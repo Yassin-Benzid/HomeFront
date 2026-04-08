@@ -1,0 +1,43 @@
+<app-dashboard-navbar [Title]="'Zones touristiques'"></app-dashboard-navbar>
+
+<h2 class="main-title d-block d-lg-none">Zones touristiques</h2>
+
+<div class="bg-white card-box border-20">
+    <div class="d-sm-flex justify-content-between align-items-center mb-25">
+        <div>
+            <h4 class="dash-title-three mb-1">Catalogue des zones</h4>
+            <p class="m0 fs-16">Ajout, édition et suppression des zones touristiques.</p>
+        </div>
+        <a href="javascript:void(0);" class="dash-btn-two tran3s mt-3 mt-sm-0">Ajouter une zone</a>
+    </div>
+    <!-- TODO backend: brancher ce tableau sur GET /touristic-zones -->
+    <div class="table-responsive">
+        <table class="table saved-search-table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Ville</th>
+                    <th>Catégorie</th>
+                    <th>Statut</th>
+                    <th>Mise à jour</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let zone of zones">
+                    <td class="fw-500 color-dark">{{ zone.name }}</td>
+                    <td>{{ zone.city }}</td>
+                    <td>{{ zone.category }}</td>
+                    <td><span class="badge text-bg-light">{{ zone.status }}</span></td>
+                    <td>{{ zone.updatedAt }}</td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a href="javascript:void(0);">Modifier</a>
+                            <a href="javascript:void(0);" (click)="deleteRecord(zone.id)">Supprimer</a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

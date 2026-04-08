@@ -1,0 +1,45 @@
+<app-dashboard-navbar [Title]="'Agences voitures'"></app-dashboard-navbar>
+
+<h2 class="main-title d-block d-lg-none">Agences voitures</h2>
+
+<div class="bg-white card-box border-20">
+    <div class="d-sm-flex justify-content-between align-items-center mb-25">
+        <div>
+            <h4 class="dash-title-three mb-1">Réseau des agences</h4>
+            <p class="m0 fs-16">Suivi des managers, flottes et disponibilités.</p>
+        </div>
+        <a href="javascript:void(0);" class="dash-btn-two tran3s mt-3 mt-sm-0">Ajouter une agence</a>
+    </div>
+    <!-- TODO backend: brancher cette table sur GET /car-agencies -->
+    <div class="table-responsive">
+        <table class="table property-list-table">
+            <thead>
+                <tr>
+                    <th>Agence</th>
+                    <th>Ville</th>
+                    <th>Manager</th>
+                    <th>Flotte</th>
+                    <th>Disponibles</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let agency of agencies">
+                    <td class="fw-500 color-dark">{{ agency.name }}</td>
+                    <td>{{ agency.city }}</td>
+                    <td>{{ agency.manager }}</td>
+                    <td>{{ agency.fleet }}</td>
+                    <td>{{ agency.available }}</td>
+                    <td><span class="badge text-bg-light">{{ agency.status }}</span></td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a href="javascript:void(0);">Voir</a>
+                            <a href="javascript:void(0);">Modifier</a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

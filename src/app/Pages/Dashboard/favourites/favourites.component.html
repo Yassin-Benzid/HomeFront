@@ -1,0 +1,19 @@
+<app-dashboard-navbar [Title]="'Wishlist'"></app-dashboard-navbar>
+
+<h2 class="main-title d-block d-lg-none">Wishlist</h2>
+
+<div class="row">
+    <div class="col-lg-4 col-md-6 d-flex mt-30" *ngFor="let wishlist of wishlists">
+        <div class="bg-white card-box border-20 w-100 h-100">
+            <h4 class="dash-title-three mb-10">{{ wishlist.client }}</h4>
+            <p class="fs-16">Dernière mise à jour: {{ wishlist.updatedAt }}</p>
+            <div class="mb-20">
+                <span class="badge text-bg-light">{{ wishlist.count }} éléments</span>
+            </div>
+            <ul class="list-style-one style-none">
+                <li *ngFor="let item of wishlist.items">{{ item }}</li>
+            </ul>
+            <p class="fs-16 mt-20 mb-0">Utilisez cette vue pour analyser les produits les plus enregistrés par les clients.</p>
+        </div>
+    </div>
+</div>

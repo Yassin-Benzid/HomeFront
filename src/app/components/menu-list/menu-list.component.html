@@ -1,0 +1,67 @@
+<ul class="navbar-nav align-items-lg-center">
+    <li class="d-block d-lg-none">
+        <div class="logo"><a routerLink="/" class="d-block"><img src="assets/images/logo/logo_01.svg" alt=""></a></div>
+    </li>
+    <li class="nav-item dashboard-menu">
+        <a class="nav-link" routerLink="/tableau-de-bord">Admin</a>
+    </li>
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="javascript:void(0);" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Accueil
+        </a>
+        <ul class="dropdown-menu">
+            <li><a routerLink="/" class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span>Accueil principal</span></a></li>
+            <li><a routerLink="/index-3" class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span>Home 3 tourisme</span></a></li>
+            <li><a routerLink="/contact" class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span>Contact</span></a></li>
+        </ul>
+    </li>
+    <li class="nav-item dropdown mega-dropdown-sm">
+        <a class="nav-link dropdown-toggle" href="javascript:void(0);" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Catalogue
+        </a>
+        <ul class="dropdown-menu">
+            <li class="row gx-1">
+                <div class="col-lg-4">
+                    <div class="menu-column">
+                        <h6 class="mega-menu-title">Réservations</h6>
+                        <ul class="style-none mega-dropdown-list">
+                            <li><a routerLink="/hotels" class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span>Hôtels</span></a></li>
+                            <li><a routerLink="/reservations" class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span>Réservations hôtels</span></a></li>
+                            <li><a routerLink="/agences-voitures" class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span>Agences voitures</span></a></li>
+                            <li><a routerLink="/wishlist" class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span>Wishlist</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="menu-column">
+                        <h6 class="mega-menu-title">Découverte</h6>
+                        <ul class="style-none mega-dropdown-list">
+                            <li><a routerLink="/zones-touristiques" class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span>Zones touristiques</span></a></li>
+                            <li><a routerLink="/avis-commentaires" class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span>Avis voyageurs</span></a></li>
+                            <li><a routerLink="/fiche-hotel" class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span>Créer une fiche hôtel</span></a></li>
+                            <li><a routerLink="/profil-admin" class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span>Profil administrateur</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="menu-column">
+                        <h6 class="mega-menu-title">Pilotage</h6>
+                        <ul class="style-none mega-dropdown-list">
+                            <li><a routerLink="/tableau-de-bord" class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span>Tableau de bord</span></a></li>
+                            <li><a routerLink="/utilisateurs" class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span>Utilisateurs</span></a></li>
+                            <li><a routerLink="/facturation" class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span>Facturation</span></a></li>
+                            <li><a routerLink="/reservations" class="dropdown-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span>Suivi des réservations</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" routerLink="/zones-touristiques">Zones touristiques</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" routerLink="/contact">Contact</a>
+    </li>
+    <li class="d-md-none ps-2 pe-2 mt-20">
+        <a routerLink="/tableau-de-bord" class="btn-two w-100"><span>Ouvrir l'administration</span> <i class="fa-thin fa-arrow-up-right"></i></a>
+    </li>
+</ul>

@@ -1,0 +1,77 @@
+<app-dashboard-navbar [Title]="'Tableau de bord'"></app-dashboard-navbar>
+
+<h2 class="main-title d-block d-lg-none">Tableau de bord</h2>
+
+<div class="row">
+    <div class="col-lg-3 col-6" *ngFor="let stat of stats">
+        <div class="dash-card-one bg-white border-30 position-relative mb-15">
+            <div class="d-sm-flex align-items-center justify-content-between">
+                <div class="icon rounded-circle d-flex align-items-center justify-content-center order-sm-1">
+                    <img [src]="stat.icon" alt="" class="lazy-img">
+                </div>
+                <div class="order-sm-0">
+                    <span>{{ stat.title }}</span>
+                    <div class="value fw-500">{{ stat.value }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row gx-xxl-5 pt-15 lg-pt-10">
+    <div class="col-xl-7 d-flex">
+        <div class="bg-white card-box border-20 w-100 mt-30">
+            <h4 class="dash-title-three">Pipeline opérationnel</h4>
+            <p class="fs-16 mb-25">Vue statique des principaux indicateurs. Branchez ici les agrégats du backend.</p>
+            <!-- TODO backend: récupérer ces valeurs depuis un endpoint de statistiques globales -->
+            <div class="mb-25" *ngFor="let item of reservationPipelines">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="fw-500 color-dark">{{ item.label }}</span>
+                    <span>{{ item.value }}%</span>
+                </div>
+                <div class="progress" style="height: 10px;">
+                    <div class="progress-bar" role="progressbar" [style.width.%]="item.value"></div>
+                </div>
+            </div>
+            <div class="border-top pt-25 mt-30">
+                <h5 class="mb-20">Activité récente</h5>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Module</th>
+                                <th>Action</th>
+                                <th>Auteur</th>
+                                <th>Heure</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let activity of recentActivities">
+                                <td>{{ activity.module }}</td>
+                                <td>{{ activity.action }}</td>
+                                <td>{{ activity.author }}</td>
+                                <td>{{ activity.when }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-5 d-flex">
+        <div class="bg-white card-box border-20 w-100 mt-30">
+            <h4 class="dash-title-three">Points d’attention</h4>
+            <div class="border rounded-4 p-3 mb-20" *ngFor="let alert of alerts">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <strong class="color-dark">{{ alert.title }}</strong>
+                    <span class="badge text-bg-light">{{ alert.level }}</span>
+                </div>
+                <p class="m0 fs-16">{{ alert.detail }}</p>
+            </div>
+            <div class="border-top pt-25 mt-30">
+                <h5 class="mb-15">Conseil intégration</h5>
+                <p class="fs-16 m0">Exposez un endpoint dédié pour le dashboard admin avec les compteurs, alertes et derniers événements. Cela évite de multiplier les appels dès le chargement.</p>
+            </div>
+        </div>
+    </div>
+</div>

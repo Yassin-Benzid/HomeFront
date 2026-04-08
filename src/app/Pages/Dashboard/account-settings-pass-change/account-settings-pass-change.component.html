@@ -1,0 +1,41 @@
+<app-dashboard-navbar [Title]="'Facturation'"></app-dashboard-navbar>
+
+<h2 class="main-title d-block d-lg-none">Facturation</h2>
+
+<div class="row">
+    <div class="col-lg-4 col-6" *ngFor="let summary of summaries">
+        <div class="dash-card-one bg-white border-30 position-relative mb-15">
+            <span>{{ summary.label }}</span>
+            <div class="value fw-500">{{ summary.value }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white card-box border-20 mt-30">
+    <h4 class="dash-title-three">Factures récentes</h4>
+    <!-- TODO backend: brancher cette table sur GET /invoices -->
+    <div class="table-responsive">
+        <table class="table property-list-table">
+            <thead>
+                <tr>
+                    <th>Facture</th>
+                    <th>Réservation</th>
+                    <th>Client</th>
+                    <th>Montant</th>
+                    <th>Méthode</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let invoice of invoices">
+                    <td class="fw-500 color-dark">{{ invoice.ref }}</td>
+                    <td>{{ invoice.reservation }}</td>
+                    <td>{{ invoice.client }}</td>
+                    <td>{{ invoice.amount }}</td>
+                    <td>{{ invoice.method }}</td>
+                    <td><span class="badge text-bg-light">{{ invoice.status }}</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

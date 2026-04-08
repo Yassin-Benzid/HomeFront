@@ -1,0 +1,52 @@
+<app-dashboard-navbar [Title]="'Utilisateurs'"></app-dashboard-navbar>
+
+<h2 class="main-title d-block d-lg-none">Utilisateurs</h2>
+
+<div class="row">
+    <div class="col-lg-3 col-6" *ngFor="let role of roleCards">
+        <div class="dash-card-one bg-white border-30 position-relative mb-15">
+            <span>{{ role.label }}</span>
+            <div class="value fw-500">{{ role.value }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white card-box border-20 mt-30">
+    <div class="d-sm-flex justify-content-between align-items-center mb-25">
+        <div>
+            <h4 class="dash-title-three mb-1">Gestion des rôles</h4>
+            <p class="m0 fs-16">Admin, client, manager hôtel et manager agence.</p>
+        </div>
+        <a href="javascript:void(0);" class="dash-btn-two tran3s mt-3 mt-sm-0">Ajouter un utilisateur</a>
+    </div>
+    <!-- TODO backend: brancher cette table sur la liste paginée des utilisateurs -->
+    <div class="table-responsive">
+        <table class="table property-list-table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Rôle</th>
+                    <th>Email</th>
+                    <th>Statut</th>
+                    <th>Dernier accès</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of users">
+                    <td class="fw-500 color-dark">{{ user.fullName }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.email }}</td>
+                    <td><span class="badge text-bg-light">{{ user.status }}</span></td>
+                    <td>{{ user.lastAccess }}</td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a href="javascript:void(0);" class="dash-btn-one">Voir</a>
+                            <a href="javascript:void(0);" class="dash-btn-one">Modifier</a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

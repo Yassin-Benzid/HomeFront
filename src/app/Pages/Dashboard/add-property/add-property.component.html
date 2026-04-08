@@ -1,0 +1,116 @@
+<app-dashboard-navbar [Title]="'Fiche hôtel'"></app-dashboard-navbar>
+
+<h2 class="main-title d-block d-lg-none">Fiche hôtel</h2>
+
+<div class="bg-white card-box border-20">
+    <h4 class="dash-title-three">Informations générales</h4>
+    <!-- TODO backend: soumettre ce formulaire vers POST/PUT /hotels -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="dash-input-wrapper mb-30">
+                <label>Nom de l’établissement</label>
+                <input type="text" [(ngModel)]="hotelForm.name" name="name">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="dash-input-wrapper mb-30">
+                <label>Type</label>
+                <ng-select [items]="categories" bindLabel="label" bindValue="value" [(ngModel)]="hotelForm.category" name="category" class="dashboard-ng-select"></ng-select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="dash-input-wrapper mb-30">
+                <label>Manager</label>
+                <ng-select [items]="managers" bindLabel="label" bindValue="value" [(ngModel)]="hotelForm.manager" name="manager" class="dashboard-ng-select"></ng-select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="dash-input-wrapper mb-30">
+                <label>Ville</label>
+                <ng-select [items]="cities" bindLabel="label" bindValue="value" [(ngModel)]="hotelForm.city" name="city" class="dashboard-ng-select"></ng-select>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="dash-input-wrapper mb-30">
+                <label>Description</label>
+                <textarea class="size-lg" [(ngModel)]="hotelForm.description" name="description"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white card-box border-20 mt-40">
+    <h4 class="dash-title-three">Capacité & disponibilité</h4>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="dash-input-wrapper mb-30">
+                <label>Chambres standard</label>
+                <input type="number" [(ngModel)]="hotelForm.standardRooms" name="standardRooms">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dash-input-wrapper mb-30">
+                <label>Chambres deluxe</label>
+                <input type="number" [(ngModel)]="hotelForm.deluxeRooms" name="deluxeRooms">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dash-input-wrapper mb-30">
+                <label>Suites</label>
+                <input type="number" [(ngModel)]="hotelForm.suites" name="suites">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dash-input-wrapper mb-30">
+                <label>Tarif / nuit</label>
+                <input type="number" [(ngModel)]="hotelForm.nightPrice" name="nightPrice">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="dash-input-wrapper mb-30">
+                <label>Check-in</label>
+                <input type="text" [(ngModel)]="hotelForm.checkIn" name="checkIn">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="dash-input-wrapper mb-30">
+                <label>Check-out</label>
+                <input type="text" [(ngModel)]="hotelForm.checkOut" name="checkOut">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white card-box border-20 mt-40">
+    <h4 class="dash-title-three">Services</h4>
+    <div class="row">
+        <div class="col-md-4" *ngFor="let amenity of amenities">
+            <div class="form-check mb-20">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="amenity.selected" [name]="amenity.label">
+                <label class="form-check-label">{{ amenity.label }}</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white card-box border-20 mt-40">
+    <h4 class="dash-title-three">Galerie & documents</h4>
+    <div class="dash-input-wrapper mb-20">
+        <label>Importer des fichiers</label>
+        <input type="file" multiple (change)="onFileChange($event)">
+    </div>
+    <div class="d-flex flex-wrap gap-3" *ngIf="uploadedFiles.length">
+        <div class="border rounded-4 p-3" *ngFor="let file of uploadedFiles">
+            <div class="d-flex align-items-center gap-3">
+                <span>{{ file.name }}</span>
+                <a href="javascript:void(0);" (click)="removeFile(file)">Supprimer</a>
+            </div>
+        </div>
+    </div>
+    <p class="fs-16 mt-20 mb-0">Conseil: stockez les URLs médias côté backend et retournez-les dans la fiche hôtel pour recharger les images automatiquement.</p>
+</div>
+
+<div class="button-group d-inline-flex align-items-center mt-30">
+    <a href="javascript:void(0);" class="dash-btn-two tran3s me-3">Enregistrer</a>
+    <a routerLink="/hotels" class="dash-cancel-btn tran3s">Annuler</a>
+</div>
