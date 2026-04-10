@@ -1,43 +1,88 @@
 <div class="main-page-wrapper">
 
-    <router-outlet />
+    <router-outlet></router-outlet>
+
+    <!-- BACKDROP -->
     <div *ngIf="isBackdropVisible" class="modal-backdrop fade show"></div>
-    <div class="modal fade" [class.show]="isVisible" [ngStyle]="{display: isVisible ? 'block' : 'none'}" tabindex="-1" aria-hidden="true">
+
+    <!-- MODAL -->
+    <div class="modal fade"
+         [class.show]="isVisible"
+         [ngStyle]="{display: isVisible ? 'block' : 'none'}"
+         tabindex="-1"
+         aria-hidden="true">
+
         <div class="modal-dialog modal-fullscreen modal-dialog-centered">
             <div class="container">
                 <div class="user-data-form modal-content">
-                    <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+
+                    <!-- CLOSE -->
+                    <button type="button"
+                            class="btn-close"
+                            (click)="closeModal()"
+                            aria-label="Close"></button>
+
                     <div class="form-wrapper m-auto">
+
+                        <!-- TABS -->
                         <ul class="nav nav-tabs w-100" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#fc1" role="tab">Connexion</button>
+                            <li class="nav-item">
+                                <button class="nav-link active"
+                                        data-bs-toggle="tab"
+                                        data-bs-target="#fc1">
+                                    Login
+                                </button>
                             </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#fc2" role="tab">Inscription</button>
+                            <li class="nav-item">
+                                <button class="nav-link"
+                                        data-bs-toggle="tab"
+                                        data-bs-target="#fc2">
+                                    Signup
+                                </button>
                             </li>
                         </ul>
+
                         <div class="tab-content mt-30">
-                            <div class="tab-pane show active" role="tabpanel" id="fc1">
+
+                            <!-- ================= LOGIN ================= -->
+                            <div class="tab-pane show active" id="fc1">
+
                                 <div class="text-center mb-20">
                                     <h2>Bon retour</h2>
-                                    <p class="fs-20 color-dark">Pas encore de compte ? <a href="javascript:void(0);">Inscrivez-vous</a></p>
+                                    <p class="fs-20 color-dark">
+                                        Pas encore de compte ?
+                                        <a href="javascript:void(0);">Sign up</a>
+                                    </p>
                                 </div>
-                                <!-- TODO backend: connecter ce formulaire à POST /auth/login -->
-                                <form action="javascript:void(0);">
+
+                                <form>
+
                                     <div class="row">
+
+                                        <!-- EMAIL -->
                                         <div class="col-12">
                                             <div class="input-group-meta position-relative mb-25">
-                                                <label>E-mail*</label>
-                                                <input type="email" placeholder="exemple@tourismhub.tn">
+                                                <label>Email*</label>
+                                                <input type="email"
+                                                       placeholder="exemple@gmail.com"
+                                                       [(ngModel)]="email"
+                                                       name="loginEmail">
                                             </div>
                                         </div>
+
+                                        <!-- PASSWORD -->
                                         <div class="col-12">
                                             <div class="input-group-meta position-relative mb-20">
                                                 <label>Mot de passe*</label>
-                                                <input type="password" placeholder="Saisir le mot de passe" class="pass_log_id">
-                                                <span class="placeholder_icon"><span class="passVicon"><img src="assets/images/icon/icon_68.svg" alt=""></span></span>
+                                                <input type="password"
+                                                       placeholder="Saisir le mot de passe"
+                                                       class="pass_log_id"
+                                                       [(ngModel)]="password"
+                                                       name="loginPassword">
                                             </div>
                                         </div>
+
+                                        <!-- REMEMBER -->
                                         <div class="col-12">
                                             <div class="agreement-checkbox d-flex justify-content-between align-items-center">
                                                 <div>
@@ -47,87 +92,124 @@
                                                 <a href="javascript:void(0);">Mot de passe oublié ?</a>
                                             </div>
                                         </div>
+
+                                        <!-- BUTTON -->
                                         <div class="col-12">
-                                            <button class="btn-two w-100 text-uppercase d-block mt-20">Connexion</button>
+                                            <button class="btn-two w-100 text-uppercase d-block mt-20"
+                                                    type="button"
+                                                    (click)="onLogin()">
+                                                Connexion
+                                            </button>
                                         </div>
+
                                     </div>
+
                                 </form>
                             </div>
-                            <div class="tab-pane" role="tabpanel" id="fc2">
+
+                            <!-- ================= REGISTER ================= -->
+                            <div class="tab-pane" id="fc2">
+
                                 <div class="text-center mb-20">
                                     <h2>Créer un compte</h2>
-                                    <p class="fs-20 color-dark">Vous avez déjà un compte ? <a href="javascript:void(0);">Connectez-vous</a></p>
+                                    <p class="fs-20 color-dark">
+                                        Vous avez déjà un compte ? 
+                                        <a href="javascript:void(0);">Login</a>
+                                    </p>
                                 </div>
-                                <!-- TODO backend: connecter ce formulaire à POST /auth/register -->
-                                <form action="javascript:void(0);">
+
+                                <form>
+
                                     <div class="row">
+
+                                        <!-- NAME -->
                                         <div class="col-12">
                                             <div class="input-group-meta position-relative mb-25">
-                                                <label>Nom complet*</label>
-                                                <input type="text" placeholder="Nom et prénom">
+                                                <label>Nom*</label>
+                                                <input type="text"
+                                                       placeholder="Nom"
+                                                       [(ngModel)]="nom"
+                                                       name="nom">
                                             </div>
                                         </div>
+
+                                        <!-- EMAIL -->
                                         <div class="col-12">
                                             <div class="input-group-meta position-relative mb-25">
-                                                <label>E-mail*</label>
-                                                <input type="email" placeholder="exemple@tourismhub.tn">
+                                                <label>Email*</label>
+                                                <input type="email"
+                                                       placeholder="exemple@gmail.com"
+                                                       [(ngModel)]="email"
+                                                       name="registerEmail">
                                             </div>
                                         </div>
-                                        <div class="col-12">
-                                            <div class="input-group-meta position-relative mb-25">
-                                                <label>Rôle*</label>
-                                                <input type="text" placeholder="Client / Gestionnaire hôtel / Gestionnaire agence">
-                                            </div>
-                                        </div>
+
+                                        <!-- PASSWORD -->
                                         <div class="col-12">
                                             <div class="input-group-meta position-relative mb-20">
                                                 <label>Mot de passe*</label>
-                                                <input type="password" placeholder="Créer un mot de passe" class="pass_log_id">
-                                                <span class="placeholder_icon"><span class="passVicon"><img src="assets/images/icon/icon_68.svg" alt=""></span></span>
+                                                <input type="password"
+                                                       placeholder="Entrer Mot de passe"
+                                                       class="pass_log_id"
+                                                       [(ngModel)]="password"
+                                                       name="registerPassword">
                                             </div>
                                         </div>
+
+                                        <!-- ROLE -->
+                                        <div class="input-group-meta mb-25">
+                                            <label>Role*</label>
+                                            <select class="form-control"
+                                                    [(ngModel)]="role"
+                                                    name="role">
+                                                <option value="" disabled selected>Choisir un rôle</option>
+                                                <option value="CLIENT">Client</option>
+                                                <option value="HOTEL_MANAGER">Hotel Manager</option>
+                                                <option value="AGENCY_MANAGER">Agence Manager</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- TERMS -->
                                         <div class="col-12">
                                             <div class="agreement-checkbox d-flex justify-content-between align-items-center">
                                                 <div>
                                                     <input type="checkbox" id="remember2">
-                                                    <label for="remember2">En cliquant sur "Inscription", vous acceptez les <a href="javascript:void(0);">conditions</a> et la <a href="javascript:void(0);">politique de confidentialité</a></label>
+                                                    <label for="remember2">
+                                                         En cliquant sur "Inscription", vous acceptez
+                                                        <a href="#">conditions</a> &
+                                                        <a href="#">politique de confidentialité</a>
+                                                    </label>
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <!-- BUTTON -->
                                         <div class="col-12">
-                                            <button class="btn-two w-100 text-uppercase d-block mt-20" (click)="closeModal()">Inscription</button>
+                                            <button class="btn-two w-100 text-uppercase d-block mt-20"
+                                                    type="button"
+                                                    (click)="onRegister()">
+                                               Inscription
+                                            </button>
                                         </div>
+
                                     </div>
+
                                 </form>
                             </div>
+
                         </div>
 
-                        <div class="d-flex align-items-center mt-30 mb-10">
-                            <div class="line"></div>
-                            <span class="pe-3 ps-3 fs-6">OU</span>
-                            <div class="line"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <a href="javascript:void(0);" class="social-use-btn d-flex align-items-center justify-content-center tran3s w-100 mt-10">
-                                    <img src="assets/images/icon/google.png" alt="">
-                                    <span class="ps-3">Continuer avec Google</span>
-                                </a>
-                            </div>
-                            <div class="col-sm-6">
-                                <a href="javascript:void(0);" class="social-use-btn d-flex align-items-center justify-content-center tran3s w-100 mt-10">
-                                    <img src="assets/images/icon/facebook.png" alt="">
-                                    <span class="ps-3">Continuer avec Facebook</span>
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <button class="scroll-top" [ngStyle]="{display: scrollVisible ? 'block' : 'none'}" (click)="scrollToTop()">
+    <!-- SCROLL TOP -->
+    <button class="scroll-top"
+            [ngStyle]="{display: scrollVisible ? 'block' : 'none'}"
+            (click)="scrollToTop()">
         <i class="bi bi-arrow-up-short"></i>
     </button>
+
 </div>

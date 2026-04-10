@@ -1,65 +1,82 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ModalService } from '../service/modal.service';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../service/auth.service';
 
 @Component({
-    selector: 'app-layout',
-    imports: [RouterOutlet, CommonModule],
-    templateUrl: './layout.component.html'
+  selector: 'app-layout',
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule],
+  templateUrl: './layout.component.html'
 })
 export class LayoutComponent {
-  scrollVisible: boolean = false;
 
+  scrollVisible = false;
 
-  @HostListener('window:scroll', [])
+  email = '';
+  password = '';
+  nom = '';
+  role = '';
+
+  isVisible = false;
+  isBackdropVisible = false;
+
+  private modalSubscription!: Subscription;
+  private backdropSubscription!: Subscription;
+
+  constructor(
+    private modalService: ModalService,
+    private authService: AuthService
+  ) {}
+
+  @HostListener('window:scroll')
   onWindowScroll() {
-    if (window.scrollY > 100) {
-      this.scrollVisible = true;
-    } else {
-      this.scrollVisible = false;
-    }
+    this.scrollVisible = window.scrollY > 100;
   }
-
 
   scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-  isVisible = false;
-  isBackdropVisible = false; // Track backdrop visibility
-  private modalSubscription!: Subscription;
-  private backdropSubscription!: Subscription;
-
-  constructor(private modalService: ModalService) { }
 
   ngOnInit() {
-    // Subscribe to modal state changes
     this.modalSubscription = this.modalService.modalState$.subscribe(
-      (state) => {
-        this.isVisible = state;
-      }
+      state => this.isVisible = state
     );
 
-    // Subscribe to backdrop state changes
     this.backdropSubscription = this.modalService.backdropState$.subscribe(
-      (state) => {
-        this.isBackdropVisible = state;
-      }
+      state => this.isBackdropVisible = state
     );
   }
 
   ngOnDestroy() {
-    // Unsubscribe to avoid memory leaks
-    if (this.modalSubscription) {
-      this.modalSubscription.unsubscribe();
-    }
-    if (this.backdropSubscription) {
-      this.backdropSubscription.unsubscribe();
-    }
+    this.modalSubscription?.unsubscribe();
+    this.backdropSubscription?.unsubscribe();
   }
 
   closeModal() {
     this.modalService.closeModal();
+  }
+
+  onLogin() {
+    this.authService.login(this.email, this.password).subscribe({
+      next: (res) => {
+        this.authService.redirectByRole(res.role);
+        this.closeModal();
+      },
+      error: () => alert('Erreur de connexion')
+    });
+  }
+
+  onRegister() {
+    this.authService.register(this.nom, this.email, this.password, this.role).subscribe({
+      next: () => {
+        alert('Inscription réussie');
+        this.closeModal();
+      },
+      error: () => alert('Erreur inscription')
+    });
   }
 }
