@@ -3,16 +3,32 @@ import { MenuListComponent } from "../../components/menu-list/menu-list.componen
 import { CommonModule } from '@angular/common';
 import { ModalService } from '../../service/modal.service';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
-    selector: 'app-navbar-3',
-    imports: [MenuListComponent, CommonModule, RouterLink],
-    templateUrl: './navbar-3.component.html'
+  selector: 'app-navbar-3',
+  standalone: true,
+  imports: [MenuListComponent, CommonModule, RouterLink],
+  templateUrl: './navbar-3.component.html'
 })
 export class Navbar3Component {
+
   headerClass = 'theme-main-menu menu-overlay menu-style-three sticky-menu';
 
-  @HostListener('window:scroll', ['$event'])
+  isLoggedIn = false;
+  userName: string | null = null;
+
+  constructor(
+    private modalService: ModalService,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit() {
+    this.isLoggedIn = this.authService.isAuthenticated();
+    this.userName = this.authService.getUserName();
+  }
+
+  @HostListener('window:scroll')
   onWindowScroll() {
     if (window.pageYOffset > 100) {
       this.headerClass = 'theme-main-menu menu-overlay menu-style-three sticky-menu fixed';
@@ -21,9 +37,13 @@ export class Navbar3Component {
     }
   }
 
-  constructor(private modalService: ModalService) { }
-
   openModal() {
     this.modalService.openModal();
+  }
+
+  logout() {
+    this.authService.logout();
+    this.isLoggedIn = false;
+    this.userName = null;
   }
 }

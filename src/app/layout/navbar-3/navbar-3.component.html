@@ -2,31 +2,79 @@
     <div class="inner-content gap-one">
         <div class="top-header position-relative">
             <div class="d-flex align-items-center">
+
+                <!-- LOGO -->
                 <div class="logo order-lg-0">
                     <a routerLink="/" class="d-flex align-items-center">
                         <img src="assets/images/logo/logo_04.svg" alt="">
                     </a>
                 </div>
+
+                <!-- RIGHT MENU -->
                 <div class="right-widget ms-auto me-3 me-lg-0 order-lg-3">
                     <ul class="d-flex align-items-center style-none">
-                        <li class="d-flex align-items-center login-btn-one">
+
+                        <!-- ❌ NOT LOGGED -->
+                        <li *ngIf="!isLoggedIn" class="d-flex align-items-center login-btn-one">
                             <i class="fa-regular fa-lock"></i>
-                            <a href="javascript:void(0);" (click)="openModal()" class="fw-500 tran3s">Connexion <span class="d-none d-sm-inline-block">/ Inscription</span></a>
+                            <a href="javascript:void(0);"
+                               (click)="openModal()"
+                               class="fw-500 tran3s">
+                                Connexion <span class="d-none d-sm-inline-block">/ Inscription</span>
+                            </a>
                         </li>
+
+                        <!-- ✅ LOGGED USER -->
+                        <li *ngIf="isLoggedIn" class="d-flex align-items-center login-btn-one">
+                            <i class="fa-regular fa-user"></i>
+
+                            <span class="fw-500 tran3s">
+                                Bonjour, {{ userName }}
+                            </span>
+
+                            <a href="javascript:void(0);"
+                               (click)="logout()"
+                               class="ms-3 text-danger">
+                                Logout
+                            </a>
+                        </li>
+
+                        <!-- ADMIN BUTTON -->
                         <li class="d-none d-md-inline-block ms-3 ms-xl-4 me-xl-4">
-                            <a routerLink="/tableau-de-bord" class="btn-ten"><span>Espace admin</span> <i class="bi bi-arrow-up-right"></i></a>
+                            <a routerLink="/tableau-de-bord" class="btn-ten">
+                                <span>Espace admin</span>
+                                <i class="bi bi-arrow-up-right"></i>
+                            </a>
                         </li>
-                        <li class="d-none d-xl-block"><button class="sidenavbtn rounded-circle tran3s" type="button" data-bs-toggle="offcanvas" data-bs-target="#sideNav" aria-controls="sideNav"><i class="fa-sharp fa-light fa-bars-filter"></i></button></li>
+
+                        <!-- SIDE MENU -->
+                        <li class="d-none d-xl-block">
+                            <button class="sidenavbtn rounded-circle tran3s"
+                                    type="button"
+                                    data-bs-toggle="offcanvas"
+                                    data-bs-target="#sideNav"
+                                    aria-controls="sideNav">
+                                <i class="fa-sharp fa-light fa-bars-filter"></i>
+                            </button>
+                        </li>
+
                     </ul>
                 </div>
+
+                <!-- NAV -->
                 <nav class="navbar navbar-expand-lg p0 ms-lg-5 order-lg-2">
-                    <button class="navbar-toggler d-block d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <button class="navbar-toggler d-block d-lg-none"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#navbarNav">
                         <span></span>
                     </button>
+
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <app-menu-list></app-menu-list>
                     </div>
                 </nav>
+
             </div>
         </div>
     </div>

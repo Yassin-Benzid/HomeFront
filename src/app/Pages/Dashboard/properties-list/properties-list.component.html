@@ -1,45 +1,55 @@
 <app-dashboard-navbar [Title]="'Hôtels & chambres'"></app-dashboard-navbar>
 
-<h2 class="main-title d-block d-lg-none">Hôtels & chambres</h2>
-
 <div class="bg-white card-box border-20">
-    <div class="d-sm-flex align-items-center justify-content-between mb-25">
-        <div>
-            <h4 class="dash-title-three mb-1">Inventaire hôtels</h4>
-            <p class="m0 fs-16">Suivi des établissements, managers et chambres disponibles.</p>
-        </div>
-        <a routerLink="/fiche-hotel" class="dash-btn-two tran3s mt-3 mt-sm-0">Ajouter une fiche</a>
+
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div class="d-flex justify-content-between mb-3">
+    <div>
+      <h4>Liste des hôtels</h4>
     </div>
-    <!-- TODO backend: remplacer ce tableau par GET /hotels avec pagination -->
-    <div class="table-responsive">
-        <table class="table property-list-table">
-            <thead>
-                <tr>
-                    <th>Hôtel</th>
-                    <th>Ville</th>
-                    <th>Manager</th>
-                    <th>Chambres</th>
-                    <th>Disponibles</th>
-                    <th>Statut</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let hotel of hotels">
-                    <td class="fw-500 color-dark">{{ hotel.name }}</td>
-                    <td>{{ hotel.city }}</td>
-                    <td>{{ hotel.manager }}</td>
-                    <td>{{ hotel.rooms }}</td>
-                    <td>{{ hotel.available }}</td>
-                    <td><span class="badge text-bg-light">{{ hotel.status }}</span></td>
-                    <td>
-                        <div class="d-flex gap-2">
-                            <a href="javascript:void(0);" class="dash-btn-one">Voir</a>
-                            <a href="javascript:void(0);" class="dash-btn-one">Modifier</a>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+
+    <a routerLink="/fiche-hotel" class="btn btn-primary">
+      Ajouter hôtel
+    </a>
+  </div>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Hôtel</th>
+        <th>Ville</th>
+        <th>Manager</th>
+        <th>Chambres</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let hotel of hotels">
+
+        <td>{{ hotel.nom }}</td>
+        <td>{{ hotel.ville }}</td>
+        <td>{{ hotel.hotelManager?.nom }}</td>
+        <td>{{ hotel.chambres?.length }}</td>
+
+        <td>
+          <a class="btn btn-info btn-sm">Voir</a>
+
+          <button class="btn btn-danger btn-sm"
+                  (click)="deleteHotel(hotel.idhotel)">
+            Supprimer
+          </button>
+        </td>
+
+      </tr>
+    </tbody>
+  </table>
+
 </div>

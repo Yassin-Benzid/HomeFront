@@ -1,0 +1,56 @@
+<app-dashboard-navbar [Title]="'Fiche agence'"></app-dashboard-navbar>
+
+<div class="bg-white card-box border-20">
+
+  <div *ngIf="message" class="alert alert-info">
+    {{ message }}
+  </div>
+
+  <h4>Informations agence</h4>
+
+  <input [(ngModel)]="agenceForm.nom" placeholder="Nom" class="form-control mb-2">
+  <input [(ngModel)]="agenceForm.ville" placeholder="Ville" class="form-control mb-2">
+  <input [(ngModel)]="agenceForm.telephone" placeholder="Téléphone" class="form-control mb-2">
+
+  <input type="number" [(ngModel)]="agenceForm.latitude" placeholder="Latitude" class="form-control mb-2">
+  <input type="number" [(ngModel)]="agenceForm.longitude" placeholder="Longitude" class="form-control mb-2">
+
+</div>
+
+<!-- ================= VOITURES ================= -->
+
+<div class="bg-white card-box border-20 mt-4">
+
+  <h4>Voitures</h4>
+
+  <button class="btn btn-primary mb-3" (click)="addVoiture()">
+    Ajouter voiture
+  </button>
+
+  <div *ngFor="let v of voitures; let i = index" class="border p-3 mb-2">
+
+    <input [(ngModel)]="v.marque" placeholder="Marque" class="form-control mb-2">
+    <input [(ngModel)]="v.modele" placeholder="Modèle" class="form-control mb-2">
+    <input [(ngModel)]="v.immatriculation" placeholder="Immatriculation" class="form-control mb-2">
+
+    <select [(ngModel)]="v.etat" class="form-control mb-2">
+      <option value="disponible">Disponible</option>
+      <option value="louée">Louée</option>
+      <option value="maintenance">Maintenance</option>
+    </select>
+
+    <input [(ngModel)]="v.prix_Jour" type="number" placeholder="Prix / jour" class="form-control mb-2">
+
+    <button class="btn btn-danger btn-sm" (click)="removeVoiture(i)">
+      Supprimer
+    </button>
+
+  </div>
+
+</div>
+
+<!-- ================= SAVE ================= -->
+
+<button class="btn btn-success mt-3" (click)="saveAgence()">
+  Enregistrer
+</button>

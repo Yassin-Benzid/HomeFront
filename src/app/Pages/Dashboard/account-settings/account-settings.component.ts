@@ -1,17 +1,44 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardNavbarComponent } from '../../../components/dashboard-navbar/dashboard-navbar.component';
+import { AgenceService } from '../../../service/agence.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-account-settings',
-  imports: [DashboardNavbarComponent, CommonModule],
+  standalone: true,
+  imports: [DashboardNavbarComponent, CommonModule, RouterLink],
   templateUrl: './account-settings.component.html'
 })
-export class AccountSettingsComponent {
-  // NOTE: ancien écran "account-settings" reconverti en gestion des agences de location.
-  agencies = [
-    { name: 'CarGo Tunisia', city: 'Tunis', manager: 'Olfa Jebali', fleet: 38, available: 22, status: 'Actif' },
-    { name: 'Djerba Mobility', city: 'Djerba', manager: 'Hichem Dridi', fleet: 17, available: 8, status: 'Actif' },
-    { name: 'Sahel Rent', city: 'Sousse', manager: 'Ahmed Khelifi', fleet: 24, available: 0, status: 'Complet' }
-  ];
+export class AccountSettingsComponent implements OnInit {
+
+  agences: any[] = [];
+
+  successMessage = '';
+  errorMessage = '';
+
+  constructor(private agenceService: AgenceService) {}
+
+  ngOnInit(): void {
+    this.loadAgences();
+  }
+
+  loadAgences() {
+    this.agenceService.getAllAgences().subscribe({
+      next: (data) => this.agences = data,
+      error: () => this.errorMessage = 'Erreur chargement agences'
+    });
+  }
+
+  deleteAgence(id: number) {
+    if (confirm('Supprimer cette agence ?')) {
+      this.agenceService.deleteAgence(id).subscribe({
+        next: () => {
+          this.successMessage = 'Agence supprimée avec succès';
+          this.loadAgences();
+        },
+        error: () => this.errorMessage = 'Erreur suppression agence'
+      });
+    }
+  }
 }

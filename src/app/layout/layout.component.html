@@ -24,6 +24,16 @@
 
                     <div class="form-wrapper m-auto">
 
+                        <!-- ✅ SUCCESS MESSAGE -->
+                        <div *ngIf="successMessage" class="alert alert-success text-center">
+                            {{ successMessage }}
+                        </div>
+
+                        <!-- ❌ ERROR MESSAGE -->
+                        <div *ngIf="errorMessage" class="alert alert-danger text-center">
+                            {{ errorMessage }}
+                        </div>
+
                         <!-- TABS -->
                         <ul class="nav nav-tabs w-100" role="tablist">
                             <li class="nav-item">
@@ -56,7 +66,6 @@
                                 </div>
 
                                 <form>
-
                                     <div class="row">
 
                                         <!-- EMAIL -->
@@ -103,7 +112,6 @@
                                         </div>
 
                                     </div>
-
                                 </form>
                             </div>
 
@@ -113,13 +121,12 @@
                                 <div class="text-center mb-20">
                                     <h2>Créer un compte</h2>
                                     <p class="fs-20 color-dark">
-                                        Vous avez déjà un compte ? 
+                                        Vous avez déjà un compte ?
                                         <a href="javascript:void(0);">Login</a>
                                     </p>
                                 </div>
 
                                 <form>
-
                                     <div class="row">
 
                                         <!-- NAME -->
@@ -175,7 +182,7 @@
                                                 <div>
                                                     <input type="checkbox" id="remember2">
                                                     <label for="remember2">
-                                                         En cliquant sur "Inscription", vous acceptez
+                                                        En cliquant sur "Inscription", vous acceptez
                                                         <a href="#">conditions</a> &
                                                         <a href="#">politique de confidentialité</a>
                                                     </label>
@@ -188,12 +195,11 @@
                                             <button class="btn-two w-100 text-uppercase d-block mt-20"
                                                     type="button"
                                                     (click)="onRegister()">
-                                               Inscription
+                                                Inscription
                                             </button>
                                         </div>
 
                                     </div>
-
                                 </form>
                             </div>
 

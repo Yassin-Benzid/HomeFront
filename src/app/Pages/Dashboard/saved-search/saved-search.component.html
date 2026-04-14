@@ -1,43 +1,124 @@
 <app-dashboard-navbar [Title]="'Zones touristiques'"></app-dashboard-navbar>
 
-<h2 class="main-title d-block d-lg-none">Zones touristiques</h2>
+<div class="bg-white p-4 rounded shadow-sm">
 
-<div class="bg-white card-box border-20">
-    <div class="d-sm-flex justify-content-between align-items-center mb-25">
-        <div>
-            <h4 class="dash-title-three mb-1">Catalogue des zones</h4>
-            <p class="m0 fs-16">Ajout, édition et suppression des zones touristiques.</p>
-        </div>
-        <a href="javascript:void(0);" class="dash-btn-two tran3s mt-3 mt-sm-0">Ajouter une zone</a>
+  <p class="text-danger">ROLE = {{ role }}</p>
+
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>Catalogue des zones</h4>
+
+    <button *ngIf="role === 'admin'"
+            class="btn btn-warning"
+            (click)="openModal()">
+      Ajouter une zone
+    </button>
+  </div>
+
+  <!-- TABLE -->
+  <table class="table table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>Image</th>
+        <th>Nom</th>
+        <th>Ville</th>
+        <th>Description</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th *ngIf="role === 'admin'">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let z of zones">
+
+        <!-- IMAGE -->
+        <td>
+          <img *ngIf="z.image"
+               [src]="z.image"
+               width="60"
+               height="60"
+               style="object-fit: cover; border-radius: 8px;">
+        </td>
+
+        <td>{{ z.nom }}</td>
+        <td>{{ z.ville }}</td>
+        <td>{{ z.description }}</td>
+        <td>{{ z.latitude }}</td>
+        <td>{{ z.longitude }}</td>
+
+        <td *ngIf="role === 'admin'">
+
+          <button class="btn btn-sm btn-primary me-2"
+                  (click)="openModal(z)">
+            Modifier
+          </button>
+
+          <button class="btn btn-sm btn-danger"
+                  (click)="deleteRecord(z.idzone)">
+            Supprimer
+          </button>
+
+        </td>
+
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MODAL -->
+<div *ngIf="showModal"
+     class="modal d-block"
+     style="background: rgba(0,0,0,0.5);">
+
+  <div class="modal-dialog">
+    <div class="modal-content p-4">
+
+      <h4>
+        {{ editingId ? 'Modifier' : 'Ajouter' }} Zone
+      </h4>
+
+      <!-- IMAGE UPLOAD 🔥 -->
+      <input type="file"
+             class="form-control mb-2"
+             (change)="onFileSelected($event)">
+
+      <img *ngIf="imagePreview"
+           [src]="imagePreview"
+           width="100"
+           class="mb-2 rounded">
+
+      <input [(ngModel)]="form.nom" class="form-control mb-2" placeholder="Nom">
+      <input [(ngModel)]="form.ville" class="form-control mb-2" placeholder="Ville">
+
+      <textarea [(ngModel)]="form.description"
+                class="form-control mb-2"
+                placeholder="Description"></textarea>
+
+      <input [(ngModel)]="form.latitude" type="number" class="form-control mb-2">
+      <input [(ngModel)]="form.longitude" type="number" class="form-control mb-2">
+
+      <div class="d-flex justify-content-end mt-3">
+
+        <button class="btn btn-success me-2"
+                (click)="saveZone()">
+          Enregistrer
+        </button>
+
+        <button class="btn btn-secondary"
+                (click)="closeModal()">
+          Annuler
+        </button>
+
+      </div>
+
     </div>
-    <!-- TODO backend: brancher ce tableau sur GET /touristic-zones -->
-    <div class="table-responsive">
-        <table class="table saved-search-table">
-            <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Ville</th>
-                    <th>Catégorie</th>
-                    <th>Statut</th>
-                    <th>Mise à jour</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let zone of zones">
-                    <td class="fw-500 color-dark">{{ zone.name }}</td>
-                    <td>{{ zone.city }}</td>
-                    <td>{{ zone.category }}</td>
-                    <td><span class="badge text-bg-light">{{ zone.status }}</span></td>
-                    <td>{{ zone.updatedAt }}</td>
-                    <td>
-                        <div class="d-flex gap-2">
-                            <a href="javascript:void(0);">Modifier</a>
-                            <a href="javascript:void(0);" (click)="deleteRecord(zone.id)">Supprimer</a>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+  </div>
 </div>

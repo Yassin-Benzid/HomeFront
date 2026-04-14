@@ -1,7 +1,10 @@
-import { DashboardIndexComponent } from './Pages/Dashboard/dashboard-index/dashboard-index.component';
 import { Routes } from '@angular/router';
+
 import { LayoutComponent } from './layout/layout.component';
 import { DashboardLayoutComponent } from './dashboard-layout/dashboard-layout.component';
+
+// Dashboard components
+import { DashboardIndexComponent } from './Pages/Dashboard/dashboard-index/dashboard-index.component';
 import { AccountSettingsComponent } from './Pages/Dashboard/account-settings/account-settings.component';
 import { AccountSettingsPassChangeComponent } from './Pages/Dashboard/account-settings-pass-change/account-settings-pass-change.component';
 import { AddPropertyComponent } from './Pages/Dashboard/add-property/add-property.component';
@@ -13,121 +16,241 @@ import { PropertiesListComponent } from './Pages/Dashboard/properties-list/prope
 import { ReviewComponent } from './Pages/Dashboard/review/review.component';
 import { SavedSearchComponent } from './Pages/Dashboard/saved-search/saved-search.component';
 
+// 🔥 NEW IMPORT (FICHE AGENCE)
+import { AddPropertyComponent as FicheAgenceComponent } from './Pages/Dashboard/add-property/add-property.component';
+
 export const routes: Routes = [
-    {
-        path: '',
-        component: LayoutComponent,
-        loadChildren: () =>
-            import('./layout/layout.route').then((mod) => mod.MP_ROUTES),
-    },
-    {
-        path: 'tableau-de-bord',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: DashboardIndexComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'dashboard-index',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: DashboardIndexComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'agences-voitures',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: AccountSettingsComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'account-settings',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: AccountSettingsComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'facturation',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: AccountSettingsPassChangeComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'account-settings-pass-change',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: AccountSettingsPassChangeComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'fiche-hotel',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: AddPropertyComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'add-property',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: AddPropertyComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'wishlist',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: FavouritesComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'favourites',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: FavouritesComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'utilisateurs',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: MembershipComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'membership',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: MembershipComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'reservations',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: MessageComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'message',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: MessageComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'profil-admin',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: ProfileComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'profile',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: ProfileComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'hotels',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: PropertiesListComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'properties-list',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: PropertiesListComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'zones-touristiques',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: SavedSearchComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'saved-search',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: SavedSearchComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'avis-commentaires',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: ReviewComponent, outlet: 'dashboard' }],
-    },
-    {
-        path: 'review',
-        component: DashboardLayoutComponent,
-        children: [{ path: '', component: ReviewComponent, outlet: 'dashboard' }],
-    },
+
+  // =========================
+  // PUBLIC LAYOUT
+  // =========================
+  {
+    path: '',
+    component: LayoutComponent,
+    loadChildren: () =>
+      import('./layout/layout.route').then((mod) => mod.MP_ROUTES),
+  },
+
+  // =========================
+  // DASHBOARD HOME
+  // =========================
+  {
+    path: 'tableau-de-bord',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: DashboardIndexComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  {
+    path: 'dashboard-index',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: DashboardIndexComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  // =========================
+  // AGENCES VOITURES
+  // =========================
+  {
+    path: 'agences-voitures',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: AccountSettingsComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  // =========================
+  // ACCOUNT SETTINGS
+  // =========================
+  {
+    path: 'account-settings',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: AccountSettingsComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  // =========================
+  // FACTURATION
+  // =========================
+  {
+    path: 'facturation',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: AccountSettingsPassChangeComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  {
+    path: 'account-settings-pass-change',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: AccountSettingsPassChangeComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  // =========================
+  // HÔTEL FICHE
+  // =========================
+  {
+    path: 'fiche-hotel',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: AddPropertyComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  {
+    path: 'add-property',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: AddPropertyComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  // =========================
+  // ⭐ FICHE AGENCE (NEW FIX)
+  // =========================
+  {
+    path: 'fiche-agence',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: AddPropertyComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  // =========================
+  // WISHLIST
+  // =========================
+  {
+    path: 'wishlist',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: FavouritesComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  {
+    path: 'favourites',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: FavouritesComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  // =========================
+  // UTILISATEURS
+  // =========================
+  {
+    path: 'utilisateurs',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: MembershipComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  {
+    path: 'membership',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: MembershipComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  // =========================
+  // RESERVATIONS
+  // =========================
+  {
+    path: 'reservations',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: MessageComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  {
+    path: 'message',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: MessageComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  // =========================
+  // PROFIL ADMIN
+  // =========================
+  {
+    path: 'profil-admin',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: ProfileComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  {
+    path: 'profile',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: ProfileComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  // =========================
+  // HOTELS
+  // =========================
+  {
+    path: 'hotels',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: PropertiesListComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  {
+    path: 'properties-list',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: PropertiesListComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  // =========================
+  // ZONES TOURISTIQUES
+  // =========================
+  {
+    path: 'zones-touristiques',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: SavedSearchComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  {
+    path: 'saved-search',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: SavedSearchComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  // =========================
+  // AVIS
+  // =========================
+  {
+    path: 'avis-commentaires',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: ReviewComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  {
+    path: 'review',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: ReviewComponent, outlet: 'dashboard' }
+    ],
+  },
 ];
