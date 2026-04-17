@@ -11,13 +11,12 @@ import { AddPropertyComponent } from './Pages/Dashboard/add-property/add-propert
 import { FavouritesComponent } from './Pages/Dashboard/favourites/favourites.component';
 import { MembershipComponent } from './Pages/Dashboard/membership/membership.component';
 import { MessageComponent } from './Pages/Dashboard/message/message.component';
+import { LocationsComponent } from './Pages/Dashboard/locations/locations.component';
 import { ProfileComponent } from './Pages/Dashboard/profile/profile.component';
 import { PropertiesListComponent } from './Pages/Dashboard/properties-list/properties-list.component';
 import { ReviewComponent } from './Pages/Dashboard/review/review.component';
 import { SavedSearchComponent } from './Pages/Dashboard/saved-search/saved-search.component';
-
-// 🔥 NEW IMPORT (FICHE AGENCE)
-import { AddPropertyComponent as FicheAgenceComponent } from './Pages/Dashboard/add-property/add-property.component';
+import { AddAccountComponent } from './Pages/Dashboard/add-account/add-account.component';
 
 export const routes: Routes = [
 
@@ -92,7 +91,7 @@ export const routes: Routes = [
   },
 
   // =========================
-  // HÔTEL FICHE
+  // HÔTEL
   // =========================
   {
     path: 'fiche-hotel',
@@ -111,15 +110,17 @@ export const routes: Routes = [
   },
 
   // =========================
-  // ⭐ FICHE AGENCE (NEW FIX)
+  // AGENCE (FIX CORRECT)
   // =========================
   {
     path: 'fiche-agence',
     component: DashboardLayoutComponent,
     children: [
-      { path: '', component: AddPropertyComponent, outlet: 'dashboard' }
+      { path: '', component: AddAccountComponent, outlet: 'dashboard' }
     ],
   },
+
+  // ❌ SUPPRIMÉ : doublon add-property qui causait conflit
 
   // =========================
   // WISHLIST
@@ -160,13 +161,21 @@ export const routes: Routes = [
   },
 
   // =========================
-  // RESERVATIONS
+  // MESSAGES / RESERVATIONS
   // =========================
   {
     path: 'reservations',
     component: DashboardLayoutComponent,
     children: [
       { path: '', component: MessageComponent, outlet: 'dashboard' }
+    ],
+  },
+
+  {
+    path: 'locations',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: LocationsComponent, outlet: 'dashboard' }
     ],
   },
 
@@ -179,7 +188,7 @@ export const routes: Routes = [
   },
 
   // =========================
-  // PROFIL ADMIN
+  // PROFIL
   // =========================
   {
     path: 'profil-admin',
@@ -198,7 +207,7 @@ export const routes: Routes = [
   },
 
   // =========================
-  // HOTELS
+  // HOTELS LIST
   // =========================
   {
     path: 'hotels',
@@ -236,7 +245,7 @@ export const routes: Routes = [
   },
 
   // =========================
-  // AVIS
+  // REVIEWS
   // =========================
   {
     path: 'avis-commentaires',

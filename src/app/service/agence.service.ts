@@ -12,10 +12,10 @@ export class AgenceService {
   constructor(private http: HttpClient) {}
 
   private getHeaders() {
+
     const token = localStorage.getItem('token');
 
     if (!token) {
-      console.error('Token manquant ❌');
       return {};
     }
 
@@ -25,6 +25,8 @@ export class AgenceService {
       })
     };
   }
+
+  // ================= CRUD =================
 
   getAllAgences(): Observable<any> {
     return this.http.get(this.API_URL, this.getHeaders());
@@ -44,5 +46,22 @@ export class AgenceService {
 
   deleteAgence(id: number): Observable<any> {
     return this.http.delete(this.API_URL + '/' + id, this.getHeaders());
+  }
+
+  // ================= UPLOAD IMAGES =================
+
+  uploadImages(files: File[]): Observable<any> {
+
+    const formData = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files', files[i]);
+    }
+
+    return this.http.post(
+      this.API_URL + '/upload-images',
+      formData,
+      this.getHeaders()
+    );
   }
 }

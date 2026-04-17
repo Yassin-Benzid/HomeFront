@@ -1,68 +1,116 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { DashboardNavbarComponent } from '../../../components/dashboard-navbar/dashboard-navbar.component';
+import { UserService } from '../../../service/user.service';
 
 @Component({
   selector: 'app-profile',
-  imports: [DashboardNavbarComponent, NgSelectModule, FormsModule, CommonModule],
+  standalone: true,
+  imports: [DashboardNavbarComponent, FormsModule, CommonModule],
   templateUrl: './profile.component.html'
 })
-export class ProfileComponent {
-  countries = [
-    { name: 'Tunisie' },
-    { name: 'France' },
-    { name: 'Algérie' },
-    { name: 'Maroc' },
-    { name: 'Italie' }
-  ];
+export class ProfileComponent implements OnInit {
 
-  cities = [
-    { name: 'Tunis' },
-    { name: 'Hammamet' },
-    { name: 'Sousse' },
-    { name: 'Djerba' },
-    { name: 'Tozeur' }
-  ];
-
-  roles = [
-    { name: 'Administrateur principal', value: 'admin' },
-    { name: 'Administrateur contenu', value: 'content-admin' },
-    { name: 'Superviseur opérations', value: 'operations' }
-  ];
-
-  user = {
-    username: 'admin-tourisme',
-    firstName: 'Amel',
-    lastName: 'Ben Youssef',
-    email: 'amel.admin@tourismhub.tn',
-    role: 'admin',
-    phoneNumber: '+216 20 123 456',
-    website: 'https://tourismhub.tn',
-    about: 'Supervision des hôtels, des agences de location, des réservations et de la facturation.'
+  user: any = {
+    nom: '',
+    prenom: '',
+    email: '',
+    telephone: '',
+    password: ''
   };
 
   imageSrc: string | ArrayBuffer | null = null;
 
-  networks = [
-    { link: 'https://www.linkedin.com/company/tourismhub' },
-    { link: 'https://www.facebook.com/tourismhub' }
-  ];
+  // ✅ POPUPS
+  successMessage: string = '';
+  errorMessage: string = '';
 
-  clearForm(): void {
-    this.user = {
-      username: '',
-      firstName: '',
-      lastName: '',
-      email: '',
-      role: '',
-      phoneNumber: '',
-      website: '',
-      about: ''
-    };
+  constructor(private userService: UserService) {}
+
+  // ================= LOAD PROFILE =================
+  ngOnInit(): void {
+    this.loadProfile();
   }
 
+  loadProfile(): void {
+    this.userService.getProfile().subscribe({
+      next: (data: any) => {
+        this.user = {
+          nom: data.nom || '',
+          prenom: data.prenom || '',
+          email: data.email || '',
+          telephone: data.telephone || '',
+          password: ''
+        };
+      },
+      error: () => {
+        this.user = {
+          nom: '',
+          prenom: '',
+          email: '',
+          telephone: '',
+          password: ''
+        };
+      }
+    });
+  }
+
+  // ================= SAVE PROFILE =================
+  saveProfile(): void {
+
+    const payload: any = {
+      nom: this.user.nom,
+      prenom: this.user.prenom,
+      email: this.user.email,
+      telephone: this.user.telephone
+    };
+
+    // password optionnel
+    if (this.user.password && this.user.password.trim() !== '') {
+      payload.password = this.user.password;
+    }
+
+    this.userService.updateProfile(payload).subscribe({
+      next: () => {
+
+        // ✅ SUCCESS POPUP
+        this.successMessage = 'Profil mis à jour avec succès';
+        this.errorMessage = '';
+
+        // reset password field
+        this.user.password = '';
+
+        // reload profile
+        this.loadProfile();
+
+        // auto hide success message
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 3000);
+      },
+
+      error: (err) => {
+        console.error('Update error:', err);
+
+        // ❌ ERROR POPUP
+        this.errorMessage = 'Erreur lors de la mise à jour du profil';
+        this.successMessage = '';
+
+        setTimeout(() => {
+          this.errorMessage = '';
+        }, 3000);
+      }
+    });
+  }
+
+  // ================= RESET =================
+  clearForm(): void {
+    this.loadProfile();
+    this.user.password = '';
+  }
+
+  // ================= IMAGE =================
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -74,9 +122,5 @@ export class ProfileComponent {
       this.imageSrc = reader.result;
     };
     reader.readAsDataURL(file);
-  }
-
-  addNetwork(): void {
-    this.networks.push({ link: '' });
   }
 }

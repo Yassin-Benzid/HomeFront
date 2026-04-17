@@ -1,9 +1,17 @@
 <app-dashboard-navbar [Title]="'Zones touristiques'"></app-dashboard-navbar>
 
-<div class="bg-white p-4 rounded shadow-sm">
+<div class="container mt-3">
 
-  <p class="text-danger">ROLE = {{ role }}</p>
+  <!-- HEADER -->
+  <div class="d-flex justify-content-between mb-3">
+    <h3>Gestion des zones</h3>
 
+    <button class="btn btn-primary" (click)="openModal()">
+      + Ajouter zone
+    </button>
+  </div>
+
+  <!-- MESSAGES -->
   <div *ngIf="successMessage" class="alert alert-success">
     {{ successMessage }}
   </div>
@@ -12,109 +20,89 @@
     {{ errorMessage }}
   </div>
 
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4>Catalogue des zones</h4>
+  <!-- ================= LIST ================= -->
+  <div class="row">
 
-    <button *ngIf="role === 'admin'"
-            class="btn btn-warning"
-            (click)="openModal()">
-      Ajouter une zone
-    </button>
-  </div>
+    <div class="col-md-4 mb-3" *ngFor="let z of zones">
 
-  <!-- TABLE -->
-  <table class="table table-hover">
-    <thead class="table-dark">
-      <tr>
-        <th>Image</th>
-        <th>Nom</th>
-        <th>Ville</th>
-        <th>Description</th>
-        <th>Latitude</th>
-        <th>Longitude</th>
-        <th *ngIf="role === 'admin'">Actions</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr *ngFor="let z of zones">
+      <div class="card p-2">
 
         <!-- IMAGE -->
-        <td>
-          <img *ngIf="z.image"
-               [src]="z.image"
-               width="60"
-               height="60"
-               style="object-fit: cover; border-radius: 8px;">
-        </td>
+        <img *ngIf="z.image"
+             [src]="getImageUrl(z.image)"
+             class="img-fluid mb-2 rounded">
 
-        <td>{{ z.nom }}</td>
-        <td>{{ z.ville }}</td>
-        <td>{{ z.description }}</td>
-        <td>{{ z.latitude }}</td>
-        <td>{{ z.longitude }}</td>
+        <h5>{{ z.nom }}</h5>
+        <p>{{ z.ville }}</p>
 
-        <td *ngIf="role === 'admin'">
+        <button class="btn btn-warning btn-sm"
+                (click)="openModal(z)">
+          Modifier
+        </button>
 
-          <button class="btn btn-sm btn-primary me-2"
-                  (click)="openModal(z)">
-            Modifier
-          </button>
+        <button class="btn btn-danger btn-sm mt-1"
+                (click)="deleteZone(z.idzone)">
+          Supprimer
+        </button>
 
-          <button class="btn btn-sm btn-danger"
-                  (click)="deleteRecord(z.idzone)">
-            Supprimer
-          </button>
+      </div>
 
-        </td>
+    </div>
 
-      </tr>
-    </tbody>
-  </table>
+  </div>
+
 </div>
 
-<!-- MODAL -->
-<div *ngIf="showModal"
-     class="modal d-block"
-     style="background: rgba(0,0,0,0.5);">
+<!-- ================= MODAL ================= -->
+<div class="modal d-block" *ngIf="showModal"
+     style="background: rgba(0,0,0,0.5)">
 
   <div class="modal-dialog">
-    <div class="modal-content p-4">
+    <div class="modal-content p-3 bg-white card-box border-20">
 
-      <h4>
-        {{ editingId ? 'Modifier' : 'Ajouter' }} Zone
-      </h4>
+      <h4>Informations zone</h4>
 
-      <!-- IMAGE UPLOAD 🔥 -->
-      <input type="file"
-             class="form-control mb-2"
-             (change)="onFileSelected($event)">
+      <input [(ngModel)]="form.nom"
+             placeholder="Nom"
+             class="form-control mb-2">
+
+      <input [(ngModel)]="form.ville"
+             placeholder="Ville"
+             class="form-control mb-2">
+
+      <textarea [(ngModel)]="form.description"
+                placeholder="Description"
+                class="form-control mb-2"></textarea>
+
+      <input type="number"
+             [(ngModel)]="form.latitude"
+             placeholder="Latitude"
+             class="form-control mb-2">
+
+      <input type="number"
+             [(ngModel)]="form.longitude"
+             placeholder="Longitude"
+             class="form-control mb-2">
+
+      <!-- IMAGE -->
+      <input type="file" class="form-control mb-2"
+             (change)="onFileChange($event)">
 
       <img *ngIf="imagePreview"
            [src]="imagePreview"
-           width="100"
-           class="mb-2 rounded">
+           class="img-fluid mb-2 rounded">
 
-      <input [(ngModel)]="form.nom" class="form-control mb-2" placeholder="Nom">
-      <input [(ngModel)]="form.ville" class="form-control mb-2" placeholder="Ville">
-
-      <textarea [(ngModel)]="form.description"
-                class="form-control mb-2"
-                placeholder="Description"></textarea>
-
-      <input [(ngModel)]="form.latitude" type="number" class="form-control mb-2">
-      <input [(ngModel)]="form.longitude" type="number" class="form-control mb-2">
-
-      <div class="d-flex justify-content-end mt-3">
-
-        <button class="btn btn-success me-2"
-                (click)="saveZone()">
-          Enregistrer
-        </button>
+      <!-- ACTIONS -->
+      <div class="d-flex justify-content-end gap-2 mt-3">
 
         <button class="btn btn-secondary"
                 (click)="closeModal()">
           Annuler
+        </button>
+
+        <button class="btn btn-success"
+                (click)="saveZone()">
+          Enregistrer
         </button>
 
       </div>

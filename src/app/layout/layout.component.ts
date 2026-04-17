@@ -19,6 +19,8 @@ export class LayoutComponent {
   email = '';
   password = '';
   nom = '';
+  prenom = '';
+  telephone = '';
   role = '';
 
   successMessage = '';
@@ -61,6 +63,12 @@ export class LayoutComponent {
     // ✅ LOAD AUTH STATE
     this.isLoggedIn = this.authService.isAuthenticated();
     this.userName = this.authService.getUserName();
+
+    // Afficher le popup login/signup au premier lancement
+    // tout en gardant la page d'accueil visible en arrière-plan.
+    if (!this.isLoggedIn) {
+      this.modalService.openModal();
+    }
   }
 
   ngOnDestroy() {
@@ -79,6 +87,11 @@ export class LayoutComponent {
   onLogin() {
     this.successMessage = '';
     this.errorMessage = '';
+
+    if (!this.email || !this.password) {
+      this.errorMessage = 'Veuillez saisir votre email et votre mot de passe.';
+      return;
+    }
 
     this.authService.login(this.email, this.password).subscribe({
       next: (res) => {
@@ -105,7 +118,12 @@ export class LayoutComponent {
     this.successMessage = '';
     this.errorMessage = '';
 
-    this.authService.register(this.nom, this.email, this.password, this.role).subscribe({
+    if (!this.nom || !this.prenom || !this.telephone || !this.email || !this.password || !this.role) {
+      this.errorMessage = 'Veuillez remplir tous les champs du formulaire.';
+      return;
+    }
+
+    this.authService.register(this.nom, this.prenom, this.telephone, this.email, this.password, this.role).subscribe({
       next: () => {
         this.successMessage = 'Bienvenue parmi nous 🎉 Votre compte a été créé avec succès.';
 

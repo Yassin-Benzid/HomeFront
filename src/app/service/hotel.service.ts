@@ -11,11 +11,12 @@ export class HotelService {
 
   constructor(private http: HttpClient) {}
 
+  // ================= TOKEN HEADERS =================
   private getHeaders() {
+
     const token = localStorage.getItem('token');
 
     if (!token) {
-      console.error('Token manquant');
       return {};
     }
 
@@ -46,5 +47,22 @@ export class HotelService {
 
   deleteHotel(id: number): Observable<any> {
     return this.http.delete(this.API_URL + '/' + id, this.getHeaders());
+  }
+
+  // ================= UPLOAD IMAGES =================
+
+  uploadImages(files: File[]): Observable<any> {
+
+    const formData = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files', files[i]);
+    }
+
+    return this.http.post(
+      this.API_URL + '/upload-images',
+      formData,
+      this.getHeaders()
+    );
   }
 }

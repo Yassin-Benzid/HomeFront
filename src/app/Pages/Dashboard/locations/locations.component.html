@@ -1,0 +1,61 @@
+<app-dashboard-navbar [Title]="'Locations'"></app-dashboard-navbar>
+
+<h2 class="main-title d-block d-lg-none">Locations voitures</h2>
+
+<div class="row">
+    <div class="col-lg-8 d-flex">
+        <div class="bg-white card-box border-20 w-100">
+            <div class="d-sm-flex justify-content-between align-items-center mb-25">
+                <div>
+                    <h4 class="dash-title-three mb-1">Locations de voitures</h4>
+                    <p class="m0 fs-16">Même présentation que les réservations, centrée sur les contrats de location véhicule.</p>
+                </div>
+                <span class="badge text-bg-light">{{ locations.length }} locations</span>
+            </div>
+            <!-- TODO backend: brancher sur GET /locations-voitures (ou équivalent) avec filtres -->
+            <div class="table-responsive">
+                <table class="table property-list-table">
+                    <thead>
+                        <tr>
+                            <th>Réf</th>
+                            <th>Nom d'Agence</th>
+                            <th>Client</th>
+                            <th>Montant</th>
+                            <th>Statut</th>
+                            <th>Détail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let loc of locations">
+                            <td class="fw-500 color-dark">{{ loc.ref }}</td>
+                            <td>{{ loc.agence }}</td>
+                            <td>{{ loc.client }}</td>
+                            <td>{{ loc.amount }}</td>
+                            <td><span class="badge text-bg-light">{{ loc.status }}</span></td>
+                            <td><a href="javascript:void(0);" (click)="selectLocation(loc)">Voir</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 d-flex">
+        <div class="bg-white card-box border-20 w-100">
+            <h4 class="dash-title-three">Détail sélectionné</h4>
+            <div class="border rounded-4 p-3 mb-20">
+                <div class="mb-2"><strong>Référence:</strong> {{ selectedLocation.ref }}</div>
+                <div class="mb-2"><strong>Agence:</strong> {{ selectedLocation.agence }}</div>
+                <div class="mb-2"><strong>Client:</strong> {{ selectedLocation.client }}</div>
+                <div class="mb-2"><strong>Véhicule:</strong> {{ selectedLocation.vehicule }}</div>
+                <div class="mb-2"><strong>Période de location:</strong> {{ selectedLocation.period }}</div>
+                <div class="mb-2"><strong>Montant:</strong> {{ selectedLocation.amount }}</div>
+                <div><strong>Statut:</strong> {{ selectedLocation.status }}</div>
+            </div>
+            <p class="fs-16">À terme, reliez cet écran à votre API de locations (créneaux, caution, kilométrage, etc.).</p>
+            <div class="d-flex gap-2 mt-20">
+                <a href="javascript:void(0);" class="dash-btn-two tran3s">Valider</a>
+                <a href="javascript:void(0);" class="dash-cancel-btn tran3s">Refuser</a>
+            </div>
+        </div>
+    </div>
+</div>

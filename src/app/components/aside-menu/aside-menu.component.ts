@@ -33,6 +33,12 @@ export class AsideMenuComponent {
           activeIcon: 'assets/dashboard-images/icon/icon_2_active.svg'
         },
         {
+          route: '/locations',
+          label: 'Locations',
+          icon: 'assets/dashboard-images/icon/icon_4.svg',
+          activeIcon: 'assets/dashboard-images/icon/icon_4_active.svg'
+        },
+        {
           route: '/facturation',
           label: 'Facturation',
           icon: 'assets/dashboard-images/icon/icon_10.svg',

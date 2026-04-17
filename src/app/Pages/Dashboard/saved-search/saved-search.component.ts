@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DashboardNavbarComponent } from '../../../components/dashboard-navbar/dashboard-navbar.component';
 import { FormsModule } from '@angular/forms';
+import { DashboardNavbarComponent } from '../../../components/dashboard-navbar/dashboard-navbar.component';
 import { ZoneService } from '../../../service/zone.service';
 
 @Component({
   selector: 'app-saved-search',
   standalone: true,
-  imports: [CommonModule, DashboardNavbarComponent, FormsModule],
+  imports: [CommonModule, FormsModule, DashboardNavbarComponent],
   templateUrl: './saved-search.component.html'
 })
 export class SavedSearchComponent implements OnInit {
@@ -21,49 +21,26 @@ export class SavedSearchComponent implements OnInit {
   successMessage = '';
   errorMessage = '';
 
-  role: string = '';
-
-  // 🔥 NEW IMAGE VARIABLES
   selectedFile: File | null = null;
   imagePreview: string | null = null;
 
   constructor(private zoneService: ZoneService) {}
 
   ngOnInit() {
-    this.role = (localStorage.getItem('role') || '')
-      .toLowerCase()
-      .replace('role_', '')
-      .trim();
-
     this.loadZones();
-  }
-
-  // ================= MESSAGES =================
-  showSuccess(msg: string) {
-    this.successMessage = msg;
-    this.errorMessage = '';
-  }
-
-  showError(msg: string) {
-    this.errorMessage = msg;
-    this.successMessage = '';
-  }
-
-  clearMessages() {
-    this.successMessage = '';
-    this.errorMessage = '';
   }
 
   // ================= LOAD =================
   loadZones() {
     this.zoneService.getZones().subscribe({
       next: (data) => this.zones = data,
-      error: () => this.showError('Erreur chargement des zones')
+      error: () => this.showError('Erreur chargement')
     });
   }
 
   // ================= MODAL =================
   openModal(zone: any = null) {
+
     this.showModal = true;
     this.clearMessages();
 
@@ -84,8 +61,9 @@ export class SavedSearchComponent implements OnInit {
     this.showModal = false;
   }
 
-  // ================= IMAGE HANDLER (NEW) =================
-  onFileSelected(event: any) {
+  // ================= IMAGE =================
+  onFileChange(event: any) {
+
     const file = event.target.files[0];
     if (!file) return;
 
@@ -101,58 +79,89 @@ export class SavedSearchComponent implements OnInit {
   // ================= SAVE =================
   saveZone() {
 
-    if (!this.form.nom || !this.form.ville || !this.form.description) {
-      this.showError('Veuillez remplir tous les champs');
+    if (!this.form.nom || !this.form.ville) {
+      this.showError('Champs obligatoires ❌');
       return;
     }
 
-    // 🔥 FORM DATA (important pour image upload)
-    const formData = new FormData();
-    formData.append('nom', this.form.nom);
-    formData.append('ville', this.form.ville);
-    formData.append('description', this.form.description);
-    formData.append('latitude', this.form.latitude || 0);
-    formData.append('longitude', this.form.longitude || 0);
-
+    // 🔥 Upload image first
     if (this.selectedFile) {
-      formData.append('image', this.selectedFile);
-    }
 
-    // ================= UPDATE =================
+      this.zoneService.uploadImage(this.selectedFile).subscribe({
+        next: (res) => {
+
+          this.form.image = res.image;
+
+          this.saveData();
+        },
+        error: () => this.showError('Erreur upload image')
+      });
+
+    } else {
+      this.saveData();
+    }
+  }
+
+  // ================= SAVE DATA =================
+  saveData() {
+
     if (this.editingId) {
-      this.zoneService.updateZone(this.editingId, formData).subscribe({
-        next: () => {
-          this.showSuccess('Zone modifiée avec succès');
-          this.loadZones();
-          this.closeModal();
-        },
-        error: () => this.showError('Erreur modification')
-      });
-    }
 
-    // ================= CREATE =================
-    else {
-      this.zoneService.createZone(formData).subscribe({
+      this.zoneService.updateZone(this.editingId, this.form).subscribe({
         next: () => {
-          this.showSuccess('Zone ajoutée avec succès');
+          this.showSuccess('Zone modifiée ✅');
           this.loadZones();
           this.closeModal();
         },
-        error: () => this.showError('Erreur création')
+        error: () => this.showError('Erreur modification ❌')
       });
+
+    } else {
+
+      this.zoneService.createZone(this.form).subscribe({
+        next: () => {
+          this.showSuccess('Zone ajoutée ✅');
+          this.loadZones();
+          this.closeModal();
+        },
+        error: () => this.showError('Erreur création ❌')
+      });
+
     }
   }
 
   // ================= DELETE =================
-  deleteRecord(id: number) {
-    if (confirm('Supprimer ?')) {
-      this.zoneService.deleteZone(id).subscribe({
-        next: () => {
-          this.showSuccess('Zone supprimée avec succès');
-          this.loadZones();
-        },
-        error: () => this.showError('Erreur suppression')
-      });
-    }
+  deleteZone(id: number) {
+
+    if (!confirm('Supprimer ?')) return;
+
+    this.zoneService.deleteZone(id).subscribe({
+      next: () => {
+        this.showSuccess('Supprimé ✅');
+        this.loadZones();
+      },
+      error: () => this.showError('Erreur suppression ❌')
+    });
+  }
+
+  // ================= IMAGE URL =================
+  getImageUrl(img: string): string {
+    return 'http://localhost:3000' + img;
+  }
+
+  // ================= MESSAGES =================
+  showSuccess(msg: string) {
+    this.successMessage = msg;
+    this.errorMessage = '';
+  }
+
+  showError(msg: string) {
+    this.errorMessage = msg;
+    this.successMessage = '';
+  }
+
+  clearMessages() {
+    this.successMessage = '';
+    this.errorMessage = '';
   }
 }

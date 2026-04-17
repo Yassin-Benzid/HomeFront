@@ -11,11 +11,11 @@ export class ZoneService {
 
   constructor(private http: HttpClient) {}
 
+  // ================= HEADERS =================
   private getHeaders() {
     const token = localStorage.getItem('token');
 
     if (!token) {
-      console.error('Token manquant ❌');
       return {};
     }
 
@@ -25,6 +25,8 @@ export class ZoneService {
       })
     };
   }
+
+  // ================= CRUD =================
 
   getZones(): Observable<any> {
     return this.http.get(this.API_URL, this.getHeaders());
@@ -44,5 +46,18 @@ export class ZoneService {
 
   deleteZone(id: number): Observable<any> {
     return this.http.delete(this.API_URL + '/' + id, this.getHeaders());
+  }
+
+  // ================= UPLOAD IMAGE =================
+  uploadImage(file: File): Observable<any> {
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post(
+      this.API_URL + '/upload-image',
+      formData,
+      this.getHeaders()
+    );
   }
 }

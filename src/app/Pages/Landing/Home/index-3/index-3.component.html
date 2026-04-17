@@ -42,17 +42,10 @@
                                         </ng-select>
                                     </div>
                                 </div>
-                                <div class="col-xl-3 col-lg-4">
-                                    <div class="input-box-one border-left border-lg-0">
-                                        <div class="label">Période</div>
-                                        <ng-select [items]="periodOptions" bindLabel="label" bindValue="value" [(ngModel)]="searchModel.period" [ngModelOptions]="{standalone: true}" [clearable]="false">
-                                            <ng-option *ngFor="let option of periodOptions" [value]="option.value">{{ option.label }}</ng-option>
-                                        </ng-select>
-                                    </div>
-                                </div>
+                               
                                 <div class="col-xl-3">
                                     <div class="input-box-one lg-mt-10">
-                                        <button class="fw-500 w-100 tran3s search-btn-three" type="submit">Lancer la recherche</button>
+                                        <button class="fw-200 w-200 tran3s search-btn-three" type="submit">Lancer la recherche</button>
                                     </div>
                                 </div>
                             </div>

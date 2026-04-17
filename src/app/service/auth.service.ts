@@ -22,6 +22,22 @@ export class AuthService {
     private router: Router
   ) {}
 
+  private normalizeRole(role: string | null | undefined): string {
+    const cleaned = (role || '')
+      .toLowerCase()
+      .replace('role_', '')
+      .replace(/_/g, '-')
+      .trim();
+
+    if (cleaned === 'agency-manager') return 'agence-manager';
+    if (cleaned === 'hotel-manager') return 'hotel-manager';
+    if (cleaned === 'agence-manager') return 'agence-manager';
+    if (cleaned === 'admin') return 'admin';
+    if (cleaned === 'client') return 'client';
+
+    return cleaned;
+  }
+
   // ================= LOGIN =================
   login(email: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(this.API_URL + '/login', {
@@ -32,21 +48,30 @@ export class AuthService {
 
         // 🔥 FIX IMPORTANT : unified keys
         localStorage.setItem('token', res.access_token);
-        localStorage.setItem('name', res.nom);
-        localStorage.setItem('email', res.email);
+        localStorage.setItem('name', res.nom || '');
+        localStorage.setItem('email', res.email || '');
 
-        // ✅ KEY UNIFIÉE (IMPORTANT FIX)
-        localStorage.setItem('role', res.role.toLowerCase().replace('role_', '').trim());
+        // Normalize role format to avoid runtime errors and bad redirects.
+        localStorage.setItem('role', this.normalizeRole(res.role));
       })
     );
   }
 
   // ================= REGISTER =================
-  register(nom: string, email: string, password: string, role: string): Observable<any> {
-    const formattedRole = role.toLowerCase();
+  register(
+    nom: string,
+    prenom: string,
+    telephone: string,
+    email: string,
+    password: string,
+    role: string
+  ): Observable<any> {
+    const formattedRole = this.normalizeRole(role);
 
     return this.http.post(this.API_URL + '/register', {
       nom,
+      prenom,
+      telephone,
       email,
       password,
       role: formattedRole
@@ -56,7 +81,7 @@ export class AuthService {
   // ================= REDIRECTION =================
   redirectByRole(role: string): void {
 
-    const r = (role || '').toLowerCase();
+    const r = this.normalizeRole(role);
 
     if (r === 'admin') {
       this.router.navigate(['/tableau-de-bord']);
@@ -75,10 +100,7 @@ export class AuthService {
   }
 
   getRole(): string {
-    return (localStorage.getItem('role') || '')
-      .toLowerCase()
-      .replace('role_', '')
-      .trim();
+    return this.normalizeRole(localStorage.getItem('role'));
   }
 
   isAuthenticated(): boolean {

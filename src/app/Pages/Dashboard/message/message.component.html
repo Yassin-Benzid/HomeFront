@@ -7,7 +7,7 @@
         <div class="bg-white card-box border-20 w-100">
             <div class="d-sm-flex justify-content-between align-items-center mb-25">
                 <div>
-                    <h4 class="dash-title-three mb-1">Réservations hôtels & voitures</h4>
+                    <h4 class="dash-title-three mb-1">Réservations hôtels</h4>
                     <p class="m0 fs-16">Liste statique prête à être alimentée depuis le backend.</p>
                 </div>
                 <span class="badge text-bg-light">{{ reservations.length }} réservations</span>
@@ -18,7 +18,7 @@
                     <thead>
                         <tr>
                             <th>Réf</th>
-                            <th>Type</th>
+                            <th>Nom d'hôtel</th>
                             <th>Client</th>
                             <th>Montant</th>
                             <th>Statut</th>
@@ -28,7 +28,7 @@
                     <tbody>
                         <tr *ngFor="let reservation of reservations">
                             <td class="fw-500 color-dark">{{ reservation.ref }}</td>
-                            <td>{{ reservation.type }}</td>
+                            <td>{{ reservation.nomHotel }}</td>
                             <td>{{ reservation.client }}</td>
                             <td>{{ reservation.amount }}</td>
                             <td><span class="badge text-bg-light">{{ reservation.status }}</span></td>
@@ -44,14 +44,14 @@
             <h4 class="dash-title-three">Détail sélectionné</h4>
             <div class="border rounded-4 p-3 mb-20">
                 <div class="mb-2"><strong>Référence:</strong> {{ selectedReservation.ref }}</div>
-                <div class="mb-2"><strong>Type:</strong> {{ selectedReservation.type }}</div>
+                <div class="mb-2"><strong> Nom d'Hôtel:</strong> {{ selectedReservation.nomHotel }}</div>
                 <div class="mb-2"><strong>Client:</strong> {{ selectedReservation.client }}</div>
-                <div class="mb-2"><strong>Produit:</strong> {{ selectedReservation.item }}</div>
+                <div class="mb-2"><strong>Chambre / offre:</strong> {{ selectedReservation.item }}</div>
                 <div class="mb-2"><strong>Période:</strong> {{ selectedReservation.period }}</div>
                 <div class="mb-2"><strong>Montant:</strong> {{ selectedReservation.amount }}</div>
                 <div><strong>Statut:</strong> {{ selectedReservation.status }}</div>
             </div>
-            <p class="fs-16">Conseil: séparez les réservations hôtel et voiture dans le backend, puis exposez une vue agrégée pour l’admin.</p>
+            <p class="fs-16">Branchez la liste sur votre API (référence, nom d'hôtel, client, séjour, montant, statut).</p>
             <div class="d-flex gap-2 mt-20">
                 <a href="javascript:void(0);" class="dash-btn-two tran3s">Confirmer</a>
                 <a href="javascript:void(0);" class="dash-cancel-btn tran3s">Annuler</a>

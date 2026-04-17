@@ -140,6 +140,28 @@
                                             </div>
                                         </div>
 
+                                        <!-- FIRST NAME -->
+                                        <div class="col-12">
+                                            <div class="input-group-meta position-relative mb-25">
+                                                <label>Prénom*</label>
+                                                <input type="text"
+                                                       placeholder="Prénom"
+                                                       [(ngModel)]="prenom"
+                                                       name="prenom">
+                                            </div>
+                                        </div>
+
+                                        <!-- PHONE -->
+                                        <div class="col-12">
+                                            <div class="input-group-meta position-relative mb-25">
+                                                <label>Téléphone*</label>
+                                                <input type="text"
+                                                       placeholder="Téléphone"
+                                                       [(ngModel)]="telephone"
+                                                       name="telephone">
+                                            </div>
+                                        </div>
+
                                         <!-- EMAIL -->
                                         <div class="col-12">
                                             <div class="input-group-meta position-relative mb-25">
@@ -169,10 +191,10 @@
                                             <select class="form-control"
                                                     [(ngModel)]="role"
                                                     name="role">
-                                                <option value="" disabled selected>Choisir un rôle</option>
-                                                <option value="CLIENT">Client</option>
-                                                <option value="HOTEL_MANAGER">Hotel Manager</option>
-                                                <option value="AGENCY_MANAGER">Agence Manager</option>
+                                                <option value="" disabled>Choisir un rôle</option>
+                                                <option value="client">Client</option>
+                                                <option value="hotel-manager">Hotel Manager</option>
+                                                <option value="agence-manager">Agence Manager</option>
                                             </select>
                                         </div>
 

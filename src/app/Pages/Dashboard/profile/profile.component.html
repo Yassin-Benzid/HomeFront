@@ -3,112 +3,90 @@
 <h2 class="main-title d-block d-lg-none">Profil admin</h2>
 
 <div class="bg-white card-box border-20">
-    <div class="user-avatar-setting d-flex align-items-center mb-30">
-        <img [src]="imageSrc || 'assets/dashboard-images/avatar_02.jpg'" alt="" class="lazy-img user-img">
-        <div class="upload-btn position-relative tran3s ms-4 me-3">
-            Importer une photo
-            <input type="file" id="uploadImg" name="uploadImg" (change)="onFileChange($event)">
-        </div>
-        <button type="button" class="delete-btn tran3s" (click)="clearForm()">Réinitialiser</button>
+
+  <!-- ================= POPUPS ================= -->
+
+  <!-- SUCCESS -->
+  <div *ngIf="successMessage" class="alert alert-success mt-3">
+    {{ successMessage }}
+  </div>
+
+  <!-- ERROR -->
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+    {{ errorMessage }}
+  </div>
+
+  <!-- ================= AVATAR ================= -->
+  <div class="user-avatar-setting d-flex align-items-center mb-30">
+
+    <img [src]="imageSrc || 'assets/dashboard-images/avatar_02.jpg'"
+         class="lazy-img user-img">
+
+    <div class="upload-btn position-relative tran3s ms-4 me-3">
+      Importer une photo
+      <input type="file" (change)="onFileChange($event)">
     </div>
-    <!-- TODO backend: connecter ce formulaire au profil de l'administrateur -->
-    <div class="row">
-        <div class="col-12">
-            <div class="dash-input-wrapper mb-30">
-                <label>Nom d’utilisateur</label>
-                <input type="text" [(ngModel)]="user.username" name="username">
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="dash-input-wrapper mb-30">
-                <label>Prénom</label>
-                <input type="text" [(ngModel)]="user.firstName" name="firstName">
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="dash-input-wrapper mb-30">
-                <label>Nom</label>
-                <input type="text" [(ngModel)]="user.lastName" name="lastName">
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="dash-input-wrapper mb-30">
-                <label>E-mail</label>
-                <input type="email" [(ngModel)]="user.email" name="email">
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="dash-input-wrapper mb-30">
-                <label>Rôle</label>
-                <ng-select [(ngModel)]="user.role" [items]="roles" bindLabel="name" bindValue="value" name="role" class="dashboard-ng-select"></ng-select>
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="dash-input-wrapper mb-30">
-                <label>Téléphone</label>
-                <input type="tel" [(ngModel)]="user.phoneNumber" name="phoneNumber">
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="dash-input-wrapper mb-30">
-                <label>Site web</label>
-                <input type="text" [(ngModel)]="user.website" name="website">
-            </div>
-        </div>
-        <div class="col-12">
-            <div class="dash-input-wrapper">
-                <label>À propos</label>
-                <textarea [(ngModel)]="user.about" class="size-lg" name="about"></textarea>
-                <div class="alert-text">Zone utile pour afficher le rôle, les responsabilités et l’équipe rattachée.</div>
-            </div>
-        </div>
+
+    <button type="button"
+            class="delete-btn tran3s"
+            (click)="clearForm()">
+      Réinitialiser
+    </button>
+
+  </div>
+
+  <!-- ================= FORM ================= -->
+  <div class="row">
+
+    <div class="col-sm-6">
+      <div class="dash-input-wrapper mb-30">
+        <label>Nom</label>
+        <input type="text" [(ngModel)]="user.nom">
+      </div>
     </div>
+
+    <div class="col-sm-6">
+      <div class="dash-input-wrapper mb-30">
+        <label>Prénom</label>
+        <input type="text" [(ngModel)]="user.prenom">
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="dash-input-wrapper mb-30">
+        <label>E-mail</label>
+        <input type="email" [(ngModel)]="user.email">
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="dash-input-wrapper mb-30">
+        <label>Téléphone</label>
+        <input type="tel" [(ngModel)]="user.telephone">
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="dash-input-wrapper mb-30">
+        <label>Nouveau mot de passe</label>
+        <input type="password" [(ngModel)]="user.password">
+      </div>
+    </div>
+
+  </div>
 </div>
 
-<div class="bg-white card-box border-20 mt-40">
-    <h4 class="dash-title-three">Réseaux & contact</h4>
-    <div class="col-12" *ngFor="let network of networks; let i = index">
-        <div class="dash-input-wrapper mb-20">
-            <label>Lien {{ i + 1 }}</label>
-            <input type="text" [(ngModel)]="network.link" [name]="'network' + i">
-        </div>
-    </div>
-    <a href="javascript:void(0);" class="dash-btn-one" (click)="addNetwork()">
-        <i class="bi bi-plus"></i> Ajouter un lien
-    </a>
-</div>
-
-<div class="bg-white card-box border-20 mt-40">
-    <h4 class="dash-title-three">Localisation administrative</h4>
-    <div class="row">
-        <div class="col-12">
-            <div class="dash-input-wrapper mb-25">
-                <label>Adresse</label>
-                <input type="text" placeholder="Centre urbain nord, Tunis">
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="dash-input-wrapper mb-25">
-                <label>Pays</label>
-                <ng-select [items]="countries" bindLabel="name" placeholder="Choisir un pays" class="dashboard-ng-select"></ng-select>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="dash-input-wrapper mb-25">
-                <label>Ville</label>
-                <ng-select [items]="cities" bindLabel="name" placeholder="Choisir une ville" class="dashboard-ng-select"></ng-select>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="dash-input-wrapper mb-25">
-                <label>Code postal</label>
-                <input type="text" placeholder="1082">
-            </div>
-        </div>
-    </div>
-</div>
-
+<!-- ================= ACTIONS ================= -->
 <div class="button-group d-inline-flex align-items-center mt-30">
-    <a href="javascript:void(0);" class="dash-btn-two tran3s me-3">Enregistrer</a>
-    <a href="javascript:void(0);" class="dash-cancel-btn tran3s">Annuler</a>
+
+  <button class="dash-btn-two tran3s me-3"
+          (click)="saveProfile()">
+    Enregistrer
+  </button>
+
+  <button class="dash-cancel-btn tran3s"
+          (click)="clearForm()">
+    Annuler
+  </button>
+
 </div>

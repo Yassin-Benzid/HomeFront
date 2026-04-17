@@ -1,38 +1,81 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { DashboardNavbarComponent } from '../../../components/dashboard-navbar/dashboard-navbar.component';
+
 import { HotelService } from '../../../service/hotel.service';
 import { ChambreService } from '../../../service/chambre.service';
 
 @Component({
   selector: 'app-add-property',
   standalone: true,
-  imports: [DashboardNavbarComponent, FormsModule, CommonModule, RouterLink],
+  imports: [DashboardNavbarComponent, FormsModule, CommonModule],
   templateUrl: './add-property.component.html'
 })
-export class AddPropertyComponent {
+export class AddPropertyComponent implements OnInit {
 
   constructor(
     private hotelService: HotelService,
     private chambreService: ChambreService
   ) {}
 
+  // ================= DATA =================
+  hotels: any[] = [];
+
   hotelForm: any = {
+    idhotel: null,
     nom: '',
     ville: '',
     nb_Etoiles: 1,
+    nb_Chambres: 0,
     telephone: '',
     latitude: 0,
-    longitude: 0
+    longitude: 0,
+    images: []
   };
 
   chambres: any[] = [];
-
   message = '';
 
-  // ===== CHAMBRES =====
+  // ================= MODAL =================
+  showModal = false;
+  editMode = false;
+
+  uploadedFiles: File[] = [];
+
+  ngOnInit() {
+    this.loadHotels();
+  }
+
+  // ================= LOAD =================
+  loadHotels() {
+    this.hotelService.getAllHotels().subscribe(res => {
+      this.hotels = res;
+    });
+  }
+
+  openAddModal() {
+    this.resetForm();
+    this.editMode = false;
+    this.showModal = true;
+  }
+
+  openEditModal(hotel: any) {
+    this.editMode = true;
+    this.showModal = true;
+
+    this.hotelForm = { ...hotel };
+
+    this.chambreService.getAllChambres().subscribe(res => {
+      this.chambres = res.filter((c: any) => c.hotel?.idhotel === hotel.idhotel);
+    });
+  }
+
+  closeModal() {
+    this.showModal = false;
+  }
+
+  // ================= CHAMBRES =================
   addChambre() {
     this.chambres.push({
       numero: '',
@@ -42,47 +85,80 @@ export class AddPropertyComponent {
     });
   }
 
-  removeChambre(index: number) {
-    this.chambres.splice(index, 1);
+  removeChambre(i: number) {
+    this.chambres.splice(i, 1);
   }
 
-  // ===== SAVE =====
+  // ================= FILES =================
+  onFileChange(event: any) {
+    const files = event.target.files;
+    if (!files) return;
+
+    this.uploadedFiles = Array.from(files);
+  }
+
+  // ================= SAVE =================
   saveHotel() {
 
-    this.hotelService.createHotel(this.hotelForm).subscribe({
+    this.hotelService.uploadImages(this.uploadedFiles).subscribe({
+      next: (res) => {
 
-      next: (hotel) => {
+        this.hotelForm.images = res.images;
 
-        const hotelId = hotel.idhotel;
+        if (!this.editMode) {
 
-        for (let c of this.chambres) {
-          c.hotelId = hotelId;
-          this.chambreService.createChambre(c).subscribe();
+          this.hotelService.createHotel(this.hotelForm).subscribe({
+            next: () => {
+              this.message = 'Hôtel et images enregistrés ✅';
+              this.closeModal();
+              this.loadHotels();
+            }
+          });
+
+        } else {
+
+          this.hotelService.updateHotel(this.hotelForm.idhotel, this.hotelForm).subscribe({
+            next: () => {
+
+              this.chambres.forEach(c => {
+                if (c.idchambre) {
+                  this.chambreService.updateChambre(c.idchambre, c).subscribe();
+                } else {
+                  c.hotel = { idhotel: this.hotelForm.idhotel };
+                  this.chambreService.createChambre(c).subscribe();
+                }
+              });
+
+              this.message = 'Hôtel modifié avec images + chambres ✅';
+              this.closeModal();
+              this.loadHotels();
+            }
+          });
         }
-
-        this.message = 'Hôtel + chambres ajoutés avec succès';
-      },
-
-      error: () => {
-        this.message = 'Erreur lors de l’ajout';
       }
     });
   }
 
-  // ===== FILES =====
-  uploadedFiles: any[] = [];
+  // ================= RESET =================
+  resetForm() {
+    this.hotelForm = {
+      idhotel: null,
+      nom: '',
+      ville: '',
+      nb_Etoiles: 1,
+      nb_Chambres: 0,
+      telephone: '',
+      latitude: 0,
+      longitude: 0,
+      images: []
+    };
 
-  onFileChange(event: any) {
-    const files = event.target.files;
-
-    if (!files) return;
-
-    for (let i = 0; i < files.length; i++) {
-      this.uploadedFiles.push(files[i]);
-    }
+    this.chambres = [];
+    this.uploadedFiles = [];
   }
 
-  removeFile(file: any) {
-    this.uploadedFiles = this.uploadedFiles.filter(f => f !== file);
+  // ================= IMAGE URL (FIXED) =================
+  getImageUrl(img: string): string {
+    return 'http://localhost:3000' + img;
   }
 }
