@@ -22,7 +22,7 @@
     <div class="col-xl-7 d-flex">
         <div class="bg-white card-box border-20 w-100 mt-30">
             <h4 class="dash-title-three">Pipeline opérationnel</h4>
-            <p class="fs-16 mb-25">Vue statique des principaux indicateurs. Branchez ici les agrégats du backend.</p>
+        
             <!-- TODO backend: récupérer ces valeurs depuis un endpoint de statistiques globales -->
             <div class="mb-25" *ngFor="let item of reservationPipelines">
                 <div class="d-flex justify-content-between mb-2">
@@ -42,7 +42,7 @@
                                 <th>Module</th>
                                 <th>Action</th>
                                 <th>Auteur</th>
-                                <th>Heure</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -50,7 +50,7 @@
                                 <td>{{ activity.module }}</td>
                                 <td>{{ activity.action }}</td>
                                 <td>{{ activity.author }}</td>
-                                <td>{{ activity.when }}</td>
+                            
                             </tr>
                         </tbody>
                     </table>
@@ -67,10 +67,6 @@
                     <span class="badge text-bg-light">{{ alert.level }}</span>
                 </div>
                 <p class="m0 fs-16">{{ alert.detail }}</p>
-            </div>
-            <div class="border-top pt-25 mt-30">
-                <h5 class="mb-15">Conseil intégration</h5>
-                <p class="fs-16 m0">Exposez un endpoint dédié pour le dashboard admin avec les compteurs, alertes et derniers événements. Cela évite de multiplier les appels dès le chargement.</p>
             </div>
         </div>
     </div>

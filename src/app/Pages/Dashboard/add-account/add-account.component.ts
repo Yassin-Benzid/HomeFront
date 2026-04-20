@@ -4,7 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { DashboardNavbarComponent } from '../../../components/dashboard-navbar/dashboard-navbar.component';
 
 import { AgenceService } from '../../../service/agence.service';
-import { VoitureService } from '../../../service/voiture.service';
+import {
+  VoitureService,
+  CreateVoitureDto,
+  UpdateVoitureDto
+} from '../../../service/voiture.service';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-account',
@@ -65,9 +71,10 @@ export class AddAccountComponent implements OnInit {
     this.showModal = true;
 
     this.agenceForm = { ...agence };
+    this.normalizeAgenceCounts();
 
-    this.voitureService.getAllVoitures().subscribe(res => {
-      this.voitures = res.filter((v: any) => v.agence?.idagence === agence.idagence);
+    this.loadVoituresForAgence(agence.idagence, list => {
+      this.voitures = list;
     });
   }
 
@@ -75,7 +82,19 @@ export class AddAccountComponent implements OnInit {
     this.showModal = false;
   }
 
-  // ================= VOITURES =================
+  private loadVoituresForAgence(idagence: number, next: (rows: any[]) => void) {
+    this.voitureService.getAllVoitures().subscribe({
+      next: res => {
+        const rows = Array.isArray(res)
+          ? res.filter((v: any) => v.agence?.idagence === idagence)
+          : [];
+        next(rows);
+      },
+      error: () => next([])
+    });
+  }
+
+  // ================= VOITURES (modal édition agence) =================
   addVoiture() {
     this.voitures.push({
       marque: '',
@@ -84,62 +103,111 @@ export class AddAccountComponent implements OnInit {
       etat: 'disponible',
       prix_Jour: 0
     });
+    this.agenceForm.nb_Voitures = Number(this.agenceForm.nb_Voitures ?? 0) + 1;
   }
 
   removeVoiture(i: number) {
     this.voitures.splice(i, 1);
+    this.agenceForm.nb_Voitures = Math.max(0, Number(this.agenceForm.nb_Voitures ?? 0) - 1);
   }
 
   // ================= FILES =================
   onFileChange(event: any) {
     const files = event.target.files;
     if (!files) return;
-
     this.uploadedFiles = Array.from(files);
   }
 
   // ================= SAVE =================
   saveAgence() {
+    if (!this.agenceForm.nom || !this.agenceForm.ville) {
+      this.message = 'Nom et ville sont obligatoires ❌';
+      return;
+    }
 
-    this.agenceService.uploadImages(this.uploadedFiles).subscribe({
-      next: (res) => {
-
-        this.agenceForm.images = res.images;
-
-        if (!this.editMode) {
-
-          // CREATE
-          this.agenceService.createAgence(this.agenceForm).subscribe({
-            next: () => {
-              this.message = 'Agence et images enregistrées ✅';
-              this.closeModal();
-              this.loadAgences();
-            }
-          });
-
-        } else {
-
-          // UPDATE
-          this.agenceService.updateAgence(this.agenceForm.idagence, this.agenceForm).subscribe({
-            next: () => {
-
-              this.voitures.forEach(v => {
-                if (v.idvoiture) {
-                  this.voitureService.updateVoiture(v.idvoiture, v).subscribe();
-                } else {
-                  v.agence = { idagence: this.agenceForm.idagence };
-                  this.voitureService.createVoiture(v).subscribe();
-                }
-              });
-
-              this.message = 'Agence modifiée avec images + voitures ✅';
-              this.closeModal();
-              this.loadAgences();
-            }
-          });
+    if (this.uploadedFiles.length > 0) {
+      this.agenceService.uploadImages(this.uploadedFiles).subscribe({
+        next: (res) => {
+          this.agenceForm.images = res.images || [];
+          this.saveAgenceData();
+        },
+        error: () => {
+          this.message = "Erreur lors de l'upload des images ❌";
         }
+      });
+      return;
+    }
+
+    this.agenceForm.images = this.agenceForm.images || [];
+    this.saveAgenceData();
+  }
+
+  private saveAgenceData() {
+    this.normalizeAgenceCounts();
+    const payload = this.buildAgencePayload();
+
+    if (!this.editMode) {
+      this.agenceService.createAgence(payload).subscribe({
+        next: () => {
+          this.message = 'Agence enregistrée ✅';
+          this.closeModal();
+          this.loadAgences();
+        },
+        error: (err) => {
+          this.message = this.httpErrorMessage(err, "Erreur lors de l'ajout de l'agence ❌");
+        }
+      });
+      return;
+    }
+
+    if (!this.agenceForm?.idagence) {
+      this.message = 'Identifiant agence manquant. Impossible de modifier.';
+      return;
+    }
+
+    this.agenceService.updateAgence(this.agenceForm.idagence, payload).subscribe({
+      next: () => {
+        this.persistVoituresAfterAgenceUpdate();
+      },
+      error: (err) => {
+        this.message = this.httpErrorMessage(err, "Erreur lors de la modification de l'agence ❌");
       }
     });
+  }
+
+  private persistVoituresAfterAgenceUpdate() {
+    const idAgence = this.agenceForm.idagence;
+    const requests = this.voitures.map(v => {
+      if (v.idvoiture) {
+        const dto = this.buildUpdateVoitureDto(v);
+        return this.voitureService.updateVoiture(v.idvoiture, dto).pipe(
+          catchError(() => of({ __saveError: true }))
+        );
+      }
+      const dto = this.buildCreateVoitureDto(v, idAgence);
+      return this.voitureService.createVoiture(dto).pipe(
+        catchError(() => of({ __saveError: true }))
+      );
+    });
+
+    if (requests.length === 0) {
+      this.finishAgenceEditSuccess();
+      return;
+    }
+
+    forkJoin(requests).subscribe(results => {
+      if (results.some((r: any) => r && r.__saveError)) {
+        this.message = "Erreur lors de l'enregistrement des voitures ❌";
+        return;
+      }
+      this.finishAgenceEditSuccess();
+    });
+  }
+
+  private finishAgenceEditSuccess() {
+    this.message = 'Agence modifiée avec images + voitures ✅';
+    this.closeModal();
+    this.loadAgences();
   }
 
   // ================= RESET =================
@@ -154,7 +222,6 @@ export class AddAccountComponent implements OnInit {
       longitude: 0,
       images: []
     };
-
     this.voitures = [];
     this.uploadedFiles = [];
   }
@@ -162,5 +229,58 @@ export class AddAccountComponent implements OnInit {
   // ================= IMAGE URL =================
   getImageUrl(img: string): string {
     return 'http://localhost:3000' + img;
+  }
+
+  private normalizeAgenceCounts() {
+    const rawCount =
+      this.agenceForm.nb_Voitures ??
+      this.agenceForm.nb_voitures ??
+      this.agenceForm['nb-voitures'];
+    this.agenceForm.nb_Voitures = Number(rawCount ?? 0);
+  }
+
+  private buildAgencePayload() {
+    const n = Number(this.agenceForm.nb_Voitures ?? 0);
+    return {
+      nom: this.agenceForm.nom,
+      ville: this.agenceForm.ville,
+      telephone: this.agenceForm.telephone ?? '',
+      nb_voitures: n,
+      nb_Voitures: n,
+      'nb-voitures': n,
+      latitude: Number(this.agenceForm.latitude ?? 0),
+      longitude: Number(this.agenceForm.longitude ?? 0),
+      images: Array.isArray(this.agenceForm.images)
+        ? this.agenceForm.images
+            .map((i: any) => (typeof i === 'string' ? i : (i?.path ?? i?.url ?? i?.filename ?? i?.name ?? '')))
+            .filter((s: string) => !!s)
+        : []
+    };
+  }
+
+  private buildCreateVoitureDto(voiture: any, agenceId: number): CreateVoitureDto {
+    return {
+      marque: String(voiture.marque ?? '').trim(),
+      modele: String(voiture.modele ?? '').trim(),
+      immatriculation: String(voiture.immatriculation ?? '').trim(),
+      etat: String(voiture.etat ?? 'disponible').trim(),
+      prix_Jour: Math.max(0, Number(voiture.prix_Jour ?? 0)),
+      agenceId
+    };
+  }
+
+  private buildUpdateVoitureDto(voiture: any): UpdateVoitureDto {
+    return {
+      etat: String(voiture.etat ?? 'disponible').trim(),
+      prix_Jour: Math.max(0, Number(voiture.prix_Jour ?? 0))
+    };
+  }
+
+  private httpErrorMessage(err: any, fallback: string): string {
+    const msg = err?.error?.message ?? err?.error?.error ?? err?.message;
+    if (typeof msg === 'string' && msg.trim()) {
+      return msg;
+    }
+    return fallback;
   }
 }

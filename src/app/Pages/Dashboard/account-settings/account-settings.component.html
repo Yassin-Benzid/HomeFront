@@ -21,31 +21,119 @@
     </a>
   </div>
 
+  <div class="row g-2 mb-3">
+    <div class="col-md-4">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Filtrer par nom..."
+        [(ngModel)]="nameFilter"
+        (ngModelChange)="onFiltersChange()">
+    </div>
+    <div class="col-md-3">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Filtrer par ville..."
+        [(ngModel)]="cityFilter"
+        (ngModelChange)="onFiltersChange()">
+    </div>
+    <div class="col-md-2">
+      <select class="form-select" [(ngModel)]="sortField" (change)="onFiltersChange()">
+        <option value="nom">Tri: Nom</option>
+        <option value="ville">Tri: Ville</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select class="form-select" [(ngModel)]="sortOrder" (change)="onFiltersChange()">
+        <option value="asc">Ordre: A-Z</option>
+        <option value="desc">Ordre: Z-A</option>
+      </select>
+    </div>
+    <div class="col-md-1">
+      <select class="form-select" [(ngModel)]="pageSize" (change)="onFiltersChange()">
+        <option [ngValue]="5">5 / page</option>
+        <option [ngValue]="10">10 / page</option>
+        <option [ngValue]="20">20 / page</option>
+      </select>
+    </div>
+  </div>
+
   <table class="table">
     <thead>
       <tr>
         <th>Nom</th>
         <th>Ville</th>
-        <th>Manager</th>
+        <th>Téléphone</th>
         <th>Voitures</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
         <th>Actions</th>
       </tr>
     </thead>
 
     <tbody>
-      <tr *ngFor="let agence of agences">
+      <tr *ngFor="let agence of displayedAgences">
         <td>{{ agence.nom }}</td>
         <td>{{ agence.ville }}</td>
-        <td>{{ agence.agenceManager?.nom || '-' }}</td>
-        <td>{{ agence.voitures?.length || 0 }}</td>
+        <td>{{ agence.telephone ?? '-' }}</td>
+        <td>{{ agence.nb_Voitures ?? agence.nb_voitures ?? agence['nb-voitures'] ?? 0 }}</td>
+        <td>{{ agence.latitude ?? '-' }}</td>
+        <td>{{ agence.longitude ?? '-' }}</td>
 
         <td>
-          <button class="btn btn-danger btn-sm" (click)="deleteAgence(agence.idagence)">
-            Supprimer
-          </button>
+          <button class="btn btn-danger btn-sm" (click)="deleteAgence(agence)">Supprimer</button>
         </td>
       </tr>
     </tbody>
   </table>
 
+  <div class="d-flex justify-content-between align-items-center mt-3">
+    <small>Total: {{ totalItems }}</small>
+    <div class="d-flex gap-1">
+      <button class="btn btn-sm btn-outline-secondary" (click)="goToPage(currentPage - 1)">Prev</button>
+      <button
+        *ngFor="let page of pageNumbers"
+        class="btn btn-sm"
+        [class.btn-primary]="page === currentPage"
+        [class.btn-outline-secondary]="page !== currentPage"
+        (click)="goToPage(page)">
+        {{ page }}
+      </button>
+      <button class="btn btn-sm btn-outline-secondary" (click)="goToPage(currentPage + 1)">Next</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================= MODAL DELETE CONFIRMATION ================= -->
+<div class="modal d-block" *ngIf="showDeleteModal"
+     style="background: rgba(0,0,0,0.5); z-index: 1060;">
+
+  <div class="modal-dialog">
+    <div class="modal-content p-3 bg-white card-box border-20">
+
+      <h4 class="text-danger">Confirmation suppression</h4>
+
+      <p>
+        Voulez-vous vraiment supprimer l'agence :
+        <b>{{ itemToDelete?.nom }}</b> ?
+      </p>
+
+      <div class="d-flex justify-content-end gap-2 mt-3">
+
+        <button class="btn btn-secondary"
+                (click)="cancelDelete()">
+          Annuler
+        </button>
+
+        <button class="btn btn-danger"
+                (click)="confirmDelete()">
+          Supprimer
+        </button>
+
+      </div>
+
+    </div>
+  </div>
 </div>

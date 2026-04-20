@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DashboardNavbarComponent } from '../../../components/dashboard-navbar/dashboard-navbar.component';
 import { UserService } from '../../../service/user.service';
+import { AuthService } from '../../../service/auth.service';
 
 @Component({
   selector: 'app-membership',
@@ -15,6 +16,9 @@ export class MembershipComponent implements OnInit {
   users: any[] = [];
   selectedUser: any = null;
 
+  currentUserRole = '';
+  allowedRoles: Array<{ value: string; label: string }> = [];
+
   showForm = false;
   showDetailsModal = false;
   showDeleteModal = false;
@@ -23,6 +27,8 @@ export class MembershipComponent implements OnInit {
 
   user = {
     nom: '',
+    prenom: '',
+    telephone: '',
     email: '',
     password: '',
     role: 'client'
@@ -38,9 +44,10 @@ export class MembershipComponent implements OnInit {
     { label: 'Managers agences', value: 0 }
   ];
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private authService: AuthService) {}
 
   ngOnInit(): void {
+    this.currentUserRole = this.authService.getRole();
     this.getUsers();
   }
 
@@ -73,7 +80,14 @@ export class MembershipComponent implements OnInit {
   }
 
   confirmDelete() {
-    this.userService.deleteUser(this.userToDelete.iduser).subscribe({
+    const id = this.userToDelete?.iduser ?? this.userToDelete?.id ?? this.userToDelete?.idUser ?? this.userToDelete?.userId;
+    if (!id) {
+      this.showMessage('Identifiant utilisateur introuvable ❌', 'error');
+      this.cancelDelete();
+      return;
+    }
+
+    this.userService.deleteUser(id).subscribe({
       next: () => {
         this.getUsers();
         this.cancelDelete();
@@ -91,6 +105,17 @@ export class MembershipComponent implements OnInit {
   // ================= FORM =================
   openForm() {
     this.showForm = true;
+    if (this.currentUserRole === 'admin') {
+      this.allowedRoles = [
+        { value: 'admin', label: 'Admin' },
+        { value: 'hotel-manager', label: 'Hotel Manager' },
+        { value: 'agence-manager', label: 'Agence Manager' }
+      ];
+      this.user.role = this.allowedRoles[0].value;
+    } else {
+      this.allowedRoles = [ { value: 'client', label: 'Client' } ];
+      this.user.role = 'client';
+    }
   }
 
   closeForm() {
@@ -112,6 +137,8 @@ export class MembershipComponent implements OnInit {
   resetForm() {
     this.user = {
       nom: '',
+      prenom: '',
+      telephone: '',
       email: '',
       password: '',
       role: 'client'

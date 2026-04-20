@@ -65,4 +65,24 @@ export class HotelService {
       this.getHeaders()
     );
   }
+
+  // ================= 🔥 ADVANCED SEARCH =================
+getAdvancedHotels(filters: any): Observable<any> {
+  let params: any = {};
+
+  // parameters
+  Object.keys(filters).forEach(key => {
+    if (filters[key] !== null && filters[key] !== '') {
+      params[key] = filters[key];
+    }
+  });
+
+  return this.http.get(
+    this.API_URL + '/advanced',
+    {
+      ...this.getHeaders(),
+      params
+    }
+  );
+}
 }

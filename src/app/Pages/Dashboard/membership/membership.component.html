@@ -44,8 +44,10 @@
       <thead>
         <tr>
           <th>Nom</th>
+          <th>Prénom</th>
           <th>Rôle</th>
           <th>Email</th>
+          <th>Téléphone</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -55,8 +57,10 @@
         <tr *ngFor="let user of users">
 
           <td>{{ user.nom }}</td>
+          <td>{{ user.prenom }}</td>
           <td>{{ getRoleLabel(user.role) }}</td>
           <td>{{ user.email }}</td>
+          <td>{{ user.telephone }}</td>
 
           <td>
             <div class="d-flex gap-2">
@@ -67,6 +71,7 @@
               </button>
 
               <button class="dash-btn-one"
+                      *ngIf="currentUserRole === 'admin'"
                       (click)="deleteUser(user)">
                 Supprimer
               </button>
@@ -93,14 +98,13 @@
       <h4>Ajouter utilisateur</h4>
 
       <input [(ngModel)]="user.nom" class="form-control mb-2" placeholder="Nom">
+      <input [(ngModel)]="user.prenom" class="form-control mb-2" placeholder="Prénom">
+      <input [(ngModel)]="user.telephone" class="form-control mb-2" placeholder="Téléphone">
       <input [(ngModel)]="user.email" class="form-control mb-2" placeholder="Email">
       <input [(ngModel)]="user.password" type="password" class="form-control mb-2" placeholder="Password">
 
       <select [(ngModel)]="user.role" class="form-control mb-2">
-        <option value="admin">Admin</option>
-        <option value="client">Client</option>
-        <option value="hotel-manager">Hotel Manager</option>
-        <option value="agence-manager">Agence Manager</option>
+        <option *ngFor="let r of allowedRoles" [value]="r.value">{{ r.label }}</option>
       </select>
 
       <div class="d-flex justify-content-end gap-2">
@@ -122,7 +126,9 @@
       <h4>Détails utilisateur</h4>
 
       <p><b>Nom:</b> {{ selectedUser?.nom }}</p>
+      <p><b>Prénom:</b> {{ selectedUser?.prenom }}</p>
       <p><b>Email:</b> {{ selectedUser?.email }}</p>
+      <p><b>Téléphone:</b> {{ selectedUser?.telephone }}</p>
       <p><b>Rôle:</b> {{ getRoleLabel(selectedUser?.role) }}</p>
 
       <div class="d-flex justify-content-end">

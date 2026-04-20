@@ -1,11 +1,9 @@
 <app-dashboard-navbar [Title]="'Gestion hôtels'"></app-dashboard-navbar>
 
 <div class="container mt-3">
-
   <!-- HEADER -->
   <div class="d-flex justify-content-between mb-3">
     <h3>Gestion des hôtels</h3>
-
     <button class="btn btn-primary" (click)="openAddModal()">
       + Ajouter hôtel
     </button>
@@ -19,168 +17,101 @@
   <!-- ================= LIST ================= -->
   <div class="row">
     <div class="col-md-4 mb-3" *ngFor="let h of hotels">
+      <div class="card p-2 h-100 shadow-sm">
 
-      <div class="card p-2">
-
-        <!-- IMAGE -->
         <img *ngIf="h.images?.length"
              [src]="getImageUrl(h.images[0])"
              class="img-fluid mb-2 rounded">
 
-        <h5>{{ h.nom }}</h5>
-        <p>{{ h.ville }}</p>
+        <h5 class="mb-1">{{ h.nom }}</h5>
+        <p class="text-muted small mb-2">{{ h.ville }}</p>
+        <p class="small mb-3">
+          <span class="badge bg-light text-dark border">
+            {{ h.nb_Chambres ?? h.nb_chambres ?? h['nb-chambres'] ?? 0 }} chambre(s)
+          </span>
+        </p>
 
-        <button class="btn btn-warning btn-sm"
-                (click)="openEditModal(h)">
-          Modifier
-        </button>
+        <div class="d-flex gap-2 mt-auto">
+          <button class="btn btn-sm btn-outline-secondary" (click)="openEditModal(h)">
+            ✏️ Modifier
+          </button>
+        </div>
 
       </div>
     </div>
   </div>
 </div>
 
-<!-- ================= MODAL ================= -->
+<!-- ================= MODAL HÔTEL ================= -->
 <div class="modal d-block" *ngIf="showModal"
-     style="background: rgba(0,0,0,0.5)">
-
+     style="background: rgba(0,0,0,0.5); z-index: 1050;">
   <div class="modal-dialog modal-lg">
     <div class="modal-content p-3 bg-white card-box border-20">
-
-      <!-- ================= HOTEL FORM ================= -->
       <h4 class="mb-3">Informations hôtel</h4>
 
       <div class="row">
 
         <div class="col-md-6">
-          <label>Nom de l’hôtel</label>
+          <label class="form-label">Nom de l'hôtel</label>
           <input type="text" class="form-control mb-2"
                  [(ngModel)]="hotelForm.nom">
         </div>
 
         <div class="col-md-6">
-          <label>Ville</label>
+          <label class="form-label">Ville</label>
           <input type="text" class="form-control mb-2"
                  [(ngModel)]="hotelForm.ville">
         </div>
 
         <div class="col-md-6">
-          <label>Téléphone</label>
+          <label class="form-label">Téléphone</label>
           <input type="text" class="form-control mb-2"
                  [(ngModel)]="hotelForm.telephone">
         </div>
 
         <div class="col-md-6">
-          <label>Nombre d’étoiles</label>
-          <input type="number" class="form-control mb-2"
+          <label class="form-label">Nombre d'étoiles</label>
+          <input type="number" min="1" max="5" class="form-control mb-2"
                  [(ngModel)]="hotelForm.nb_Etoiles">
         </div>
 
         <div class="col-md-6">
-          <label>Nombre de chambres</label>
-          <input type="number" class="form-control mb-2"
+          <label class="form-label">Nombre de chambres</label>
+          <input type="number" min="0" class="form-control mb-2"
                  name="chambre"
                  [(ngModel)]="hotelForm.nb_Chambres">
         </div>
 
         <div class="col-md-6">
-          <label>Latitude</label>
+          <label class="form-label">Latitude</label>
           <input type="number" class="form-control mb-2"
                  [(ngModel)]="hotelForm.latitude">
         </div>
 
         <div class="col-md-6">
-          <label>Longitude</label>
+          <label class="form-label">Longitude</label>
           <input type="number" class="form-control mb-2"
                  [(ngModel)]="hotelForm.longitude">
         </div>
 
       </div>
 
-      <!-- ================= IMAGES ================= -->
       <div class="mt-3">
-        <label>Images</label>
+        <label class="form-label">Images</label>
         <input type="file" multiple class="form-control mb-2"
                (change)="onFileChange($event)">
 
-        <!-- preview -->
         <div class="d-flex flex-wrap gap-2 mt-2">
           <div *ngFor="let file of uploadedFiles"
-               class="border p-2 rounded">
+               class="border p-2 rounded small">
             {{ file.name }}
           </div>
         </div>
       </div>
 
-      <!-- ================= CHAMBRES (modification uniquement) ================= -->
-      <div class="mt-4" *ngIf="editMode">
-
-        <h4>Chambres</h4>
-
-        <button class="btn btn-primary mb-3"
-                type="button"
-                (click)="addChambre()">
-          + Ajouter chambre
-        </button>
-
-        <div *ngFor="let c of chambres; let i = index"
-             class="border p-3 mb-2 rounded">
-
-          <div class="row">
-
-            <div class="col-md-3">
-              <input [(ngModel)]="c.numero"
-                     class="form-control mb-2"
-                     placeholder="Numéro">
-            </div>
-
-            <div class="col-md-3">
-              <input [(ngModel)]="c.capacite"
-                     type="number"
-                     class="form-control mb-2"
-                     placeholder="Capacité">
-            </div>
-
-            <div class="col-md-3">
-              <input [(ngModel)]="c.prix_Nuit"
-                     type="number"
-                     class="form-control mb-2"
-                     placeholder="Prix / nuit">
-            </div>
-
-            <div class="col-md-3">
-              <select [(ngModel)]="c.etat"
-                      class="form-control mb-2">
-                <option value="disponible">Disponible</option>
-                <option value="occupée">Occupée</option>
-              </select>
-            </div>
-
-          </div>
-
-          <button class="btn btn-danger btn-sm"
-                  type="button"
-                  (click)="removeChambre(i)">
-            Supprimer
-          </button>
-
-        </div>
-
-      </div>
-
-      <!-- ================= ACTIONS ================= -->
-      <div class="mt-4 d-flex gap-2 justify-content-end">
-
-        <button class="btn btn-success"
-                (click)="saveHotel()">
-          Enregistrer
-        </button>
-
-        <button class="btn btn-secondary"
-                (click)="closeModal()">
-          Annuler
-        </button>
-
+      <div class="d-flex justify-content-end gap-2 mt-3">
+        <button class="btn btn-secondary" (click)="closeModal()">Annuler</button>
+        <button class="btn btn-primary" (click)="saveHotel()">Enregistrer</button>
       </div>
 
     </div>

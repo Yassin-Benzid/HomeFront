@@ -1,6 +1,7 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { CommonEngine } from '@angular/ssr/node';
 import express from 'express';
+import fs from 'fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import bootstrap from './src/main.server';
@@ -20,6 +21,38 @@ export function app(): express.Express {
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
+  // If a request targets a component template (e.g. '/properties-list.component.html')
+  // try to serve it from the local `src/` tree (useful in dev / non-bundled builds).
+  server.get('/*.component.html', (req, res, next) => {
+    const name = req.path.replace(/^\//, ''); // properties-list.component.html
+    // search for the file under project src directory
+    const projectRoot = resolve(serverDistFolder, '..', '..');
+    const srcRoot = resolve(projectRoot, 'src');
+
+    function findFileSync(dir: string, target: string): string | null {
+      try {
+        const entries = fs.readdirSync(dir, { withFileTypes: true });
+        for (const e of entries) {
+          const p = join(dir, e.name);
+          if (e.isFile() && e.name === target) return p;
+          if (e.isDirectory()) {
+            const found = findFileSync(p, target);
+            if (found) return found;
+          }
+        }
+      } catch (e) {
+        return null;
+      }
+      return null;
+    }
+
+    const found = findFileSync(srcRoot, name);
+    if (found) {
+      return res.sendFile(found);
+    }
+    return next();
+  });
+
   server.get('**', express.static(browserDistFolder, {
     maxAge: '1y',
     index: 'index.html',

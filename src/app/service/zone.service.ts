@@ -60,4 +60,24 @@ export class ZoneService {
       this.getHeaders()
     );
   }
+
+  // ================= 🔥 ADVANCED SEARCH =================
+getAdvancedZones(filters: any): Observable<any> {
+
+  let params: any = {};
+
+  Object.keys(filters).forEach(key => {
+    if (filters[key] !== null && filters[key] !== '') {
+      params[key] = filters[key];
+    }
+  });
+
+  return this.http.get(
+    this.API_URL + '/advanced',
+    {
+      ...this.getHeaders(),
+      params
+    }
+  );
+}
 }

@@ -115,10 +115,10 @@ export class Index3Component {
 
   // ✅ catégories avec fiche agence ajoutée
   categories: CategoryCard[] = [
-    { link: '/hotels', icon: 'assets/images/icon/icon_15.svg', label: 'Hôtels & resorts' },
+    { link: '/hotels', icon: 'assets/images/icon/icon_15.svg', label: 'Hôtels & chambres' },
     { link: '/reservations', icon: 'assets/images/icon/icon_16.svg', label: 'Réservations' },
-    { link: '/agences-voitures', icon: 'assets/images/icon/icon_17.svg', label: 'Voitures de location' },
-    { link: '/fiche-agence', icon: 'assets/images/icon/icon_17.svg', label: 'Fiche agence' }, // ✅ NEW
+    { link: '/agences-voitures', icon: 'assets/images/icon/icon_17.svg', label: 'Agences de location' },
+    { link: '/locations', icon: 'assets/images/icon/icon_27.svg', label: 'Locations' },
     { link: '/zones-touristiques', icon: 'assets/images/icon/icon_18.svg', label: 'Zones touristiques' },
     { link: '/avis-commentaires', icon: 'assets/images/icon/icon_19.svg', label: 'Avis voyageurs' },
     { link: '/wishlist', icon: 'assets/images/icon/icon_20.svg', label: 'Wishlist' },
@@ -221,7 +221,7 @@ export class Index3Component {
 
   testimonials: Testimonial[] = [
     {
-      name: 'Yasmine',
+      name: 'Ahmed',
       location: 'Tunis',
       image: 'assets/images/media/img_01.jpg',
       message: 'Très bonne expérience'

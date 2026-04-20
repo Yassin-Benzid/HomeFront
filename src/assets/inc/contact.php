@@ -4,23 +4,35 @@
  */
 
 // an email address that will be in the From field of the email.
-$from = 'Homy <demo@domain.com>';
+$from = 'Homy <noreply@homy.com>';
 
 // an email address that will receive the email with the output of the form
-$sendTo = 'Homy contact form <demo@domain.com>'; // Add Your emnail here
+$sendTo = 'Support Homy <support@homy.com>'; // Update with your support address
 
 // subject of the email
-$subject = 'New message from Homy';
+$subject = 'Nouvelle demande — Homy (réservations / location / tourisme)';
 
 // form field names and their translations.
 // array variable name => Text to appear in the email
-$fields = array('name' => 'Name', 'email' => 'Email', 'message' => 'Message'); 
+$fields = array(
+    'nom' => 'Nom',
+    'prenom' => 'Prénom',
+    'telephone' => 'Téléphone',
+    'email' => 'E-mail',
+    'inquiryType' => 'Type de demande',
+    'destination' => 'Destination',
+    'startDate' => 'Date de début',
+    'endDate' => 'Date de fin',
+    'guests' => 'Nombre de personnes',
+    'carType' => 'Type de véhicule',
+    'message' => 'Message'
+);
 
 // message that will be displayed when everything is OK :)
-$okMessage = 'Thank you, We will get back to you soon!';
+$okMessage = 'Merci ! Votre demande a bien été reçue. Notre équipe vous contactera sous 24 heures.';
 
 // If something goes wrong, we will display this message.
-$errorMessage = 'There was an error while submitting the form. Please try again later';
+$errorMessage = 'Une erreur est survenue lors de l\'envoi. Veuillez réessayer ultérieurement.';
 
 /*
  *  LET'S DO THE SENDING
@@ -34,7 +46,7 @@ try
 
     if(count($_POST) == 0) throw new \Exception('Form is empty');
             
-    $emailText = "You have a new message from Sinco\n=============================\n";
+    $emailText = "Nouveau message depuis le site Homy (réservations / tourisme)\n=============================\n";
 
     foreach ($_POST as $key => $value) {
         // If the field exists in the $fields array, include it in the email 

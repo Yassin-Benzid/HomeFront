@@ -64,4 +64,24 @@ export class AgenceService {
       this.getHeaders()
     );
   }
+
+  // ================= 🔥 ADVANCED SEARCH =================
+getAdvancedAgences(filters: any): Observable<any> {
+
+  let params: any = {};
+
+  Object.keys(filters).forEach(key => {
+    if (filters[key] !== null && filters[key] !== '') {
+      params[key] = filters[key];
+    }
+  });
+
+  return this.http.get(
+    this.API_URL + '/advanced',
+    {
+      ...this.getHeaders(),
+      params
+    }
+  );
+}
 }

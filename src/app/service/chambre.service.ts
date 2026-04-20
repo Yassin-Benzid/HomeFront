@@ -2,6 +2,23 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+/** Aligné sur `CreateChambreDto` (NestJS + class-validator). */
+export interface CreateChambreDto {
+  numero: number;
+  capacite: number;
+  etat: string;
+  prix_Nuit: number;
+  hotelId: number;
+}
+
+/** Aligné sur `UpdateChambreDto`. */
+export interface UpdateChambreDto {
+  numero?: number;
+  capacite?: number;
+  etat?: string;
+  prix_Nuit?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,8 +43,6 @@ export class ChambreService {
     };
   }
 
-  // ================= CHAMBRES =================
-
   getAllChambres(): Observable<any> {
     return this.http.get(this.API_URL, this.getHeaders());
   }
@@ -36,12 +51,12 @@ export class ChambreService {
     return this.http.get(this.API_URL + '/' + id, this.getHeaders());
   }
 
-  createChambre(data: any): Observable<any> {
-    return this.http.post(this.API_URL, data, this.getHeaders());
+  createChambre(dto: CreateChambreDto): Observable<any> {
+    return this.http.post(this.API_URL, dto, this.getHeaders());
   }
 
-  updateChambre(id: number, data: any): Observable<any> {
-    return this.http.put(this.API_URL + '/' + id, data, this.getHeaders());
+  updateChambre(id: number, dto: UpdateChambreDto): Observable<any> {
+    return this.http.put(this.API_URL + '/' + id, dto, this.getHeaders());
   }
 
   deleteChambre(id: number): Observable<any> {

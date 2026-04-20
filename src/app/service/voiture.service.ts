@@ -2,6 +2,22 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+/** Aligné sur `CreateVoitureDto` (NestJS + class-validator). */
+export interface CreateVoitureDto {
+  marque: string;
+  modele: string;
+  immatriculation: string;
+  etat: string;
+  prix_Jour: number;
+  agenceId: number;
+}
+
+/** Aligné sur `UpdateVoitureDto` (seulement etat + prix_Jour). */
+export interface UpdateVoitureDto {
+  etat?: string;
+  prix_Jour?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,8 +42,6 @@ export class VoitureService {
     };
   }
 
-  // ================= VOITURES =================
-
   getAllVoitures(): Observable<any> {
     return this.http.get(this.API_URL, this.getHeaders());
   }
@@ -36,12 +50,12 @@ export class VoitureService {
     return this.http.get(this.API_URL + '/' + id, this.getHeaders());
   }
 
-  createVoiture(data: any): Observable<any> {
-    return this.http.post(this.API_URL, data, this.getHeaders());
+  createVoiture(dto: CreateVoitureDto): Observable<any> {
+    return this.http.post(this.API_URL, dto, this.getHeaders());
   }
 
-  updateVoiture(id: number, data: any): Observable<any> {
-    return this.http.put(this.API_URL + '/' + id, data, this.getHeaders());
+  updateVoiture(id: number, dto: UpdateVoitureDto): Observable<any> {
+    return this.http.put(this.API_URL + '/' + id, dto, this.getHeaders());
   }
 
   deleteVoiture(id: number): Observable<any> {

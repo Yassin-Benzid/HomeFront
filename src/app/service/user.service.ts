@@ -45,7 +45,7 @@ return this.http.get(this.apiUrl + '/' + id, this.getHeaders());
 }
 
 addUser(user: any) {
-return this.http.post(this.apiUrl + '/register', user);
+	return this.http.post(this.apiUrl + '/register', user, this.getHeaders());
 }
 
 deleteUser(id: number) {

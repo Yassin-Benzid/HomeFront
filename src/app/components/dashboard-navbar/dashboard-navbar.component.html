@@ -7,13 +7,27 @@
             <span></span>
         </button>
 
-        <!-- SEARCH -->
-        <form action="javascript:void(0);" class="search-form ms-auto">
-            <input type="text" placeholder="Rechercher un hôtel, une réservation, un client...">
-            <button>
-                <img src="assets/dashboard-images/icon/icon_43.svg" alt="" class="lazy-img m-auto">
-            </button>
-        </form>
+                <!-- SEARCH -->
+                <div class="position-relative ms-auto" style="min-width:260px;">
+                    <form class="search-form d-flex" (submit)="search(); $event.preventDefault();">
+                        <input name="searchQuery" [(ngModel)]="searchQuery" type="text" placeholder="Rechercher un hôtel, une zone, une agence..." class="form-control">
+                        <button type="submit" class="btn btn-link p-0 ms-2">
+                                <img src="assets/dashboard-images/icon/icon_43.svg" alt="" class="lazy-img m-auto">
+                        </button>
+                        <button *ngIf="searchQuery" type="button" class="btn btn-link p-0 ms-2" (click)="clear()">✕</button>
+                    </form>
+
+                    <div *ngIf="showResults" class="search-results bg-white border rounded shadow-sm position-absolute" style="z-index:1050; left:0; right:0; max-height:320px; overflow:auto;">
+                        <div *ngIf="isSearching" class="p-2 small text-muted">Recherche...</div>
+                        <ul class="list-unstyled mb-0">
+                            <li *ngFor="let r of results" class="p-2 border-bottom" style="cursor:pointer;" (click)="selectResult(r)">
+                                <div class="fw-600">{{ r.title }}</div>
+                                <div class="small text-muted">{{ r.type | titlecase }} {{ r.subtitle ? '· ' + r.subtitle : '' }}</div>
+                            </li>
+                            <li *ngIf="!isSearching && results.length === 0" class="p-2 small text-muted">Aucun résultat</li>
+                        </ul>
+                    </div>
+                </div>
 
         <!-- NOTIFICATIONS -->
         <div class="profile-notification position-relative dropdown-center ms-3 ms-md-5 me-4">
