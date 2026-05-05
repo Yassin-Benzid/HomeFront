@@ -2,8 +2,9 @@ import { Component, HostListener } from '@angular/core';
 import { MenuListComponent } from "../../components/menu-list/menu-list.component";
 import { CommonModule } from '@angular/common';
 import { ModalService } from '../../service/modal.service';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar-3',
@@ -17,15 +18,29 @@ export class Navbar3Component {
 
   isLoggedIn = false;
   userName: string | null = null;
+  isClient = false;
 
   constructor(
     private modalService: ModalService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit() {
+    this.refreshAuthState();
+
+    // ✅ Refresh automatiquement l'état connexion aprés login / changement de page
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.refreshAuthState();
+    });
+  }
+
+  refreshAuthState() {
     this.isLoggedIn = this.authService.isAuthenticated();
     this.userName = this.authService.getUserName();
+    this.isClient = this.authService.isClient();
   }
 
   @HostListener('window:scroll')

@@ -16,7 +16,7 @@
       <p>Gestion des agences et voitures</p>
     </div>
 
-    <a routerLink="/fiche-agence" class="btn btn-primary">
+    <a routerLink="/fiche-agence" class="btn btn-primary" *ngIf="isAdmin">
       Ajouter une agence
     </a>
   </div>
@@ -82,7 +82,8 @@
         <td>{{ agence.longitude ?? '-' }}</td>
 
         <td>
-          <button class="btn btn-danger btn-sm" (click)="deleteAgence(agence)">Supprimer</button>
+          <a routerLink="/fiche-agence/{{ agence.idagence }}" class="btn btn-info btn-sm me-1" *ngIf="isAgencyManager">Gérer voitures</a>
+          <button class="btn btn-danger btn-sm" (click)="deleteAgence(agence)" *ngIf="isAdmin">Supprimer</button>
         </td>
       </tr>
     </tbody>

@@ -12,7 +12,7 @@ export class SidenavComponent {
     {
       tag: 'HOTEL',
       imgUrl: 'assets/images/listing/img_69.jpg',
-      price: '180 EUR / nuit',
+      price: '200 DT / nuit',
       address: 'Hammamet, Tunisie',
       route: '/hotels',
       title: 'Hôtel Riviera & Spa',
@@ -20,26 +20,18 @@ export class SidenavComponent {
     {
       tag: 'VOITURE',
       imgUrl: 'assets/images/listing/img_70.jpg',
-      price: '65 EUR / jour',
-      address: 'Aéroport Tunis-Carthage',
+      price: '300 DT / jour',
+      address: 'Tunis, Tunisie',
       route: '/agences-voitures',
-      title: 'SUV automatique - catégorie premium',
+      title: 'BMW Série 3 - Location de voiture',
     },
     {
       tag: 'ZONE',
       imgUrl: 'assets/images/listing/img_71.jpg',
-      price: 'Circuit 3 jours',
-      address: 'Tozeur & désert',
+      address: 'El Jem, Mahdia, Tunisie',
       route: '/zones-touristiques',
-      title: 'Découverte oasis, ksour et désert',
+      title: 'Découverte de la zone touristique El Jem',
     },
-    {
-      tag: 'ADMIN',
-      imgUrl: 'assets/images/listing/img_72.jpg',
-      price: 'Back-office',
-      address: 'Suivi en temps réel',
-      route: '/tableau-de-bord',
-      title: 'Pilotage des réservations et factures',
-    }
+    
   ];
 }

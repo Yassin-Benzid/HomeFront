@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardNavbarComponent } from '../../../components/dashboard-navbar/dashboard-navbar.component';
 import { AdminService } from '../../../service/admin.service';
+import { ReservationService, Reservation } from '../../../service/reservation.service';
+import { FactureService, Facture } from '../../../service/facture.service';
 
 @Component({
   selector: 'app-dashboard-index',
@@ -36,10 +38,90 @@ export class DashboardIndexComponent implements OnInit {
     { title: '12 avis en attente de modération', level: 'success', detail: 'Les commentaires clients doivent être publiés ou rejetés.' }
   ];
 
-  constructor(private adminService: AdminService) {}
+  reservations: Reservation[] = [];
+  factures: Facture[] = [];
+  isLoadingReservations = false;
+  isLoadingFactures = false;
+
+  constructor(
+    private adminService: AdminService,
+    private reservationService: ReservationService,
+    private factureService: FactureService
+  ) {}
 
   ngOnInit(): void {
     this.fetchStats();
+    this.loadReservations();
+    this.loadFactures();
+  }
+
+  loadReservations() {
+    this.isLoadingReservations = true;
+    this.reservationService.getReservationsForDashboard().subscribe({
+      next: (reservations) => {
+        this.reservations = reservations;
+        this.isLoadingReservations = false;
+      },
+      error: (err) => {
+        console.error('Erreur chargement réservations', err);
+        alert('Impossible de charger les réservations');
+        this.isLoadingReservations = false;
+      }
+    });
+  }
+
+  loadFactures() {
+    this.isLoadingFactures = true;
+    this.factureService.findAll().subscribe({
+      next: (factures) => {
+        this.factures = factures;
+        this.isLoadingFactures = false;
+      },
+      error: (err) => {
+        console.error('Erreur chargement factures', err);
+        alert('Impossible de charger les factures');
+        this.isLoadingFactures = false;
+      }
+    });
+  }
+
+  confirmerReservation(reservation: Reservation) {
+    this.reservationService.confirmerReservation(reservation.idreservation, reservation.client.iduser).subscribe({
+      next: () => {
+        alert(`✅ Réservation #${reservation.idreservation} confirmée avec succès`);
+        
+        // Création automatique de la facture
+        this.factureService.createAuto(reservation.idreservation).subscribe({
+          next: (facture) => {
+            alert(`✅ Facture #${facture.idfacture} générée automatiquement et envoyée au client`);
+            this.loadReservations();
+            this.loadFactures();
+          },
+          error: (err) => {
+            alert('❌ Erreur lors de la génération de la facture');
+          }
+        });
+      },
+      error: (err) => {
+        alert('❌ Erreur lors de la confirmation de la réservation');
+      }
+    });
+  }
+
+  annulerReservation(reservation: Reservation) {
+    if (!confirm(`Êtes-vous sûr de vouloir annuler la réservation #${reservation.idreservation} ?`)) {
+      return;
+    }
+
+    this.reservationService.annulerReservation(reservation.idreservation, reservation.client.iduser).subscribe({
+      next: () => {
+        alert(`⚠️ Réservation #${reservation.idreservation} annulée. Notification envoyée au client.`);
+        this.loadReservations();
+      },
+      error: (err) => {
+        alert('❌ Erreur lors de l\'annulation de la réservation');
+      }
+    });
   }
 
   private fetchStats() {

@@ -1,0 +1,102 @@
+<app-dashboard-navbar [Title]="'Fiche Zone'"></app-dashboard-navbar>
+
+<div class="container mt-3">
+  <!-- HEADER -->
+  <div class="d-flex justify-content-between mb-3">
+    <h3>Gestion des zones touristiques</h3>
+    <button class="btn btn-primary" (click)="openAddModal()">
+      + Ajouter zone
+    </button>
+  </div>
+
+  <!-- MESSAGE -->
+  <div *ngIf="message" class="alert alert-info">
+    {{ message }}
+  </div>
+
+  <!-- ================= LIST CARDS ================= -->
+  <div class="row">
+    <div class="col-md-4 mb-3" *ngFor="let z of zones">
+      <div class="card p-2 h-100 shadow-sm">
+
+        <img *ngIf="z.image"
+             [src]="getImageUrl(z.image)"
+             class="img-fluid mb-2 rounded">
+
+        <h5 class="mb-1">{{ z.nom }}</h5>
+        <p class="text-muted small mb-2">{{ z.ville }}</p>
+        <p class="small mb-3 text-truncate">
+          {{ z.description || 'Aucune description' }}
+        </p>
+
+        <div class="d-flex gap-2 mt-auto">
+          <button class="btn btn-sm btn-outline-secondary" (click)="openEditModal(z)">
+            ✏️ Modifier
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL ZONE ================= -->
+<div class="modal d-block" *ngIf="showModal"
+     style="background: rgba(0,0,0,0.5); z-index: 1050;">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content p-3 bg-white card-box border-20">
+      <h4 class="mb-3">Informations zone touristique</h4>
+
+      <div class="row">
+
+        <div class="col-md-6">
+          <label class="form-label">Nom de la zone</label>
+          <input type="text" class="form-control mb-2"
+                 [(ngModel)]="form.nom">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Ville</label>
+          <input type="text" class="form-control mb-2"
+                 [(ngModel)]="form.ville">
+        </div>
+
+        <div class="col-md-12">
+          <label class="form-label">Description</label>
+          <textarea class="form-control mb-2" rows="3"
+                    [(ngModel)]="form.description"></textarea>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Latitude</label>
+          <input type="number" class="form-control mb-2"
+                 [(ngModel)]="form.latitude">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Longitude</label>
+          <input type="number" class="form-control mb-2"
+                 [(ngModel)]="form.longitude">
+        </div>
+
+      </div>
+
+      <div class="mt-3">
+        <label class="form-label">Image</label>
+        <input type="file" class="form-control mb-2"
+               (change)="onFileChange($event)">
+
+        <img *ngIf="imagePreview"
+             [src]="imagePreview"
+             class="img-fluid mb-2 rounded"
+             height="150">
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-3">
+        <button class="btn btn-secondary" (click)="closeModal()">Annuler</button>
+        <button class="btn btn-primary" (click)="saveZone()">Enregistrer</button>
+      </div>
+
+    </div>
+  </div>
+</div>

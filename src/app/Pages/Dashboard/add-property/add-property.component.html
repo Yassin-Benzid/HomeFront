@@ -79,7 +79,18 @@
           <label class="form-label">Nombre de chambres</label>
           <input type="number" min="0" class="form-control mb-2"
                  name="chambre"
-                 [(ngModel)]="hotelForm.nb_Chambres">
+                 [(ngModel)]="hotelForm.nb_Chambres"
+                 (ngModelChange)="onNbChambresChange()">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Gérant d'hôtel assigné</label>
+          <select class="form-control mb-2" [(ngModel)]="hotelForm.hotelManagerId">
+            <option [ngValue]="null">-- Sélectionner un gérant --</option>
+            <option *ngFor="let manager of hotelManagers" [ngValue]="manager.iduser">
+              {{ manager.nom }} {{ manager.prenom }}
+            </option>
+          </select>
         </div>
 
         <div class="col-md-6">

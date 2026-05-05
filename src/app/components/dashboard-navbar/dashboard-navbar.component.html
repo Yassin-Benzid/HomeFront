@@ -7,28 +7,6 @@
             <span></span>
         </button>
 
-                <!-- SEARCH -->
-                <div class="position-relative ms-auto" style="min-width:260px;">
-                    <form class="search-form d-flex" (submit)="search(); $event.preventDefault();">
-                        <input name="searchQuery" [(ngModel)]="searchQuery" type="text" placeholder="Rechercher un hôtel, une zone, une agence..." class="form-control">
-                        <button type="submit" class="btn btn-link p-0 ms-2">
-                                <img src="assets/dashboard-images/icon/icon_43.svg" alt="" class="lazy-img m-auto">
-                        </button>
-                        <button *ngIf="searchQuery" type="button" class="btn btn-link p-0 ms-2" (click)="clear()">✕</button>
-                    </form>
-
-                    <div *ngIf="showResults" class="search-results bg-white border rounded shadow-sm position-absolute" style="z-index:1050; left:0; right:0; max-height:320px; overflow:auto;">
-                        <div *ngIf="isSearching" class="p-2 small text-muted">Recherche...</div>
-                        <ul class="list-unstyled mb-0">
-                            <li *ngFor="let r of results" class="p-2 border-bottom" style="cursor:pointer;" (click)="selectResult(r)">
-                                <div class="fw-600">{{ r.title }}</div>
-                                <div class="small text-muted">{{ r.type | titlecase }} {{ r.subtitle ? '· ' + r.subtitle : '' }}</div>
-                            </li>
-                            <li *ngIf="!isSearching && results.length === 0" class="p-2 small text-muted">Aucun résultat</li>
-                        </ul>
-                    </div>
-                </div>
-
         <!-- NOTIFICATIONS -->
         <div class="profile-notification position-relative dropdown-center ms-3 ms-md-5 me-4">
             <button class="noti-btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -53,33 +31,18 @@
         </div>
 
         <!-- 🔥 BOUTON HOTEL -->
-        <div class="d-none d-md-block me-2">
+        <div *ngIf="showAdminButtons" class="d-none d-md-block me-2">
             <a routerLink="/fiche-hotel" class="btn-two">
                 <span>Nouvelle fiche hôtel</span>
             </a>
         </div>
 
-        <!-- 🔥🔥 NEW: BOUTON AGENCE -->
-        <div class="d-none d-md-block me-3">
-            <a routerLink="/fiche-agence" class="btn-two">
-                <span>Nouvelle fiche agence</span>
-            </a>
-        </div>
-
-        <!-- PROFILE -->
-        <div class="user-data position-relative">
-            <button class="user-avatar online rounded-circle dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                <img src="assets/dashboard-images/avatar_01.jpg" class="lazy-img">
-            </button>
-
-            <ul class="dropdown-menu">
-                <li>
-                    <a class="dropdown-item" routerLink="/profil-admin">
-                        Profil admin
-                    </a>
-                </li>
-            </ul>
-        </div>
+         <!-- 🔥🔥 NEW: BOUTON AGENCE -->
+         <div *ngIf="showAdminButtons" class="d-none d-md-block me-3">
+             <a routerLink="/fiche-agence" class="btn-two">
+                 <span>Nouvelle fiche agence</span>
+             </a>
+         </div>
 
     </div>
 </header>

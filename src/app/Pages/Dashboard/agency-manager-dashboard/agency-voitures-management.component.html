@@ -1,0 +1,171 @@
+<app-dashboard-navbar [Title]="'Gestion Agences & Voitures'"></app-dashboard-navbar>
+
+<div class="container-fluid mt-4">
+
+  <!-- Titre Page -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="main-title">
+      <i class="bi bi-car-front me-2"></i> Gestion de mon Agence & Voitures
+    </h2>
+    <button class="btn btn-outline-primary" (click)="loadAgenceData()">
+      <i class="bi bi-arrow-clockwise"></i> Actualiser
+    </button>
+  </div>
+
+  <!-- Message Alerte -->
+  <div *ngIf="message" class="alert alert-info mb-4 fade show" role="alert">
+    {{ message }}
+  </div>
+
+  <!-- Information Agence -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h5 class="card-title text-primary">
+            <i class="bi bi-building-check"></i> Mon Agence
+          </h5>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <div class="badge bg-primary fs-6 px-4 py-2">
+            <i class="bi bi-car-front me-1"></i> {{ voitures.length }} Voitures
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau Gestion Voitures -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom">
+      <h6 class="mb-0 fw-bold">
+        <i class="bi bi-list-ul me-2"></i> Liste des Voitures
+      </h6>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="fw-semibold">#ID</th>
+              <th class="fw-semibold">Marque</th>
+              <th class="fw-semibold">Modèle</th>
+              <th class="fw-semibold">Immatriculation</th>
+              <th class="fw-semibold">Etat</th>
+              <th class="fw-semibold">Prix / Jour</th>
+              <th class="fw-semibold">Disponibilité</th>
+              <th class="fw-semibold text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let voiture of voitures">
+
+              <td>{{ voiture.idvoiture }}</td>
+
+              <td>
+                <ng-container *ngIf="editVoitureId !== voiture.idvoiture; else editMarque">
+                  <span class="fw-bold">{{ voiture.marque }}</span>
+                </ng-container>
+                <ng-template #editMarque>
+                  <input type="text" class="form-control form-control-sm w-100" [(ngModel)]="voiture.marque">
+                </ng-template>
+              </td>
+
+              <td>
+                <ng-container *ngIf="editVoitureId !== voiture.idvoiture; else editModele">
+                  <span class="fw-bold">{{ voiture.modele }}</span>
+                </ng-container>
+                <ng-template #editModele>
+                  <input type="text" class="form-control form-control-sm w-100" [(ngModel)]="voiture.modele">
+                </ng-template>
+              </td>
+
+              <td>
+                <ng-container *ngIf="editVoitureId !== voiture.idvoiture; else editImmatriculation">
+                  <span class="fw-semibold">{{ voiture.immatriculation }}</span>
+                </ng-container>
+                <ng-template #editImmatriculation>
+                  <input type="text" class="form-control form-control-sm w-100" [(ngModel)]="voiture.immatriculation">
+                </ng-template>
+              </td>
+
+              <td>
+                <ng-container *ngIf="editVoitureId !== voiture.idvoiture; else editEtat">
+                  <span class="badge px-3 py-2 rounded-pill {{ getEtatBadgeClass(voiture.etat) }}">
+                    {{ voiture.etat | uppercase }}
+                  </span>
+                </ng-container>
+                <ng-template #editEtat>
+                  <select class="form-select form-select-sm w-100" [(ngModel)]="voiture.etat">
+                    <option value="disponible">✅ Disponible</option>
+                    <option value="louée">❌ Louée</option>
+                    <option value="maintenance">🔧 Maintenance</option>
+                  </select>
+                </ng-template>
+              </td>
+
+              <td>
+                <ng-container *ngIf="editVoitureId !== voiture.idvoiture; else editPrix">
+                  <span class="fw-semibold text-success fs-6">{{ voiture.prix_Jour }} dt</span>
+                </ng-container>
+                <ng-template #editPrix>
+                  <div class="input-group input-group-sm w-100">
+                    <input type="number" class="form-control" min="0" step="10" [(ngModel)]="voiture.prix_Jour">
+                    <span class="input-group-text">dt</span>
+                  </div>
+                </ng-template>
+              </td>
+
+              <td>
+                <div class="d-flex flex-column gap-2">
+                  <div class="d-flex gap-1 align-items-center">
+                    <input type="date" class="form-control form-control-sm" style="width: 115px"
+                      [(ngModel)]="disponibiliteCheck[voiture.idvoiture].dateDebut">
+                    <span class="text-muted">➝</span>
+                    <input type="date" class="form-control form-control-sm" style="width: 115px"
+                      [(ngModel)]="disponibiliteCheck[voiture.idvoiture].dateFin">
+                  </div>
+                  <div class="d-flex gap-2 align-items-center">
+                    <button class="btn btn-sm btn-outline-secondary"
+                      (click)="verifierDisponibilite(voiture.idvoiture)"
+                      [disabled]="disponibiliteCheck[voiture.idvoiture].loading">
+                      <span *ngIf="!disponibiliteCheck[voiture.idvoiture].loading">🔍 Vérifier</span>
+                      <span *ngIf="disponibiliteCheck[voiture.idvoiture].loading">⏳</span>
+                    </button>
+
+                    <span *ngIf="disponibiliteCheck[voiture.idvoiture].disponible === true" class="badge bg-success">
+                      ✅ Disponible
+                    </span>
+                    <span *ngIf="disponibiliteCheck[voiture.idvoiture].disponible === false" class="badge bg-danger">
+                      ❌ Indisponible
+                    </span>
+                  </div>
+                </div>
+              </td>
+
+              <td class="text-center">
+                <div class="btn-group btn-group-sm">
+                  <ng-container *ngIf="editVoitureId !== voiture.idvoiture; else saveButtons">
+                    <button class="btn btn-outline-primary" (click)="toggleEdit(voiture.idvoiture)">
+                      ✏️ Modifier
+                    </button>
+                  </ng-container>
+                  <ng-template #saveButtons>
+                    <button class="btn btn-success" (click)="saveVoiture(voiture)">
+                      💾 Enregistrer
+                    </button>
+                    <button class="btn btn-secondary" (click)="toggleEdit(voiture.idvoiture)">
+                      ❌ Annuler
+                    </button>
+                  </ng-template>
+                </div>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>

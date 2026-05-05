@@ -8,10 +8,6 @@
         </div>
     </li>
 
-    <li class="nav-item dashboard-menu">
-        <a class="nav-link" routerLink="/tableau-de-bord">Admin</a>
-    </li>
-
     <!-- Accueil -->
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="javascript:void(0);" data-bs-toggle="dropdown">
@@ -24,11 +20,6 @@
                 </a>
             </li>
 
-            <li>
-                <a routerLink="/contact" class="dropdown-item">
-                    <span>Contact</span>
-                </a>
-            </li>
         </ul>
     </li>
 
@@ -46,10 +37,8 @@
                     <div class="menu-column">
                         <h6 class="mega-menu-title">Réservations</h6>
                         <ul class="style-none mega-dropdown-list">
-                            <li><a routerLink="/hotels" class="dropdown-item"><span>Hôtels</span></a></li>
-                            <li><a routerLink="/reservations" class="dropdown-item"><span>Réservations hôtels</span></a></li>
-                            <li><a routerLink="/agences-voitures" class="dropdown-item"><span>Agences voitures</span></a></li>
-                            <li><a routerLink="/locations" class="dropdown-item"><span>Location voitures</span></a></li>
+                            <li><a routerLink="/hotels" class="dropdown-item"><span>Hôtels & Chambres</span></a></li>
+                            <li><a routerLink="/agences-voitures" class="dropdown-item"><span>Agences & Voitures</span></a></li>
                         </ul>
                     </div>
                 </div>
@@ -66,36 +55,7 @@
                     </div>
                 </div>
 
-                <!-- Pilotage -->
-                <div class="col-lg-4">
-                    <div class="menu-column">
-                        <h6 class="mega-menu-title">Pilotage</h6>
-                        <ul class="style-none mega-dropdown-list">
-                            <li>
-                                <a routerLink="/profil-admin" class="dropdown-item">
-                                    <span>Profil administrateur</span>
-                                </a>
-                            </li>
-                            <li><a routerLink="/tableau-de-bord" class="dropdown-item"><span>Tableau de bord</span></a></li>
-                            <li><a routerLink="/utilisateurs" class="dropdown-item"><span>Utilisateurs</span></a></li>
-                            <li><a routerLink="/facturation" class="dropdown-item"><span> suvi des Factures</span></a></li>
-                            <li><a routerLink="/reservations" class="dropdown-item"><span>Suivi des réservations</span></a></li>
-                            <li><a routerLink="/locations" class="dropdown-item"><span>Suivi des locations</span></a></li>
-                        
-                            <li>
-                                <a routerLink="/fiche-hotel" class="dropdown-item">
-                                    <span>Créer une fiche hôtel</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a routerLink="/fiche-agence" class="dropdown-item">
-                                    <span>Créer une fiche agence </span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
+               
             </li>
         </ul>
     </li>
@@ -106,12 +66,5 @@
         <a class="nav-link" routerLink="/contact">Contact</a>
     </li>
 
-    <!-- Mobile -->
-    <li class="d-md-none ps-2 pe-2 mt-20">
-        <a routerLink="/tableau-de-bord" class="btn-two w-100">
-            <span>Ouvrir l'administration</span>
-            <i class="fa-thin fa-arrow-up-right"></i>
-        </a>
-    </li>
 
 </ul>

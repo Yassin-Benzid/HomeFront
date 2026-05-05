@@ -1,0 +1,200 @@
+<div class="container-fluid py-4 px-3 px-md-5">
+
+  <!-- ══════════════ PROFILE HEADER ══════════════ -->
+  <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden" *ngIf="profile">
+    <div class="card-body d-flex align-items-center gap-4 p-4"
+         style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);">
+      <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+           style="width:72px;height:72px;background:rgba(255,255,255,0.12);font-size:2rem;color:#fff;">
+        <i class="bi bi-person-fill"></i>
+      </div>
+       <div class="text-white">
+         <h4 class="mb-0 fw-bold text-white">{{ profile.prenom }} {{ profile.nom }}</h4>
+         <small class="opacity-75 text-white-50">{{ profile.email }}</small>
+        <div class="mt-1">
+          <span class="badge rounded-pill" style="background:rgba(255,255,255,0.2);">
+            <i class="bi bi-shield-check me-1"></i>Client vérifié
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ TAB NAV ══════════════ -->
+  <ul class="nav nav-pills gap-2 mb-4 flex-nowrap overflow-auto pb-1">
+    <li class="nav-item" *ngFor="let tab of tabs">
+      <button class="nav-link d-flex align-items-center gap-2 px-4 py-2 rounded-pill fw-semibold"
+              [class.active]="activeTab === tab.key"
+              (click)="selectTab(tab.key)"
+              style="white-space:nowrap;transition:all .2s;">
+        <i class="bi {{ tab.icon }}"></i>
+        {{ tab.label }}
+      </button>
+    </li>
+  </ul>
+
+  <!-- ══════════════ ERROR ══════════════ -->
+  <div class="alert alert-danger rounded-3" *ngIf="error">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ error }}
+  </div>
+
+  <!-- ══════════════ LOADER ══════════════ -->
+  <div class="text-center py-5" *ngIf="loading">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2 text-muted">Chargement en cours…</p>
+  </div>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- ════════════ RÉSERVATIONS ════════════ -->
+    <div *ngIf="activeTab === 'reservations'">
+      <h5 class="fw-bold mb-3"><i class="bi bi-calendar-check me-2 text-primary"></i>Mes Réservations</h5>
+      <div *ngIf="reservations.length === 0" class="text-center text-muted py-5">
+        <i class="bi bi-calendar-x display-4 d-block mb-2"></i>Aucune réservation.
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6 col-lg-4" *ngFor="let r of reservations">
+          <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <h6 class="fw-bold mb-0">Réservation #{{ r.idreservation }}</h6>
+                <span class="badge rounded-pill {{ getStatusClass(r.statut) }}">{{ r.statut }}</span>
+              </div>
+              <div class="small text-muted">
+                <div class="mb-1"><i class="bi bi-calendar2 me-2"></i>
+                  Du <strong>{{ r.dateDebut | date:'dd/MM/yyyy' }}</strong>
+                  au <strong>{{ r.dateFin | date:'dd/MM/yyyy' }}</strong>
+                </div>
+                <div *ngIf="r.vehicule">
+                  <i class="bi bi-car-front me-2"></i>{{ r.vehicule?.marque }} {{ r.vehicule?.modele }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ LOCATIONS ════════════ -->
+    <div *ngIf="activeTab === 'locations'">
+      <h5 class="fw-bold mb-3"><i class="bi bi-house-door me-2 text-primary"></i>Mes Locations</h5>
+      <div *ngIf="locations.length === 0" class="text-center text-muted py-5">
+        <i class="bi bi-house display-4 d-block mb-2"></i>Aucune location.
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6 col-lg-4" *ngFor="let l of locations">
+          <div class="card border-0 shadow-sm rounded-4 h-100 hover-lift">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <h6 class="fw-bold mb-0">Location #{{ l.idlocation }}</h6>
+                <span class="badge rounded-pill {{ getStatusClass(l.statut) }}">{{ l.statut }}</span>
+              </div>
+              <div class="small text-muted">
+                <div class="mb-1"><i class="bi bi-calendar2 me-2"></i>
+                  {{ l.dateDebut | date:'dd/MM/yyyy' }} → {{ l.dateFin | date:'dd/MM/yyyy' }}
+                </div>
+                <div *ngIf="l.montantTotal" class="mt-2 fw-semibold text-dark">
+                  <i class="bi bi-cash me-2 text-success"></i>{{ l.montantTotal | number:'1.2-2' }} TND
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ FACTURES ════════════ -->
+    <div *ngIf="activeTab === 'factures'">
+      <h5 class="fw-bold mb-3"><i class="bi bi-receipt me-2 text-primary"></i>Mes Factures</h5>
+      <div *ngIf="factures.length === 0" class="text-center text-muted py-5">
+        <i class="bi bi-file-earmark-x display-4 d-block mb-2"></i>Aucune facture.
+      </div>
+      <div class="table-responsive rounded-4 shadow-sm" *ngIf="factures.length > 0">
+        <table class="table table-hover align-middle mb-0">
+          <thead style="background:#f8f9ff;">
+            <tr>
+              <th class="ps-4">N° Facture</th>
+              <th>Date</th>
+              <th>Montant</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let f of factures">
+              <td class="ps-4 fw-semibold">#{{ f.idfacture }}</td>
+              <td>{{ f.dateFacture | date:'dd/MM/yyyy' }}</td>
+              <td class="fw-bold text-success">{{ f.montantTotal | number:'1.2-2' }} TND</td>
+              <td>
+                <span class="badge rounded-pill {{ getStatusClass(f.statut) }}">{{ f.statut }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════════════ AVIS ════════════ -->
+    <div *ngIf="activeTab === 'avis'">
+      <h5 class="fw-bold mb-3"><i class="bi bi-star-half me-2 text-primary"></i>Mes Avis</h5>
+      <div *ngIf="avis.length === 0" class="text-center text-muted py-5">
+        <i class="bi bi-chat-square display-4 d-block mb-2"></i>Aucun avis laissé.
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6" *ngFor="let a of avis">
+          <div class="card border-0 shadow-sm rounded-4 hover-lift">
+            <div class="card-body p-4">
+              <div class="d-flex gap-1 mb-2">
+                <i *ngFor="let star of getStars(a.note)"
+                   class="bi {{ star }}"
+                   style="color:#f5a623;font-size:1rem;"></i>
+                <span class="ms-2 small text-muted fw-semibold">{{ a.note }}/5</span>
+              </div>
+              <p class="mb-2 text-dark">{{ a.commentaire }}</p>
+              <small class="text-muted">
+                <i class="bi bi-clock me-1"></i>{{ a.dateAvis | date:'dd/MM/yyyy' }}
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ FAVORIS ════════════ -->
+    <div *ngIf="activeTab === 'favoris'">
+      <h5 class="fw-bold mb-3"><i class="bi bi-heart me-2 text-primary"></i>Mes Favoris</h5>
+      <div *ngIf="favoris.length === 0" class="text-center text-muted py-5">
+        <i class="bi bi-heart display-4 d-block mb-2"></i>Aucun favori enregistré.
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6 col-lg-4" *ngFor="let fav of favoris">
+          <div class="card border-0 shadow-sm rounded-4 hover-lift">
+            <div class="card-body p-4 d-flex align-items-center gap-3">
+              <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                   style="width:48px;height:48px;background:#fff0f3;">
+                <i class="bi bi-heart-fill text-danger fs-5"></i>
+              </div>
+              <div>
+                <h6 class="fw-bold mb-0">
+                  {{ fav.vehicule?.marque ?? 'Favori' }} {{ fav.vehicule?.modele ?? '#' + fav.idfavoris }}
+                </h6>
+                <small class="text-muted" *ngIf="fav.vehicule?.prixParJour">
+                  {{ fav.vehicule.prixParJour | number:'1.2-2' }} TND / jour
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+</div>
+
+<!-- ══════════════ STYLES SCOPED ══════════════ -->
+<style>
+  .hover-lift { transition: transform .18s, box-shadow .18s; }
+  .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.10) !important; }
+  .nav-link { color: #555; background: #f1f3f8; }
+  .nav-link.active { background: #0f3460 !important; color: #fff !important; }
+  .nav-link:hover:not(.active) { background: #e2e6f0; }
+</style>

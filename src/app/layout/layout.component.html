@@ -59,10 +59,10 @@
 
                                 <div class="text-center mb-20">
                                     <h2>Bon retour</h2>
-                                    <p class="fs-20 color-dark">
-                                        Pas encore de compte ?
-                                        <a href="javascript:void(0);">Sign up</a>
-                                    </p>
+                                        <p class="fs-20 color-dark">
+                                            Pas encore de compte ?
+                                            <a href="javascript:void(0);" (click)="goToRegisterTab()">Sign up</a>
+                                        </p>
                                 </div>
 
                                 <form>
@@ -120,10 +120,10 @@
 
                                 <div class="text-center mb-20">
                                     <h2>Créer un compte</h2>
-                                    <p class="fs-20 color-dark">
-                                        Vous avez déjà un compte ?
-                                        <a href="javascript:void(0);">Login</a>
-                                    </p>
+                                        <p class="fs-20 color-dark">
+                                            Vous avez déjà un compte ?
+                                            <a href="javascript:void(0);" (click)="goToLoginTab()">Login</a>
+                                        </p>
                                 </div>
 
                                 <form>
@@ -183,19 +183,6 @@
                                                        [(ngModel)]="password"
                                                        name="registerPassword">
                                             </div>
-                                        </div>
-
-                                        <!-- ROLE -->
-                                        <div class="input-group-meta mb-25">
-                                            <label>Role*</label>
-                                            <select class="form-control"
-                                                    [(ngModel)]="role"
-                                                    name="role">
-                                                <option value="" disabled>Choisir un rôle</option>
-                                                <option value="client">Client</option>
-                                                <option value="hotel-manager">Hotel Manager</option>
-                                                <option value="agence-manager">Agence Manager</option>
-                                            </select>
                                         </div>
 
                                         <!-- TERMS -->

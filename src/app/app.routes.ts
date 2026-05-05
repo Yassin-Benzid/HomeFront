@@ -2,9 +2,16 @@ import { Routes } from '@angular/router';
 
 import { LayoutComponent } from './layout/layout.component';
 import { DashboardLayoutComponent } from './dashboard-layout/dashboard-layout.component';
+import { HotelManagerLayoutComponent } from './hotel-manager-layout/hotel-manager-layout.component';
+import { AgencyManagerLayoutComponent } from './agency-manager-layout/agency-manager-layout.component';
+import { ClientSpaceLayoutComponent } from './client-space-layout/client-space-layout.component';
 
 // Dashboard components
 import { DashboardIndexComponent } from './Pages/Dashboard/dashboard-index/dashboard-index.component';
+import { HotelManagerDashboardComponent } from './Pages/Dashboard/hotel-manager-dashboard/hotel-manager-dashboard.component';
+import { HotelChambresManagementComponent } from './Pages/Dashboard/hotel-manager-dashboard/hotel-chambres-management.component';
+import { AgencyManagerDashboardComponent } from './Pages/Dashboard/agency-manager-dashboard/agency-manager-dashboard.component';
+import { AgencyVoituresManagementComponent } from './Pages/Dashboard/agency-manager-dashboard/agency-voitures-management.component';
 import { AccountSettingsComponent } from './Pages/Dashboard/account-settings/account-settings.component';
 import { AccountSettingsPassChangeComponent } from './Pages/Dashboard/account-settings-pass-change/account-settings-pass-change.component';
 import { AddPropertyComponent } from './Pages/Dashboard/add-property/add-property.component';
@@ -17,6 +24,9 @@ import { PropertiesListComponent } from './Pages/Dashboard/properties-list/prope
 import { ReviewComponent } from './Pages/Dashboard/review/review.component';
 import { SavedSearchComponent } from './Pages/Dashboard/saved-search/saved-search.component';
 import { AddAccountComponent } from './Pages/Dashboard/add-account/add-account.component';
+import { EspaceClientComponent } from './Pages/Dashboard/client-space/espace-client.component';
+import { ZoneFicheComponent } from './Pages/Dashboard/zone-fiche/zone-fiche.component';
+import { FacturationComponent } from './Pages/Dashboard/facturation/facturation.component';
 
 export const routes: Routes = [
 
@@ -50,18 +60,35 @@ export const routes: Routes = [
   },
 
   // =========================
-  // AGENCES VOITURES
+  // DASHBOARD HOTEL MANAGER
   // =========================
   {
-    path: 'agences-voitures',
-    component: DashboardLayoutComponent,
+    path: 'hotel-manager',
+    component: HotelManagerLayoutComponent,
     children: [
-      { path: '', component: AccountSettingsComponent, outlet: 'dashboard' }
+      { path: '', component: HotelManagerDashboardComponent },
+      { path: 'gestion-hotels-chambres', component: HotelChambresManagementComponent },
+      { path: 'facturation', component: FacturationComponent }
     ],
   },
 
   // =========================
-  // ACCOUNT SETTINGS
+  // DASHBOARD AGENCE MANAGER
+  // =========================
+  {
+    path: 'agency-manager',
+    component: AgencyManagerLayoutComponent,
+    children: [
+      { path: '', component: AgencyManagerDashboardComponent },
+      { path: 'gestion-agences-voitures', component: AgencyVoituresManagementComponent },
+      { path: 'facturation', component: FacturationComponent }
+    ],
+  },
+
+  
+ 
+  // =========================
+  // Liste des Agences
   // =========================
   {
     path: 'account-settings',
@@ -71,6 +98,15 @@ export const routes: Routes = [
     ],
   },
 
+   {
+    path: 'agences-voitures',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: AccountSettingsComponent, outlet: 'dashboard' }
+    ],
+  },
+
+
   // =========================
   // FACTURATION
   // =========================
@@ -78,7 +114,7 @@ export const routes: Routes = [
     path: 'facturation',
     component: DashboardLayoutComponent,
     children: [
-      { path: '', component: AccountSettingsPassChangeComponent, outlet: 'dashboard' }
+      { path: '', component: FacturationComponent, outlet: 'dashboard' }
     ],
   },
 
@@ -91,7 +127,7 @@ export const routes: Routes = [
   },
 
   // =========================
-  // HÔTEL
+  // Fiche HÔTEL
   // =========================
   {
     path: 'fiche-hotel',
@@ -109,37 +145,114 @@ export const routes: Routes = [
     ],
   },
 
-  // =========================
-  // AGENCE (FIX CORRECT)
-  // =========================
-  {
-    path: 'fiche-agence',
-    component: DashboardLayoutComponent,
-    children: [
-      { path: '', component: AddAccountComponent, outlet: 'dashboard' }
-    ],
-  },
+   // ======================
+   // Fiche AGENCE 
+   // ======================
+   {
+     path: 'fiche-agence',
+     component: DashboardLayoutComponent,
+     children: [
+       { path: '', component: AddAccountComponent, outlet: 'dashboard' }
+     ],
+   },
 
-  // ❌ SUPPRIMÉ : doublon add-property qui causait conflit
+   {
+     path: 'add-account',
+     component: DashboardLayoutComponent,
+     children: [
+       { path: '', component: AddAccountComponent, outlet: 'dashboard' }
+     ],
+   },
 
-  // =========================
-  // WISHLIST
-  // =========================
-  {
-    path: 'wishlist',
-    component: DashboardLayoutComponent,
-    children: [
-      { path: '', component: FavouritesComponent, outlet: 'dashboard' }
-    ],
-  },
+   // ======================
+   // Fiche ZONE 
+   // ======================
+   {
+     path: 'fiche-zone',
+     component: DashboardLayoutComponent,
+     children: [
+       { path: '', component: ZoneFicheComponent, outlet: 'dashboard' }
+     ],
+   },
 
-  {
-    path: 'favourites',
-    component: DashboardLayoutComponent,
-    children: [
-      { path: '', component: FavouritesComponent, outlet: 'dashboard' }
-    ],
-  },
+   // =========================
+   //       ESPACE CLIENT
+   // =========================
+   {
+     path: 'espace-client',
+     component: ClientSpaceLayoutComponent,
+     children: [
+        { path: '', component: EspaceClientComponent }
+     ],
+   },
+   {
+     path: 'mes-reservations',
+     component: ClientSpaceLayoutComponent,
+     children: [
+        { path: '', component: EspaceClientComponent }
+     ],
+   },
+   {
+     path: 'mes-locations',
+     component: ClientSpaceLayoutComponent,
+     children: [
+        { path: '', component: EspaceClientComponent }
+     ],
+   },
+   {
+     path: 'mes-factures',
+     component: ClientSpaceLayoutComponent,
+     children: [
+        { path: '', component: EspaceClientComponent }
+     ],
+   },
+   {
+     path: 'mes-avis',
+     component: ClientSpaceLayoutComponent,
+     children: [
+        { path: '', component: EspaceClientComponent }
+     ],
+   },
+   {
+     path: 'mes-favoris',
+     component: ClientSpaceLayoutComponent,
+     children: [
+        { path: '', component: EspaceClientComponent }
+     ],
+   },
+   {
+     path: 'mon-espace',
+     component: ClientSpaceLayoutComponent,
+     children: [
+        { path: '', component: EspaceClientComponent }
+     ],
+   },
+   {
+     path: 'mon-compte',
+     component: ClientSpaceLayoutComponent,
+     children: [
+        { path: '', component: EspaceClientComponent }
+     ],
+   },
+
+   // =========================
+   //       Favoris
+   // =========================
+   {
+     path: 'wishlist',
+     component: LayoutComponent,
+     children: [
+       { path: '', component: FavouritesComponent }
+     ],
+   },
+
+   {
+     path: 'favourites',
+     component: LayoutComponent,
+     children: [
+       { path: '', component: FavouritesComponent }
+     ],
+   },
 
   // =========================
   // UTILISATEURS
@@ -160,9 +273,9 @@ export const routes: Routes = [
     ],
   },
 
-  // =========================
-  // MESSAGES / RESERVATIONS
-  // =========================
+  // ===================================
+  // MESSAGES / RESERVATIONS / LOCATIONS
+  // ===================================
   {
     path: 'reservations',
     component: DashboardLayoutComponent,
@@ -188,7 +301,7 @@ export const routes: Routes = [
   },
 
   // =========================
-  // PROFIL
+  // Peofile
   // =========================
   {
     path: 'profil-admin',
@@ -207,7 +320,7 @@ export const routes: Routes = [
   },
 
   // =========================
-  // HOTELS LIST
+  // Liste Hotels
   // =========================
   {
     path: 'hotels',
@@ -245,7 +358,7 @@ export const routes: Routes = [
   },
 
   // =========================
-  // REVIEWS
+  //          Avis
   // =========================
   {
     path: 'avis-commentaires',

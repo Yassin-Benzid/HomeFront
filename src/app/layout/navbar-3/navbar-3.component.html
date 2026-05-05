@@ -28,24 +28,22 @@
                         <li *ngIf="isLoggedIn" class="d-flex align-items-center login-btn-one">
                             <i class="fa-regular fa-user"></i>
 
-                            <span class="fw-500 tran3s">
-                                Bonjour, {{ userName }}
-                            </span>
+                             <span class="fw-500 tran3s">
+                                 Bonjour, {{ userName }}
+                             </span>
 
-                            <a href="javascript:void(0);"
-                               (click)="logout()"
-                               class="ms-3 text-danger">
-                                Logout
-                            </a>
+                             <a routerLink="/mon-espace" *ngIf="isClient" class="ms-3 text-primary fw-500 tran3s">
+                                 <i class="bi bi-person-circle me-1"></i> Mon Espace
+                             </a>
+
+                             <a href="javascript:void(0);"
+                                (click)="logout()"
+                                class="ms-3 text-danger">
+                                 Déconnexion
+                             </a>
                         </li>
 
-                        <!-- ADMIN BUTTON -->
-                        <li class="d-none d-md-inline-block ms-3 ms-xl-4 me-xl-4">
-                            <a routerLink="/tableau-de-bord" class="btn-ten">
-                                <span>Espace admin</span>
-                                <i class="bi bi-arrow-up-right"></i>
-                            </a>
-                        </li>
+                        
 
                         <!-- SIDE MENU -->
                         <li class="d-none d-xl-block">

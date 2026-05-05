@@ -8,7 +8,7 @@
         </div>
         <nav class="dasboard-main-nav pt-30 pb-30 bottom-line">
             <ul class="style-none">
-                <ng-container *ngFor="let section of adminSections; let sectionIndex = index">
+                <ng-container *ngFor="let section of currentSections; let sectionIndex = index">
                     <li *ngIf="sectionIndex > 0" class="bottom-line pt-30 lg-pt-20 mb-40 lg-mb-30"></li>
                     <li>
                         <div class="nav-title">{{ section.title }}</div>
@@ -24,17 +24,10 @@
         </nav>
 
 
-        <div class="profile-complete-status bottom-line pb-35 plr">
-            <div class="progress-value fw-500">90%</div>
-            <div class="progress-line position-relative">
-                <div class="inner-line" style="width:90%;"></div>
-            </div>
-            <p>Base statique prête pour l'API</p>
-        </div>
-
+        
 
         <div class="plr">
-            <a href="javascript:void(0);" class="d-flex w-100 align-items-center logout-btn">
+            <a (click)="logout()" href="javascript:void(0);" class="d-flex w-100 align-items-center logout-btn">
                 <div class="icon tran3s d-flex align-items-center justify-content-center rounded-circle"><img src="assets/dashboard-images/icon/icon_41.svg" alt=""></div>
                 <span>Déconnexion</span>
             </a>

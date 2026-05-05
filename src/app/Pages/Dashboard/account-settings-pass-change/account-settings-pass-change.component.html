@@ -3,39 +3,80 @@
 <h2 class="main-title d-block d-lg-none">Facturation</h2>
 
 <div class="row">
-    <div class="col-lg-4 col-6" *ngFor="let summary of summaries">
+    <div class="col-lg-4 col-6">
         <div class="dash-card-one bg-white border-30 position-relative mb-15">
-            <span>{{ summary.label }}</span>
-            <div class="value fw-500">{{ summary.value }}</div>
+            <span>Factures payées</span>
+            <div class="value fw-500">{{ getTotalPayees() }}</div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-6">
+        <div class="dash-card-one bg-white border-30 position-relative mb-15">
+            <span>En attente</span>
+            <div class="value fw-500">{{ getTotalEnAttente() }}</div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-6">
+        <div class="dash-card-one bg-white border-30 position-relative mb-15">
+            <span>Montant du mois</span>
+            <div class="value fw-500">{{ getMontantTotalMois() }} </div>
         </div>
     </div>
 </div>
 
 <div class="bg-white card-box border-20 mt-30">
     <h4 class="dash-title-three">Factures récentes</h4>
-    <!-- TODO backend: brancher cette table sur GET /invoices -->
     <div class="table-responsive">
         <table class="table property-list-table">
             <thead>
                 <tr>
                     <th>Facture</th>
-                    <th>Réservation</th>
+                    <th>Date</th>
                     <th>Client</th>
                     <th>Montant</th>
                     <th>Méthode</th>
                     <th>Statut</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let invoice of invoices">
-                    <td class="fw-500 color-dark">{{ invoice.ref }}</td>
-                    <td>{{ invoice.reservation }}</td>
-                    <td>{{ invoice.client }}</td>
-                    <td>{{ invoice.amount }}</td>
-                    <td>{{ invoice.method }}</td>
-                    <td><span class="badge text-bg-light">{{ invoice.status }}</span></td>
+                <tr *ngFor="let facture of factures" [class.table-active]="selectedFacture?.idfacture === facture.idfacture">
+                    <td class="fw-500 color-dark">FAC-{{ facture.idfacture }}</td>
+                    <td>{{ formatDate(facture.date_Facture) }}</td>
+                    <td>{{ facture.client?.nom }} {{ facture.client?.prenom }}</td>
+                    <td>{{ facture.montant_Total }} </td>
+                    <td>{{ facture.mode_Paiement }}</td>
+                    <td><span class="badge {{ getStatutBadgeClass(facture.statut) }}">{{ getStatutLabel(facture.statut) }}</span></td>
+                    <td>
+                        <a href="javascript:void(0);" (click)="selectFacture(facture)">Voir</a>
+                    </td>
                 </tr>
             </tbody>
         </table>
+    </div>
+</div>
+
+<div class="bg-white card-box border-20 mt-30" *ngIf="selectedFacture">
+    <h4 class="dash-title-three mb-20">Détail de la facture #{{ selectedFacture.idfacture }}</h4>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <strong>Date:</strong> {{ formatDate(selectedFacture.date_Facture) }}
+        </div>
+        <div class="col-md-6 mb-3">
+            <strong>Montant total:</strong> {{ selectedFacture.montant_Total }}
+        </div>
+        <div class="col-md-6 mb-3">
+            <strong>Mode de paiement:</strong> {{ selectedFacture.mode_Paiement }}
+        </div>
+        <div class="col-md-6 mb-3">
+            <strong>Statut:</strong> <span class="badge {{ getStatutBadgeClass(selectedFacture.statut) }}">{{ getStatutLabel(selectedFacture.statut) }}</span>
+        </div>
+        <div class="col-md-6 mb-3" *ngIf="selectedFacture.reservation">
+            <strong>Réservation liée:</strong> RS-{{ selectedFacture.reservation.idreservation }}
+        </div>
+        <div class="col-md-6 mb-3" *ngIf="selectedFacture.location">
+            <strong>Location liée:</strong> LV-{{ selectedFacture.location.idlocation }}
+        </div>
+    </div>
+    <div class="mt-3">
     </div>
 </div>

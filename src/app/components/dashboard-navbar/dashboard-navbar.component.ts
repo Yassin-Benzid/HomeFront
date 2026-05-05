@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HotelService } from '../../service/hotel.service';
 import { ZoneService } from '../../service/zone.service';
 import { AgenceService } from '../../service/agence.service';
+import { AuthService } from '../../service/auth.service';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -17,18 +18,30 @@ import { catchError } from 'rxjs/operators';
 export class DashboardNavbarComponent {
 
   @Input() Title: string | undefined;
+  @Input() showAdminButtons: boolean = false;
 
   searchQuery = '';
   isSearching = false;
   showResults = false;
   results: Array<{ type: string; title: string; subtitle?: string; raw?: any }> = [];
 
+  userName: string | null = '';
+
   constructor(
     private hotelService: HotelService,
     private zoneService: ZoneService,
     private agenceService: AgenceService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
+
+  ngOnInit(): void {
+    this.userName = this.authService.getUserName();
+  }
+
+  logout(): void {
+    this.authService.logout();
+  }
 
   search() {
     const q = (this.searchQuery || '').toString().trim();

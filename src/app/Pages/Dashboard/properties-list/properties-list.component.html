@@ -15,7 +15,7 @@
       <h4>Liste des hôtels</h4>
     </div>
 
-    <a routerLink="/fiche-hotel" class="btn btn-primary">
+    <a routerLink="/fiche-hotel" class="btn btn-primary" *ngIf="isAdmin">
       Ajouter hôtel
     </a>
   </div>
@@ -81,7 +81,8 @@
         <td>{{ hotel.latitude ?? '-' }}</td>
         <td>{{ hotel.longitude ?? '-' }}</td>
         <td>
-          <button class="btn btn-danger btn-sm" (click)="deleteHotel(hotel)">Supprimer</button>
+          <a routerLink="/fiche-hotel/{{ hotel.idhotel }}" class="btn btn-info btn-sm me-1" *ngIf="isHotelManager">Gérer chambres</a>
+          <button class="btn btn-danger btn-sm" (click)="deleteHotel(hotel)" *ngIf="isAdmin">Supprimer</button>
         </td>
       </tr>
     </tbody>

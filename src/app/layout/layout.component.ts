@@ -60,12 +60,21 @@ export class LayoutComponent {
       state => this.isBackdropVisible = state
     );
 
+    // ✅ VIDER TOUS LES CHAMPS AU CHARGEMENT / RAFRAICHISSEMENT DE LA PAGE
+    this.email = '';
+    this.password = '';
+    this.nom = '';
+    this.prenom = '';
+    this.telephone = '';
+    this.role = '';
+    this.successMessage = '';
+    this.errorMessage = '';
+
     // ✅ LOAD AUTH STATE
     this.isLoggedIn = this.authService.isAuthenticated();
     this.userName = this.authService.getUserName();
 
-    // Afficher le popup login/signup au premier lancement
-    // tout en gardant la page d'accueil visible en arrière-plan.
+    // ✅ OUVRIR LE MODAL AUTOMATIQUEMENT AUX VISITEURS
     if (!this.isLoggedIn) {
       this.modalService.openModal();
     }
@@ -79,8 +88,25 @@ export class LayoutComponent {
   // ================= MODAL =================
   closeModal() {
     this.modalService.closeModal();
+    
+    // ✅ VIDER TOUS LES CHAMPS DU FORMULAIRE LORS DE LA FERMETURE
+    this.email = '';
+    this.password = '';
+    this.nom = '';
+    this.prenom = '';
+    this.telephone = '';
+    this.role = '';
     this.successMessage = '';
     this.errorMessage = '';
+  }
+
+  // ================= SWITCH TABS =================
+  goToLoginTab() {
+    (document.querySelector('[data-bs-target="#fc1"]') as HTMLElement)?.click();
+  }
+
+  goToRegisterTab() {
+    (document.querySelector('[data-bs-target="#fc2"]') as HTMLElement)?.click();
   }
 
   // ================= LOGIN =================
@@ -118,12 +144,15 @@ export class LayoutComponent {
     this.successMessage = '';
     this.errorMessage = '';
 
-    if (!this.nom || !this.prenom || !this.telephone || !this.email || !this.password || !this.role) {
+    if (!this.nom || !this.prenom || !this.telephone || !this.email || !this.password) {
       this.errorMessage = 'Veuillez remplir tous les champs du formulaire.';
       return;
     }
 
-    this.authService.register(this.nom, this.prenom, this.telephone, this.email, this.password, this.role).subscribe({
+    // Force le rôle CLIENT par défaut pour tous les inscriptions publiques
+    const defaultRole = 'client';
+
+    this.authService.register(this.nom, this.prenom, this.telephone, this.email, this.password, defaultRole).subscribe({
       next: () => {
         this.successMessage = 'Bienvenue parmi nous 🎉 Votre compte a été créé avec succès.';
 

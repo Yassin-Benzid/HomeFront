@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DashboardNavbarComponent } from '../../../components/dashboard-navbar/dashboard-navbar.component';
 import { HotelService } from '../../../service/hotel.service';
+import { AuthService } from '../../../service/auth.service';
 
 @Component({
   selector: 'app-properties-list',
@@ -29,7 +30,10 @@ export class PropertiesListComponent implements OnInit {
   pageSize = 5;
   totalItems = 0;
 
-  constructor(private hotelService: HotelService) {}
+  constructor(
+    private hotelService: HotelService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.loadHotels();
@@ -48,6 +52,7 @@ export class PropertiesListComponent implements OnInit {
   }
 
   deleteHotel(hotel: any) {
+    if (!this.isAdmin) return;
     this.itemToDelete = hotel;
     this.showDeleteModal = true;
   }
@@ -99,6 +104,14 @@ export class PropertiesListComponent implements OnInit {
 
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.totalItems / this.pageSize));
+  }
+
+  get isAdmin(): boolean {
+    return this.authService.getRole() === 'admin';
+  }
+
+  get isHotelManager(): boolean {
+    return this.authService.getRole() === 'hotel-manager';
   }
 
   get pageNumbers(): number[] {

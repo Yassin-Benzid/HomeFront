@@ -12,8 +12,11 @@ export interface CreateVoitureDto {
   agenceId: number;
 }
 
-/** Aligné sur `UpdateVoitureDto` (seulement etat + prix_Jour). */
+/** Aligné sur `UpdateVoitureDto` (tous les champs modifiables pour agence-manager). */
 export interface UpdateVoitureDto {
+  marque?: string;
+  modele?: string;
+  immatriculation?: string;
   etat?: string;
   prix_Jour?: number;
 }

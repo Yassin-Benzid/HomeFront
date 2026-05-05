@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardNavbarComponent } from '../../../components/dashboard-navbar/dashboard-navbar.component';
 import { AgenceService } from '../../../service/agence.service';
+import { AuthService } from '../../../service/auth.service';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
@@ -30,7 +31,10 @@ export class AccountSettingsComponent implements OnInit {
   pageSize = 5;
   totalItems = 0;
 
-  constructor(private agenceService: AgenceService) {}
+  constructor(
+    private agenceService: AgenceService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.loadAgences();
@@ -48,6 +52,7 @@ export class AccountSettingsComponent implements OnInit {
   }
 
   deleteAgence(agence: any) {
+    if (!this.isAdmin) return;
     this.itemToDelete = agence;
     this.showDeleteModal = true;
   }
@@ -99,6 +104,14 @@ export class AccountSettingsComponent implements OnInit {
 
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.totalItems / this.pageSize));
+  }
+
+  get isAdmin(): boolean {
+    return this.authService.getRole() === 'admin';
+  }
+
+  get isAgencyManager(): boolean {
+    return this.authService.getRole() === 'agence-manager';
   }
 
   get pageNumbers(): number[] {

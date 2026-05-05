@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { DashboardNavbarComponent } from '../../../components/dashboard-navbar/dashboard-navbar.component';
 
 import { HotelService } from '../../../service/hotel.service';
@@ -22,11 +23,13 @@ export class AddPropertyComponent implements OnInit {
 
   constructor(
     private hotelService: HotelService,
-    private chambreService: ChambreService
+    private chambreService: ChambreService,
+    private http: HttpClient
   ) {}
 
   // ================= DATA =================
   hotels: any[] = [];
+  hotelManagers: any[] = [];
 
   hotelForm: any = {
     idhotel: null,
@@ -37,6 +40,7 @@ export class AddPropertyComponent implements OnInit {
     telephone: '',
     latitude: 0,
     longitude: 0,
+    hotelManagerId: null,
     images: []
   };
 
@@ -51,6 +55,7 @@ export class AddPropertyComponent implements OnInit {
 
   ngOnInit() {
     this.loadHotels();
+    this.loadHotelManagers();
   }
 
   // ================= LOAD =================
@@ -58,6 +63,18 @@ export class AddPropertyComponent implements OnInit {
     this.hotelService.getAllHotels().subscribe(res => {
       this.hotels = Array.isArray(res) ? res : [];
       this.normalizeHotelsList(this.hotels);
+    });
+  }
+
+  loadHotelManagers() {
+    // Charger tous les utilisateurs avec role hotel-manager
+    this.http.get('http://localhost:3000/users?role=hotel-manager').subscribe({
+      next: (res: any) => {
+        this.hotelManagers = Array.isArray(res) ? res : [];
+      },
+      error: () => {
+        this.hotelManagers = [];
+      }
     });
   }
 
@@ -148,10 +165,40 @@ export class AddPropertyComponent implements OnInit {
 
     if (!this.editMode) {
       this.hotelService.createHotel(payload).subscribe({
-        next: () => {
-          this.message = 'Hôtel enregistré ✅';
-          this.closeModal();
-          this.loadHotels();
+        next: (hotelCreated: any) => {
+          // ✅ CRÉATION AUTOMATIQUE DES CHAMBRES APRÈS CRÉATION HÔTEL
+          const nbChambres = Number(this.hotelForm.nb_Chambres ?? 0);
+          const chambresToCreate: CreateChambreDto[] = [];
+          
+          for (let i = 1; i <= nbChambres; i++) {
+            chambresToCreate.push({
+              numero: i,
+              capacite: 2,
+              etat: 'disponible',
+              prix_Nuit: 120,
+              hotelId: hotelCreated.idhotel
+            });
+          }
+
+          if (chambresToCreate.length > 0) {
+            const createRequests = chambresToCreate.map(dto => 
+              this.chambreService.createChambre(dto).pipe(catchError(() => of({ __saveError: true })))
+            );
+
+            forkJoin(createRequests).subscribe(results => {
+              if (results.some((r: any) => r && r.__saveError)) {
+                this.message = 'Hôtel créé mais certaines chambres ont échoué ⚠️';
+              } else {
+                this.message = `Hôtel enregistré avec ${nbChambres} chambres créées automatiquement ✅`;
+              }
+              this.closeModal();
+              this.loadHotels();
+            });
+          } else {
+            this.message = 'Hôtel enregistré ✅';
+            this.closeModal();
+            this.loadHotels();
+          }
         },
         error: (err) => {
           this.message = this.httpErrorMessage(err, "Erreur lors de l'ajout de l'hôtel ❌");
@@ -216,10 +263,37 @@ export class AddPropertyComponent implements OnInit {
       telephone: '',
       latitude: 0,
       longitude: 0,
+      hotelManagerId: null,
       images: []
     };
     this.chambres = [];
     this.uploadedFiles = [];
+  }
+
+  // ✅ Génération automatique des chambres quand on change le nombre
+  onNbChambresChange() {
+    const nb = Math.max(0, Number(this.hotelForm.nb_Chambres ?? 0));
+    const actuel = this.chambres.length;
+
+    if (nb > actuel) {
+      // Ajouter les chambres manquantes
+      for (let i = actuel + 1; i <= nb; i++) {
+        this.chambres.push({
+          numero: i,
+          capacite: 2, // Valeur par défaut comme backend
+          etat: 'disponible',
+          prix_Nuit: 120, // Prix par nuit corrigé à 120
+        });
+      }
+    } else if (nb < actuel) {
+      // Supprimer les chambres en trop
+      this.chambres.splice(nb, actuel - nb);
+    }
+
+    // Mettre à jour les numéros séquentiellement
+    this.chambres.forEach((ch, index) => {
+      ch.numero = index + 1;
+    });
   }
 
   // ================= IMAGE URL (FIXED) =================
@@ -266,6 +340,7 @@ export class AddPropertyComponent implements OnInit {
       nb_Chambres: n,
       'nb-chambres': n,
       telephone: this.hotelForm.telephone ?? '',
+      hotelManagerId: this.hotelForm.hotelManagerId,
       latitude: Number(this.hotelForm.latitude ?? 0),
       longitude: Number(this.hotelForm.longitude ?? 0),
       images: Array.isArray(this.hotelForm.images)

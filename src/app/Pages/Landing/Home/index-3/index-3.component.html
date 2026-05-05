@@ -1,6 +1,7 @@
 <app-sidenav></app-sidenav>
 <app-navbar-3></app-navbar-3>
 
+<!-- HERO BANNER PROFESSIONNEL AMELIORE -->
 <div class="hero-banner-three position-relative z-1 pt-130 lg-pt-100 pb-170 xl-pb-130 lg-pb-100">
     <div class="hero-slider-one m0">
         <div class="item m0">
@@ -11,46 +12,47 @@
         <div class="row">
             <div class="col-lg-10 m-auto">
                 <h1 class="hero-heading text-center text-white font-garamond fw-500">
-                    <span><img src="assets/images/shape/shape_34.svg" alt="" class="lazy-img"> Réservez votre</span>
-                    <br> hôtel, voiture et expérience touristique
+                    <span><img src="assets/images/shape/shape_34.svg" alt="" class="lazy-img"> Bienvenue sur la plateforme touristique</span>
+                    <br> complète de la <strong>Tunisie</strong>
                 </h1>
+                <p class="text-center text-white fs-20 mt-20 opacity-90">
+                    Réservez votre hôtel, louez votre voiture et découvrez les plus belles destinations tunisiennes. 
+                    Tout sur une seule plateforme, simple, sécurisée et fiable.
+                </p>
                 
             </div>
         </div>
-        <div class="row">
+        <div class="row mt-60">
             <div class="col-xxl-10 m-auto">
                 <div class="search-wrapper-one layout-one position-relative">
                     <div class="bg-wrapper">
-                        <!-- TODO backend: connecter ce formulaire au moteur de recherche global -->
-                        <form action="javascript:void(0);">
+                        <form (ngSubmit)="onSearch()">
                             <div class="row gx-0 align-items-center">
-                                <div class="col-xl-3 col-lg-4">
+                                <div class="col-xl-4 col-lg-4">
                                     <div class="input-box-one border-left">
-                                        <div class="label">Service</div>
+                                        <div class="label">Service souhaité</div>
                                         <ng-select [items]="serviceOptions" bindLabel="label" bindValue="value" [(ngModel)]="searchModel.service" [ngModelOptions]="{standalone: true}" [clearable]="false">
-                                            <ng-option *ngFor="let option of serviceOptions" [value]="option.value">{{ option.label }}</ng-option>
                                         </ng-select>
                                     </div>
                                 </div>
-                                <div class="col-xl-3 col-lg-4">
+                                <div class="col-xl-5 col-lg-5">
                                     <div class="input-box-one border-left">
-                                        <div class="label">Destination</div>
+                                        <div class="label">Destination en Tunisie</div>
                                         <ng-select [items]="destinationOptions" bindLabel="label" bindValue="value" [(ngModel)]="searchModel.destination" [ngModelOptions]="{standalone: true}" [clearable]="false">
-                                            <ng-option *ngFor="let option of destinationOptions" [value]="option.value">{{ option.label }}</ng-option>
                                         </ng-select>
                                     </div>
                                 </div>
-                               
                                 <div class="col-xl-3">
                                     <div class="input-box-one lg-mt-10">
-                                        <button class="fw-200 w-200 tran3s search-btn-three" type="submit">Lancer la recherche</button>
+                                        <button class="fw-200 w-100 tran3s search-btn-three" type="submit">
+                                            <i class="bi bi-search me-2"></i> Rechercher
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
-               
             </div>
         </div>
     </div>
@@ -58,170 +60,284 @@
     <img src="assets/images/shape/shape_36.svg" alt="" class="lazy-img shapes shape_02">
 </div>
 
-<div class="category-section-one mt-65">
-    <div class="container container-large">
-        <div class="position-relative border-bottom pb-65 xl-pb-40 z-1">
-            <h4 class="mb-50 xl-mb-30 text-center text-md-start">Modules clés de la plateforme.</h4>
-            <div class="wrapper">
-                <ul class="d-flex flex-wrap justify-content-center justify-content-xxl-between style-none">
-                    <li *ngFor="let category of categories">
-                        <a [routerLink]="category.link" class="d-flex align-items-center fw-500 tran3s">
-                            <img [src]="category.icon" alt="" class="lazy-img invert">
-                            <span>{{ category.label }}</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="section-btn text-center sm-mt-40">
-                <a routerLink="/tableau-de-bord" class="btn-eleven"><span>Ouvrir le dashboard</span> <i class="bi bi-chevron-right"></i></a>
+<!-- STATISTIQUES PLATEFORME -->
+<div class="container mt-n5 position-relative z-2">
+    <div class="bg-white rounded-4 shadow-lg p-40">
+        <div class="row text-center">
+            <div class="col-lg-3 col-md-6" *ngFor="let stat of statistics">
+                <div class="d-flex flex-column align-items-center">
+                    <i class="{{ stat.icon }} fs-36 color-blue mb-15"></i>
+                    <h3 class="fw-bold mb-5">{{ stat.value }}</h3>
+                    <p class="text-secondary m0">{{ stat.label }}</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- CATEGORIES PRINCIPALES -->
+<div class="category-section-one mt-65">
+    <div class="container container-large">
+        <div class="position-relative border-bottom pb-65 xl-pb-40 z-1">
+            <div class="row align-items-center mb-50 xl-mb-30">
+                <div class="col-md-8">
+                    <h4 class="m0">Tous nos services touristiques</h4>
+                    <p class="text-secondary fs-18 mt-10 m0">Accédez directement à ce que vous recherchez</p>
+                </div>
+            </div>
+            <div class="wrapper">
+                <div class="row">
+                    <div class="col-xl-3 col-md-4 col-sm-6 mb-20" *ngFor="let category of categories">
+                        <a [routerLink]="category.link" class="category-card d-flex flex-column align-items-center p-30 bg-gray border-20 tran3s h-100">
+                            <div class="icon-wrapper d-flex align-items-center justify-content-center rounded-circle mb-20">
+                                <img [src]="category.icon" alt="" class="lazy-img invert">
+                            </div>
+                            <h5 class="fw-500 mb-10">{{ category.label }}</h5>
+                            <p class="text-secondary fs-16 text-center m0">{{ category.description }}</p>
+                            <span class="badge bg-light text-dark mt-15">{{ category.count }} éléments</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- USER JOURNEYS -->
 <div class="block-feature-seven position-relative z-1 mt-120 xl-mt-100">
     <div class="container container-large">
         <div class="position-relative">
             <div class="text-center mb-30">
-                <div class="title-one mb-30 lg-mb-20">
-                    <h2 class="font-garamond star-shape">Trois parcours métier, une seule <em>plateforme</em> <span class="star-shape"><img src="assets/images/shape/shape_37.svg" alt="" class="lazy-img"></span></h2>
-                    
+                <div class="title-one mb-30 lg-mb-20">                    <h2 class="font-garamond star-shape">
+                        Trois parcours métier, une seule <em>plateforme</em> 
+                        <span class="star-shape"><img src="assets/images/shape/shape_37.svg" alt="" class="lazy-img"></span>
+                    </h2>
+                    <p class="fs-20 text-muted">Choisissez votre expérience et commencez votre aventure tunisienne</p>
                 </div>
-                <ul class="rating style-none d-flex justify-content-center">
-                    <li><i class="fa-sharp fa-solid fa-star"></i></li>
-                    <li><i class="fa-sharp fa-solid fa-star"></i></li>
-                    <li><i class="fa-sharp fa-solid fa-star"></i></li>
-                    <li><i class="fa-sharp fa-solid fa-star"></i></li>
-                    <li><i class="fa-sharp fa-solid fa-star"></i></li>
-                    <li><span class="color-dark fw-500">Architecture statique claire</span></li>
-                </ul>
             </div>
+            
             <div class="row justify-content-center gx-xxl-5">
-                <div class="col-lg-4 col-md-6 mt-30 d-flex" *ngFor="let card of journeyCards">
-                    <div class="card-style-five text-center d-inline-flex flex-column align-items-center tran3s h-100 w-100">
-                        <img [src]="card.icon" alt="" class="lazy-img icon">
-                        <h5 class="mt-35 mb-20">{{ card.title }}</h5>
-                        <p class="fs-22 mb-50">{{ card.description }}</p>
-                        <a [routerLink]="card.link" class="btn-twelve mt-auto">{{ card.buttonText }}</a>
+                <div class="col-lg-3 col-md-6 mt-30 d-flex" *ngFor="let card of journeyCards">
+                    <div class="card-style-five text-center d-inline-flex flex-column align-items-center tran3s h-100 w-100 border-0 shadow-sm hover-shadow-lg">
+                        <img [src]="card.icon" alt="" class="lazy-img icon" style="height: 60px;">
+                        <h5 class="mt-35 mb-20 fw-600">{{ card.title }}</h5>
+                        <p class="fs-16 text-muted mb-40 flex-grow-1">{{ card.description }}</p>
+                        <a [routerLink]="card.link" class="btn-twelve mt-auto">
+                            {{ card.buttonText }} <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+            
 </div>
 
+<!-- FEATURED HIGHLIGHTS -->
 <div class="property-listing-three position-relative z-1 mt-170 xl-mt-140 lg-mt-120">
     <div class="container container-large">
         <div class="position-relative">
-            <div class="title-one mb-60 lg-mb-40">
-                <h2 class="font-garamond star-shape">Sélections <em>à la une</em> <span class="star-shape"><img src="assets/images/shape/shape_37.svg" alt="" class="lazy-img"></span></h2>
-                <p class="fs-22 m0">Un bloc premium pour pousser vos hôtels, agences ou zones touristiques.</p>
+            <div class="d-flex justify-content-between align-items-end mb-60 lg-mb-40">
+                <div>
+                    <h2 class="font-garamond star-shape m-0">
+                        Sélections <em>à la une</em> 
+                        <span class="star-shape"><img src="assets/images/shape/shape_37.svg" alt="" class="lazy-img"></span>
+                    </h2>
+                    <p class="fs-20 text-muted mb-0 mt-2">Nos meilleures offres du moment</p>
+                </div>
+                <div class="d-none d-md-flex gap-2">
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill" (click)="filterOffersByType('all')">
+                        Tout
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill" (click)="filterOffersByType('hotel')">
+                        🏨 Hôtels                    </button>
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill" (click)="filterOffersByType('car')">
+                        🚗 Voitures
+                    </button>
+                </div>
             </div>
+            
             <div class="row gx-xxl-5">
+                <!-- Featured Focus (Large) -->
                 <div class="col-lg-8 d-flex">
-                    <div class="listing-card-three w-100 h-100 position-relative z-1" [style.background-image]="'url(' + featuredFocus.image + ')'">
-                        <div class="w-100 h-100 d-flex flex-column">
-                            <div class="tag fw-500 text-uppercase">{{ featuredFocus.badge }}</div>
-                            <div class="mt-100 mt-sm-auto wrapper d-flex flex-wrap justify-content-between align-items-center">
-                                <div class="property-name h-100">
-                                    <h5 class="text-white mb-15">{{ featuredFocus.title }}</h5>
-                                    <p class="m0 text-white">{{ featuredFocus.location }}</p>
-                                </div>
-                                <div class="property-info h-100">
-                                    <ul class="style-none feature d-flex flex-wrap align-items-center justify-content-between pb-5">
-                                        <li class="d-flex align-items-center" *ngFor="let detail of featuredFocus.details">
-                                            <div class="fs-16">{{ detail }}</div>
-                                        </li>
-                                    </ul>
-                                    <div class="d-sm-flex justify-content-between align-items-center mt-10">
-                                        <ul class="style-none d-flex action-icons">
-                                            <li><a href="javascript:void(0);"><i class="fa-light fa-heart"></i></a></li>
-                                            <li><a href="javascript:void(0);"><i class="fa-light fa-bookmark"></i></a></li>
-                                            <li><a href="javascript:void(0);"><i class="fa-light fa-circle-plus"></i></a></li>
-                                        </ul>
-                                        <a [routerLink]="featuredFocus.link" class="btn-ten xs-mt-20"><span>{{ featuredFocus.cta }}</span> <i class="bi bi-arrow-up-right"></i></a>
+                    <div class="listing-card-three w-100 h-100 position-relative z-1 overflow-hidden rounded-4" 
+                         [style.background-image]="'url(' + featuredFocus.image + ')'">
+                        <div class="overlay-dark"></div>
+                        <div class="w-100 h-100 d-flex flex-column p-4">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <span class="badge bg-warning text-dark fw-600 px-3 py-2 rounded-pill">
+                                    {{ featuredFocus.badge }}
+                                </span>
+                                <button class="btn btn-light btn-sm rounded-circle shadow" 
+                                        (click)="addToFavorite(featuredFocus)"
+                                        title="Ajouter aux favoris">
+                                    <i class="fa-regular fa-heart"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <div class="rating text-warning">
+                                        <i class="fa-solid fa-star" *ngFor="let star of getStars(featuredFocus.rating)"></i>
+                                        <span class="text-white ms-1">{{ featuredFocus.rating }}/5</span>
                                     </div>
+                                    <span class="text-white-50">•</span>
+                                    <span class="text-white fw-500">{{ featuredFocus.price }}</span>
+                                </div>
+                                
+                                <h5 class="text-white mb-2 fs-24">{{ featuredFocus.title }}</h5>
+                                <p class="text-white-75 mb-3 d-flex align-items-center">
+                                    <i class="bi bi-geo-alt me-1"></i> {{ featuredFocus.location }}
+                                </p>
+                                
+                                <ul class="list-unstyled d-flex flex-wrap gap-2 mb-4">
+                                    <li class="badge bg-white/20 text-white border-0" *ngFor="let detail of featuredFocus.details">
+                                        {{ detail }}
+                                    </li>
+                                </ul>
+                                
+                                <div class="d-flex gap-2">
+                                    <a [routerLink]="featuredFocus.link" class="btn btn-primary px-4 rounded-pill">
+                                        {{ featuredFocus.cta }} <i class="bi bi-arrow-right ms-1"></i>
+                                    </a>                                    
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                
+                <!-- Highlights Grid -->
                 <div class="col-lg-4 d-flex">
                     <div class="w-100 h-100">
-                        <div class="row h-100">
-                            <div class="col-lg-12 col-md-6" *ngFor="let item of featuredHighlights; let first = first">
-                                <div class="listing-card-two w-100 position-relative z-1" [class.mt-40]="!first" [class.md-mt-40]="first" [style.background-image]="'url(' + item.image + ')'">
-                                    <div class="w-100 h-100 d-flex flex-column">
-                                        <div class="tag fw-500 text-uppercase">{{ item.badge }}</div>
-                                        <div class="mt-auto d-lg-flex justify-content-between align-items-center">
-                                            <div class="md-mb-20">
-                                                <h5 class="text-white">{{ item.title }}</h5>
-                                                <p class="m0 text-white">{{ item.location }}</p>
-                                            </div>
-                                            <a [routerLink]="item.link" class="btn-four rounded-circle inverse stretched-link"><i class="bi bi-arrow-up-right"></i></a>
+                        <div class="row h-100 g-4">
+                            <div class="col-12" *ngFor="let item of featuredHighlights; let first = first">
+                                <div class="listing-card-two w-100 position-relative z-1 overflow-hidden rounded-4 h-100" 
+                                     [style.background-image]="'url(' + item.image + ')'">
+                                    <div class="overlay-dark"></div>
+                                    <div class="w-100 h-100 d-flex flex-column p-3">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <span class="badge bg-info text-dark fw-500 px-2 py-1 rounded-pill small">
+                                                {{ item.badge }}
+                                            </span>
+                                            <button class="btn btn-light btn-sm rounded-circle shadow-sm"
+                                                    (click)="addToFavorite(item)">
+                                                <i class="fa-regular fa-heart small"></i>
+                                            </button>
                                         </div>
-                                    </div>
+                                        
+                                        <div class="mt-auto">
+                                            <div class="d-flex align-items-center gap-1 mb-1" *ngIf="item.rating">
+                                                <i class="fa-solid fa-star text-warning small"></i>
+                                                <small class="text-white">{{ item.rating }}/5</small>
+                                            </div>
+                                            
+                                            <h6 class="text-white mb-1">{{ item.title }}</h6>
+                                            <small class="text-white-75 d-flex align-items-center">
+                                                <i class="bi bi-geo-alt me-1" style="font-size: 12px;"></i> 
+                                                {{ item.location }}
+                                            </small>
+                                            
+                                            <ul class="list-unstyled d-flex flex-wrap gap-1 my-2">
+                                                <li class="text-white-75 small" *ngFor="let detail of item.details.slice(0,2)">
+                                                    • {{ detail }}
+                                                </li>
+                                            </ul>
+                                            
+                                            <a [routerLink]="item.link" class="btn btn-sm btn-light rounded-pill stretched-link d-inline-flex align-items-center gap-1">
+                                                {{ item.cta }} <i class="bi bi-arrow-up-right small"></i>
+                                            </a>
+                                        </div>                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="section-btn text-center md-mt-60">
-                <a routerLink="/reservations" class="btn-five md"><span>Voir les réservations</span> <i class="bi bi-arrow-up-right"></i></a>
             </div>
         </div>
     </div>
 </div>
 
+<!-- PROMOTIONAL OFFERS -->
 <div class="property-listing-four bg-pink-three position-relative z-1 overflow-hidden pt-120 xl-pt-80 pb-110 xl-pb-60 mt-170 xl-mt-140 lg-mt-120">
     <div class="container container-large">
         <div class="position-relative z-1">
-            <div class="title-one mb-60 lg-mb-40">
-                <h2 class="font-garamond">Offres <em>recommandées</em> <span class="star-shape"><img src="assets/images/shape/shape_37.svg" alt="" class="lazy-img"></span></h2>
+            <div class="d-flex justify-content-between align-items-end mb-60 lg-mb-40">
+                <div>
+                    <h2 class="font-garamond text-white m-0">
+                        Offres <em>recommandées</em> 
+                        <span class="star-shape"><img src="assets/images/shape/shape_37.svg" alt="" class="lazy-img"></span>
+                    </h2>
+                    <p class="text-white-75 mb-0 mt-2">Profitez de nos promotions exclusives</p>
+                </div>
+               
             </div>
-            <div class="row">
+            
+            <div class="row g-4">
                 <div class="col-xl-4 col-md-6" *ngFor="let offer of offers">
-                    <div class="listing-card-one style-three border-30 mb-50">
-                        <div class="img-gallery p-15">
-                            <div class="position-relative border-20 overflow-hidden">
-                                <div class="tag bg-white text-dark fw-500 border-20">{{ offer.badge }}</div>
-                                <img [src]="offer.image" class="w-100 border-20" alt="offre">
-                                <a [routerLink]="offer.link" class="btn-four inverse rounded-circle position-absolute"><i class="bi bi-arrow-up-right"></i></a>
-                                <div class="img-slider-btn">
-                                    Statique <i class="fa-regular fa-image"></i>
+                    <div class="listing-card-one style-three border-30 mb-0 h-100 bg-white rounded-4 overflow-hidden shadow-sm hover-shadow transition-all">
+                        <div class="img-gallery p-3 position-relative">
+                            <div class="position-relative overflow-hidden rounded-3">
+                                <span class="badge bg-danger text-white fw-600 position-absolute top-3 start-3 z-2 px-3 py-2 rounded-pill"
+                                      *ngIf="offer.discount">
+                                    {{ offer.discount }}
+                                </span>
+                                <span class="badge bg-primary text-white fw-500 position-absolute top-3 end-3 z-2 px-3 py-1 rounded-pill small">
+                                    {{ offer.badge }}
+                                </span>
+                                <img [src]="offer.image" class="w-100 rounded-3 transition-transform hover-scale" alt="{{ offer.title }}">
+                                
+                                <div class="action-buttons position-absolute bottom-3 end-3 d-flex flex-column gap-2 z-2">
+                                    <button class="btn btn-light btn-sm rounded-circle shadow" 
+                                            (click)="addToFavorite(offer)"
+                                            title="Ajouter aux favoris">
+                                        <i class="fa-regular fa-heart small"></i>
+                                    </button>
+                                    <button class="btn btn-light btn-sm rounded-circle shadow" title="Comparer">
+                                        <i class="bi bi-arrow-left-right small"></i>                                    </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="property-info pe-4 ps-4">
-                            <a [routerLink]="offer.link" class="title tran3s">{{ offer.title }}</a>
-                            <div class="address">{{ offer.location }}</div>
-                            <ul class="style-none feature d-flex flex-column align-items-start">
-                                <li class="d-flex align-items-center mb-2" *ngFor="let detail of offer.details">
-                                    <span class="fs-16">{{ detail }}</span>
+                        
+                        <div class="property-info p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <a [routerLink]="offer.link" class="title tran3s fw-600 text-dark text-decoration-none d-block">
+                                    {{ offer.title }}
+                                </a>
+                                <div class="text-end">
+                                    <span class="text-danger fw-bold fs-5">{{ offer.price }}</span>
+                                    <small class="text-muted text-decoration-line-through d-block" *ngIf="offer.originalPrice">
+                                        {{ offer.originalPrice }}
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            <div class="address text-muted small mb-3 d-flex align-items-center">
+                                <i class="bi bi-geo-alt me-1"></i> {{ offer.location }}
+                            </div>
+                            
+                            <ul class="list-unstyled mb-4">
+                                <li class="d-flex align-items-center text-muted small mb-1" *ngFor="let detail of offer.details">
+                                    <i class="bi bi-check-circle-fill text-success me-2" style="font-size: 12px;"></i>
+                                    {{ detail }}
                                 </li>
                             </ul>
-                            <div class="pl-footer top-border d-flex align-items-center justify-content-between">
-                                <strong class="price fw-500 color-dark">{{ offer.price }}</strong>
-                                <ul class="style-none d-flex action-icons">
-                                    <li><a href="javascript:void(0);"><i class="fa-light fa-heart"></i></a></li>
-                                    <li><a href="javascript:void(0);"><i class="fa-light fa-bookmark"></i></a></li>
-                                    <li><a href="javascript:void(0);"><i class="fa-light fa-circle-plus"></i></a></li>
-                                </ul>
+                            
+                            <div class="pl-footer top-border d-flex align-items-center justify-content-between pt-3">
+                                <span class="badge bg-light text-dark border">
+                                    <i class="bi bi-tag me-1"></i> {{ offer.type === 'hotel' ? 'Hôtel' : offer.type === 'car' ? 'Voiture' : 'Forfait' }}
+                                </span>
+                                <a [routerLink]="offer.link" class="btn btn-sm btn-primary rounded-pill px-4">
+                                    Réserver <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="section-btn text-center">
-                <a routerLink="/wishlist" class="btn-eleven fst-italic"><span>Voir la wishlist</span></a>
-            </div>
         </div>
     </div>
-    <img src="assets/images/shape/shape_38.svg" alt="" class="lazy-img shapes shape_01">
-    <img src="assets/images/shape/shape_39.svg" alt="" class="lazy-img shapes shape_02">
+    <img src="assets/images/shape/shape_38.svg" alt="" class="lazy-img shapes shape_01">    <img src="assets/images/shape/shape_39.svg" alt="" class="lazy-img shapes shape_02">
 </div>
 
+<!-- PLATFORM VALUE PROPOSITION -->
 <div class="block-feature-eight position-relative z-1 mt-170 xl-mt-140 lg-mt-120">
     <div class="container container-large">
         <div class="position-relative">
@@ -229,65 +345,81 @@
                 <div class="col-xl-7 col-lg-6">
                     <div class="pe-xl-5 me-xxl-3">
                         <div class="title-one pe-xl-5">
-                            <h2 class="font-garamond">Une base front claire pour votre <em>stage</em> <span class="star-shape"><img src="assets/images/shape/shape_37.svg" alt="" class="lazy-img"></span></h2>
+                            <h2 class="font-garamond mb-4">
+                                Une plateforme claire pour un site web touristique 
+                                <span class="star-shape"><img src="assets/images/shape/shape_37.svg" alt="" class="lazy-img"></span>
+                            </h2>
+                            <p class="fs-20 text-muted">
+                                Conçue pour les voyageurs tunisiens et les touristes internationaux, 
+                                notre solution centralise réservation, location et découverte en une expérience fluide.
+                            </p>
+                            
                         </div>
-                        <div class="row gx-xl-4 align-items-end">
+                        
+                        <!-- Features Grid -->
+                        <div class="row g-3 mt-4">
+                            <div class="col-6" *ngFor="let feature of [
+                                {icon: 'bi-emoji-smile', text: 'Expérience utilisateur fluide'},
+                                {icon: 'bi-headset', text: 'Support client 24/7'},
+                                {icon: 'bi-search', text: 'Recherche rapide et intelligente'},
+                                {icon: 'bi-building', text: 'Large choix d’hôtels et d’agences'}
+                            ]">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi {{feature.icon}} text-primary"></i>
+                                    <span class="fs-14 fw-500">{{ feature.text }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row gx-xl-4 align-items-end mt-40">
                             <div class="col-7">
-                                <div class="media-block position-relative z-1">
+                                <div class="media-block position-relative z-1 rounded-4 overflow-hidden shadow-lg">
                                     <img src="assets/images/media/img_29.jpg" alt="" class="lazy-img main-img w-100">
-                                    <img src="assets/images/assets/screen_03.jpg" alt="" class="lazy-img shapes screen_01">
                                     <img src="assets/images/shape/shape_40.svg" alt="" class="lazy-img shapes shape_01">
                                 </div>
                             </div>
                             <div class="col-5">
-                                <div class="media-block position-relative z-1">
+                                <div class="media-block position-relative z-1 rounded-4 overflow-hidden shadow-lg">
                                     <img src="assets/images/media/img_30.jpg" alt="" class="lazy-img main-img w-100">
                                     <img src="assets/images/assets/screen_04.png" alt="" class="lazy-img shapes screen_02">
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </div>                    </div>
                 </div>
+                
                 <div class="col-xl-5 col-lg-6">
                     <div class="block-two ps-xxl-5 md-mt-100">
-                        <div class="bg-wrapper">
-                            <p class="fs-24 fst-italic pe-xl-5">“Le template a été converti pour un cas métier cohérent: réservation d’hôtels, location de voitures et gestion de zones touristiques.”</p>
+                        <div class="bg-wrapper p-4 p-md-5 rounded-4 shadow-lg">
+                            <blockquote class="fs-20 fst-italic mb-4">
+                                "La plateforme a été conçue et adaptée pour répondre à un besoin métier cohérent, intégrant la réservation d’hôtels, la location de voitures ainsi que la gestion et l’exploration des zones touristiques en Tunisie."
+                            </blockquote>
+                            
+                            <!-- Quick Stats -->
                             <div class="counter-wrapper pb-40 mt-45 lg-mt-20 mb-60 lg-mb-20">
-                                <div class="row">
-                                    <div class="col-6" *ngFor="let stat of statistics">
-                                        <div class="counter-block-one mt-20">
-                                            <div class="main-count fw-500 color-dark">{{ stat.value }}</div>
-                                            <span>{{ stat.label }}</span>
+                                <div class="row g-3">
+                                    <div class="col-6" *ngFor="let stat of stats.slice(0,2)">
+                                        <div class="text-center p-3 bg-light rounded-3">
+                                            <div class="fw-bold text-primary fs-4">{{ stat.value }}</div>
+                                            <small class="text-muted">{{ stat.label }}</small>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="mt-70 lg-mt-50">
-                                <a routerLink="/utilisateurs" class="btn-five md"><span>Voir les rôles</span> <i class="bi bi-arrow-up-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row gx-lg-5 align-items-center mt-120 lg-mt-50">
-                <div class="col-lg-3">
-                    <div class="card-style-three border-20 mt-40">
-                        <div class="bg-wrapper text-center">
-                            <h3>11</h3>
-                            <p>rubriques admin <br>prêtes à brancher.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-9 ps-xl-5">
-                    <div class="row gx-xl-5">
-                        <div class="col-md-4" *ngFor="let item of platformBenefits">
-                            <div class="card-style-four mt-40">
-                                <div class="icon style-two rounded-circle d-flex align-items-center justify-content-center position-relative">
-                                    <img [src]="item.icon" alt="" class="lazy-img">
-                                </div>
-                                <h5 class="mt-35 mb-15">{{ item.title }}</h5>
-                                <p>{{ item.description }}</p>
+                            <!-- CTA Buttons -->
+                            <div class="d-grid gap-2">
+                                 <a href="javascript:void(0);" (click)="openRegisterModal()" class="btn btn-primary rounded-pill py-3 fw-500" 
+                                    *ngIf="!isAuthenticated">
+                                     <i class="bi bi-person-plus me-2"></i>Créer un compte gratuit
+                                 </a>
+                                 <a href="javascript:void(0);" (click)="openLoginModal()" class="btn btn-outline-primary rounded-pill py-3 fw-500"
+                                    *ngIf="!isAuthenticated">
+                                     <i class="bi bi-box-arrow-in-right me-2"></i>Se connecter
+                                 </a>
+                                 <a routerLink="/mon-espace" class="btn btn-success rounded-pill py-3 fw-500"
+                                    *ngIf="isAuthenticated">
+                                     <i class="bi bi-person-circle me-2"></i>Accéder à mon espace
+                                 </a>
                             </div>
                         </div>
                     </div>
@@ -297,13 +429,19 @@
     </div>
 </div>
 
+<!-- CARTE INTERACTIVE TUNISIE -->
 <div class="fancy-banner-six mt-160 xl-mt-140 lg-mt-100">
     <div class="container container-large">
         <div class="bg-wrapper position-relative z-1 pt-85 md-pt-50 pb-140 md-pb-100 ps-4 pe-4">
             <div class="row">
                 <div class="col-xl-7 col-lg-8 m-auto">
                     <div class="title-one text-center pe-xxl-2 ps-xxl-2">
-                        <h2 class="font-garamond text-white">Des destinations valorisées dans tout le <em>pays <span>facilement</span></em> <span class="star-shape"><img src="assets/images/shape/shape_37.svg" alt="" class="lazy-img"></span></h2>
+                        <h2 class="font-garamond text-white">
+                            Découvrez les meilleures expériences touristiques en <em><span>Tunisie</span></em>
+                                <span class="star-shape">
+                                <img src="assets/images/shape/shape_37.svg" alt="" class="lazy-img">
+                                    </span>
+                                    </h2>
                     </div>
                 </div>
             </div>
@@ -320,59 +458,76 @@
                     </div>
                 </div>
             </div>
-            <div class="country-list d-flex flex-wrap">
+            <div class="country-list d-flex flex-wrap justify-content-center gap-5">
                 <div *ngFor="let list of regionLists" class="list-block">
-                    <div class="title">{{ list.title }}</div>
-                    <ul class="style-none d-flex flex-wrap">
-                        <li *ngFor="let country of list.countries">{{ country }}</li>
+                    <div class="title text-white fw-500 mb-15">{{ list.title }}</div>
+                    <ul class="style-none d-flex flex-wrap gap-2">
+                        <li class="text-white opacity-80" *ngFor="let country of list.countries">{{ country }}</li>
                     </ul>
-                </div>
-            </div>
-            <div class="text-slide-wrapper">
-                <div class="marquee">
-                    <p>{{ heroMarquee }}</p>
-                    <p>{{ heroMarquee }}</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- TESTIMONIALS SECTION -->
 <div class="feedback-section-four position-relative overflow-hidden z-1 pt-150 lg-pt-120 pb-110 lg-pb-80">
     <div class="container container-large">
         <div class="position-relative z-1">
             <div class="row">
                 <div class="col-xl-6 col-lg-8">
                     <div class="title-one pe-xxl-5 mb-75 xl-mb-50">
-                        <h2 class="font-garamond">Des retours pertinents pour améliorer votre expérience<span class="star-shape"><img src="assets/images/shape/shape_37.svg" alt="" class="lazy-img"></span></h2>
-                        <p class="fs-20 m0">Ces cartes peuvent devenir des avis clients.</p>
+                        <h2 class="font-garamond">
+                            Des retours pertinents pour améliorer votre expérience
+                            <span class="star-shape"><img src="assets/images/shape/shape_37.svg" alt="" class="lazy-img"></span>
+                        </h2>
+                        <p class="fs-20 text-muted m-0">
+                            Découvrez les avis de nos voyageurs du tourisme tunisien. Leurs expériences partagées nous aident à améliorer continuellement notre plateforme pour mieux répondre à vos besoins.
+                        </p>
                     </div>
                 </div>
             </div>
+            
             <div class="row">
                 <div class="col-lg-4 col-md-6" *ngFor="let feedback of testimonials">
-                    <div class="feedback-block-four mb-30 h-100">
-                        <div class="d-flex align-items-center">
-                            <img [src]="feedback.image" alt="" class="rounded-circle avatar">
+                    <div class="feedback-block-four mb-30 h-100 bg-light rounded-4 p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <img [src]="feedback.image" alt="{{ feedback.name }}" class="rounded-circle avatar border border-3 border-white shadow" style="width: 56px; height: 56px; object-fit: cover;">
                             <div class="ps-3">
-                                <h6 class="fs-20 m0">{{ feedback.name }}</h6>
-                                <span class="fs-16">{{ feedback.location }}</span>
-                            </div>
+                                <h6 class="fs-18 fw-600 m-0">{{ feedback.name }}</h6>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="fs-14 text-muted">{{ feedback.location }}</span>
+                                    <span class="text-muted">•</span>
+                                    <span class="badge bg-primary-subtle text-primary small">{{ feedback.serviceType === 'hotel' ? '🏨' : feedback.serviceType === 'car' ? '🚗' : '🗺️' }}</span>
+                                </div>
+                            </div>                        </div>
+                        
+                        <blockquote class="fs-16 text-muted mb-3" style="line-height: 1.6;">
+                            "{{ feedback.message }}"
+                        </blockquote>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <ul class="rating style-none d-flex mb-0">
+                                <li *ngFor="let star of [].constructor(feedback.rating)">
+                                    <i class="fa-sharp fa-solid fa-star text-warning"></i>
+                                </li>
+                                <li *ngFor="let star of [].constructor(5 - feedback.rating)">
+                                    <i class="fa-sharp fa-regular fa-star text-warning"></i>
+                                </li>
+                            </ul>
+                            <small class="text-muted">{{ feedback.date }}</small>
                         </div>
-                        <blockquote>{{ feedback.message }}</blockquote>
-                        <ul class="rating style-none d-flex">
-                            <li><i class="fa-sharp fa-solid fa-star"></i></li>
-                            <li><i class="fa-sharp fa-solid fa-star"></i></li>
-                            <li><i class="fa-sharp fa-solid fa-star"></i></li>
-                            <li><i class="fa-sharp fa-solid fa-star"></i></li>
-                            <li><i class="fa-sharp fa-solid fa-star"></i></li>
-                        </ul>
-                        <img src="assets/images/icon/icon_29.svg" alt="" class="icon">
+                        
+                        <img src="assets/images/icon/icon_29.svg" alt="" class="icon opacity-25" style="position: absolute; bottom: 20px; right: 20px; width: 40px;">
                     </div>
                 </div>
             </div>
+            
             <div class="section-btn text-center md-mt-30">
-                <a routerLink="/avis-commentaires" class="btn-eleven fst-italic"><span>Voir les avis</span></a>
+                <a routerLink="/avis-commentaires" class="btn-eleven fst-italic d-inline-flex align-items-center gap-2">
+                    <span>Voir tous les avis</span> <i class="bi bi-arrow-right"></i>
+                </a>
+                
             </div>
         </div>
     </div>
@@ -380,20 +535,16 @@
     <img src="assets/images/shape/shape_43.svg" alt="" class="lazy-img shapes shape_02">
 </div>
 
-<div class="fancy-banner-seven mt-110 xl-mt-80 mb-130 xl-mb-100 lg-mb-80">
-    <div class="container container-large">
-        <div class="bg-wrapper position-relative z-1 pt-85 lg-pt-70 pb-100 xl-pb-80 lg-pb-70">
-            <div class="row">
-                <div class="col-xl-7 col-lg-8 col-md-10 m-auto text-center">
-                    <h2 class="font-garamond text-white">Une homepage statique propre et un dashboard prêt pour l’intégration</h2>
-        
-                    <a routerLink="/tableau-de-bord" class="btn-two"><span>Commencer côté admin</span></a>
-                </div>Passez
-            </div>
-            <img src="assets/images/shape/shape_44.svg" alt="" class="lazy-img shapes shape_01">
-            <img src="assets/images/shape/shape_45.svg" alt="" class="lazy-img shapes shape_02">
-        </div>
-    </div>
+<!-- Scroll to Top Button -->
+<button class="btn btn-primary rounded-circle shadow-lg position-fixed bottom-4 end-4 z-3 d-none" 
+        id="scrollTopBtn" style="width: 50px; height: 50px;"
+        (click)="scrollToTop()">
+    <i class="bi bi-arrow-up"></i>
+</button>
+
+<!-- Toast Notifications Container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+    <!-- Notifications dynamiques seront injectées ici -->
 </div>
 
 <app-footer-2></app-footer-2>

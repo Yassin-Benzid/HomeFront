@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -66,7 +66,7 @@ export class AgenceService {
   }
 
   // ================= 🔥 ADVANCED SEARCH =================
-getAdvancedAgences(filters: any): Observable<any> {
+  getAdvancedAgences(filters: any): Observable<any> {
 
   let params: any = {};
 

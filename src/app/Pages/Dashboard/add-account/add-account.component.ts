@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { DashboardNavbarComponent } from '../../../components/dashboard-navbar/dashboard-navbar.component';
 
 import { AgenceService } from '../../../service/agence.service';
 import {
-  VoitureService,
-  CreateVoitureDto,
-  UpdateVoitureDto
+  VoitureService
 } from '../../../service/voiture.service';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -22,11 +21,13 @@ export class AddAccountComponent implements OnInit {
 
   constructor(
     private agenceService: AgenceService,
-    private voitureService: VoitureService
+    private voitureService: VoitureService,
+    private http: HttpClient
   ) {}
 
   // ================= DATA =================
   agences: any[] = [];
+  agenceManagers: any[] = [];
 
   agenceForm: any = {
     idagence: null,
@@ -34,6 +35,7 @@ export class AddAccountComponent implements OnInit {
     ville: '',
     telephone: '',
     nb_Voitures: 0,
+    agenceManagerId: null,
     latitude: 0,
     longitude: 0,
     images: []
@@ -52,11 +54,24 @@ export class AddAccountComponent implements OnInit {
   // ================= LOAD =================
   ngOnInit() {
     this.loadAgences();
+    this.loadAgenceManagers();
   }
 
   loadAgences() {
     this.agenceService.getAllAgences().subscribe(res => {
       this.agences = res;
+    });
+  }
+
+  loadAgenceManagers() {
+    // Charger tous les utilisateurs avec role agence-manager
+    this.http.get('http://localhost:3000/users?role=agence-manager').subscribe({
+      next: (res: any) => {
+        this.agenceManagers = Array.isArray(res) ? res : [];
+      },
+      error: () => {
+        this.agenceManagers = [];
+      }
     });
   }
 
@@ -148,10 +163,41 @@ export class AddAccountComponent implements OnInit {
 
     if (!this.editMode) {
       this.agenceService.createAgence(payload).subscribe({
-        next: () => {
-          this.message = 'Agence enregistrée ✅';
-          this.closeModal();
-          this.loadAgences();
+        next: (agenceCreated: any) => {
+          // ✅ CRÉATION AUTOMATIQUE DES VOITURES APRÈS CRÉATION AGENCE
+          const nbVoitures = Number(this.agenceForm.nb_Voitures ?? 0);
+          const voituresToCreate: any[] = [];
+          
+          for (let i = 0; i < nbVoitures; i++) {
+            voituresToCreate.push({
+              marque: 'BMW',
+              modele: 'Série 3',
+              immatriculation: `${230 + i} TUN ${2630 + i}`,
+              etat: 'disponible',
+              prix_Jour: 200,
+              agenceId: agenceCreated.idagence
+            });
+          }
+
+          if (voituresToCreate.length > 0) {
+            const createRequests = voituresToCreate.map(dto => 
+              this.voitureService.createVoiture(dto).pipe(catchError(() => of({ __saveError: true })))
+            );
+
+            forkJoin(createRequests).subscribe(results => {
+              if (results.some((r: any) => r && r.__saveError)) {
+                this.message = 'Agence créée mais certaines voitures ont échoué ⚠️';
+              } else {
+                this.message = `Agence enregistrée avec ${nbVoitures} voitures créées automatiquement ✅`;
+              }
+              this.closeModal();
+              this.loadAgences();
+            });
+          } else {
+            this.message = 'Agence enregistrée ✅';
+            this.closeModal();
+            this.loadAgences();
+          }
         },
         error: (err) => {
           this.message = this.httpErrorMessage(err, "Erreur lors de l'ajout de l'agence ❌");
@@ -218,6 +264,7 @@ export class AddAccountComponent implements OnInit {
       ville: '',
       telephone: '',
       nb_Voitures: 0,
+      agenceManagerId: null,
       latitude: 0,
       longitude: 0,
       images: []
@@ -248,6 +295,7 @@ export class AddAccountComponent implements OnInit {
       nb_voitures: n,
       nb_Voitures: n,
       'nb-voitures': n,
+      agenceManagerId: this.agenceForm.agenceManagerId,
       latitude: Number(this.agenceForm.latitude ?? 0),
       longitude: Number(this.agenceForm.longitude ?? 0),
       images: Array.isArray(this.agenceForm.images)
@@ -258,7 +306,7 @@ export class AddAccountComponent implements OnInit {
     };
   }
 
-  private buildCreateVoitureDto(voiture: any, agenceId: number): CreateVoitureDto {
+  private buildCreateVoitureDto(voiture: any, agenceId: number): any {
     return {
       marque: String(voiture.marque ?? '').trim(),
       modele: String(voiture.modele ?? '').trim(),
@@ -269,8 +317,11 @@ export class AddAccountComponent implements OnInit {
     };
   }
 
-  private buildUpdateVoitureDto(voiture: any): UpdateVoitureDto {
+  private buildUpdateVoitureDto(voiture: any): any {
     return {
+      marque: String(voiture.marque ?? '').trim(),
+      modele: String(voiture.modele ?? '').trim(),
+      immatriculation: String(voiture.immatriculation ?? '').trim(),
       etat: String(voiture.etat ?? 'disponible').trim(),
       prix_Jour: Math.max(0, Number(voiture.prix_Jour ?? 0))
     };

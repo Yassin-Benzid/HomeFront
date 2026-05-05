@@ -44,11 +44,32 @@ export class ChambreService {
   }
 
   getAllChambres(): Observable<any> {
-    return this.http.get(this.API_URL, this.getHeaders());
+    // Récupérer l'utilisateur connecté depuis localStorage
+    const userData = localStorage.getItem('user');
+    if (!userData) {
+      return new Observable(observer => {
+        observer.error('Utilisateur non connecté');
+        observer.complete();
+      });
+    }
+    
+    const user = JSON.parse(userData);
+    // Transmettre userId et role en paramètres query comme attendu par le backend
+    return this.http.get(`${this.API_URL}?userId=${user.id}&role=${user.role}`, this.getHeaders());
   }
 
   getChambre(id: number): Observable<any> {
-    return this.http.get(this.API_URL + '/' + id, this.getHeaders());
+    const userData = localStorage.getItem('user');
+    if (!userData) {
+      return new Observable(observer => {
+        observer.error('Utilisateur non connecté');
+        observer.complete();
+      });
+    }
+    
+    const user = JSON.parse(userData);
+    // Transmettre userId et role en paramètres query pour findOne
+    return this.http.get(`${this.API_URL}/${id}?userId=${user.id}&role=${user.role}`, this.getHeaders());
   }
 
   createChambre(dto: CreateChambreDto): Observable<any> {

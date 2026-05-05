@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { DashboardNavbarComponent } from '../../../components/dashboard-navbar/dashboard-navbar.component';
 import { ZoneService } from '../../../service/zone.service';
 
@@ -17,7 +18,7 @@ import { ZoneService } from '../../../service/zone.service';
     <div class="d-flex justify-content-between mb-3">
       <h3>Gestion des zones</h3>
 
-      <button class="btn btn-primary" (click)="openModal()">
+      <button class="btn btn-primary" (click)="goToFicheZone()">
         + Ajouter zone
       </button>
     </div>
@@ -70,34 +71,43 @@ import { ZoneService } from '../../../service/zone.service';
       </div>
     </div>
 
-    <div class="row">
-
-      <div class="col-md-4 mb-3" *ngFor="let z of displayedZones">
-
-        <div class="card p-2">
-
-          <!-- IMAGE -->
-          <img *ngIf="z.image"
-               [src]="getImageUrl(z.image)"
-               class="img-fluid mb-2 rounded">
-
-          <h5>{{ z.nom }}</h5>
-          <p>{{ z.ville }}</p>
-
-          <button class="btn btn-warning btn-sm"
-                  (click)="openModal(z)">
-            Modifier
-          </button>
-
-          <button class="btn btn-danger btn-sm mt-1"
-                  (click)="deleteZone(z)">
-            Supprimer
-          </button>
-
-        </div>
-
-      </div>
-
+    <!-- TABLEAU ZONES TOURISTIQUES -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Nom Zone</th>
+            <th>Ville</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Description</th>
+            <th class="text-center" style="width: 120px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let z of displayedZones">
+            <td>{{ z.idzone || z.id }}</td>
+            <td><strong>{{ z.nom }}</strong></td>
+            <td>{{ z.ville }}</td>
+            <td>{{ z.latitude || '-' }}</td>
+            <td>{{ z.longitude || '-' }}</td>
+            <td>{{ z.description || '-' | slice:0:50 }}{{ z.description?.length > 50 ? '...' : '' }}</td>
+            <td class="text-center">
+              <button class="btn btn-outline-danger btn-sm" 
+                      (click)="deleteZone(z)" 
+                      title="Supprimer">
+                <i class="fa fa-trash"></i> Supprimer
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="displayedZones.length === 0">
+            <td colspan="7" class="text-center text-muted py-4">
+              Aucune zone touristique trouvée
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="d-flex justify-content-between align-items-center mt-2 mb-3">
@@ -234,7 +244,10 @@ export class SavedSearchComponent implements OnInit {
   pageSize = 6;
   totalItems = 0;
 
-  constructor(private zoneService: ZoneService) {}
+  constructor(
+    private zoneService: ZoneService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.loadZones();
@@ -250,6 +263,11 @@ export class SavedSearchComponent implements OnInit {
       },
       error: () => this.loadZonesFallback()
     });
+  }
+
+  // ================= NAVIGATION =================
+  goToFicheZone() {
+    this.router.navigate(['/fiche-zone']);
   }
 
   // ================= MODAL =================

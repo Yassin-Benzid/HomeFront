@@ -1,16 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardNavbarComponent } from '../../../components/dashboard-navbar/dashboard-navbar.component';
-
-interface LocationVoitureItem {
-  ref: string;
-  agence: string;
-  client: string;
-  vehicule: string;
-  period: string;
-  amount: string;
-  status: string;
-}
+import { LocationService, Location } from '../../../service/location.service';
+import { AuthService } from '../../../service/auth.service';
 
 @Component({
   selector: 'app-locations',
@@ -18,49 +10,81 @@ interface LocationVoitureItem {
   imports: [DashboardNavbarComponent, CommonModule],
   templateUrl: './locations.component.html'
 })
-export class LocationsComponent {
-  locations: LocationVoitureItem[] = [
-    {
-      ref: 'LV-1042',
-      agence: 'CarGo Tunis',
-      client: 'Yasmine Trabelsi',
-      vehicule: 'SUV automatique - catégorie premium',
-      period: '05/05/2026 - 12/05/2026',
-      amount: '455 EUR',
-      status: 'Confirmée'
-    },
-    {
-      ref: 'LV-1043',
-      agence: 'Djerba Wheels',
-      client: 'Karim Baccar',
-      vehicule: 'Citadine économique',
-      period: '10/05/2026 - 14/05/2026',
-      amount: '180 EUR',
-      status: 'En attente'
-    },
-    {
-      ref: 'LV-1044',
-      agence: 'CarGo Tunis',
-      client: 'Rania Ben Amor',
-      vehicule: 'Berline diesel',
-      period: '18/05/2026 - 22/05/2026',
-      amount: '220 EUR',
-      status: 'Confirmée'
-    },
-    {
-      ref: 'LV-1045',
-      agence: 'Sfax Auto Rent',
-      client: 'Nader Ghannouchi',
-      vehicule: 'Break familial',
-      period: '01/06/2026 - 08/06/2026',
-      amount: '310 EUR',
-      status: 'Annulée'
-    }
-  ];
+export class LocationsComponent implements OnInit {
 
-  selectedLocation: LocationVoitureItem = this.locations[0];
+  locations: Location[] = [];
+  selectedLocation?: Location;
 
-  selectLocation(loc: LocationVoitureItem): void {
+  constructor(
+    private locationService: LocationService,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadLocations();
+  }
+
+  loadLocations(): void {
+    this.locationService.findAll().subscribe({
+      next: (data) => {
+        this.locations = data;
+        if (this.locations.length > 0) {
+          this.selectedLocation = this.locations[0];
+        }
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement des locations:', err);
+      }
+    });
+  }
+
+  selectLocation(loc: Location): void {
     this.selectedLocation = loc;
+  }
+
+  confirmerLocation(): void {
+    if (this.selectedLocation && this.selectedLocation.client) {
+      this.locationService.confirmerLocation(
+        this.selectedLocation.idlocation,
+        this.selectedLocation.client.iduser
+      ).subscribe({
+        next: () => {
+          this.loadLocations();
+        },
+        error: (err) => {
+          console.error('Erreur lors de la confirmation:', err);
+        }
+      });
+    }
+  }
+
+  annulerLocation(): void {
+    if (this.selectedLocation && this.selectedLocation.client) {
+      this.locationService.annulerLocation(
+        this.selectedLocation.idlocation,
+        this.selectedLocation.client.iduser
+      ).subscribe({
+        next: () => {
+          this.loadLocations();
+        },
+        error: (err) => {
+          console.error('Erreur lors de l\'annulation:', err);
+        }
+      });
+    }
+  }
+
+  canConfirm(): boolean {
+    const isAdmin = this.authService.getRole() === 'admin';
+    return !isAdmin && this.selectedLocation?.statut === 'en attente';
+  }
+
+  canCancel(): boolean {
+    const isAdmin = this.authService.getRole() === 'admin';
+    return !isAdmin && (this.selectedLocation?.statut === 'en attente' || this.selectedLocation?.statut === 'confirmée');
+  }
+
+  formatDate(date: Date): string {
+    return new Date(date).toLocaleDateString('fr-FR');
   }
 }

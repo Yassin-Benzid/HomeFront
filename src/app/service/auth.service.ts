@@ -86,9 +86,9 @@ export class AuthService {
     if (r === 'admin') {
       this.router.navigate(['/tableau-de-bord']);
     } else if (r === 'hotel-manager') {
-      this.router.navigate(['/dashboard-hotel']);
+      this.router.navigate(['/hotel-manager']);
     } else if (r === 'agence-manager') {
-      this.router.navigate(['/dashboard-agence']);
+      this.router.navigate(['/agency-manager']);
     } else {
       this.router.navigate(['/']);
     }
@@ -109,6 +109,22 @@ export class AuthService {
 
   getUserName(): string | null {
     return localStorage.getItem('name');
+  }
+
+  isClient(): boolean {
+    return this.getRole() === 'client';
+  }
+
+  isAdmin(): boolean {
+    return this.getRole() === 'admin';
+  }
+
+  isHotelManager(): boolean {
+    return this.getRole() === 'hotel-manager';
+  }
+
+  isAgencyManager(): boolean {
+    return this.getRole() === 'agence-manager';
   }
 
   logout(): void {

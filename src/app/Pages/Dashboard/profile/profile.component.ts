@@ -75,7 +75,7 @@ export class ProfileComponent implements OnInit {
       next: () => {
 
         // ✅ SUCCESS POPUP
-        this.successMessage = 'Profil mis à jour avec succès';
+        this.successMessage = 'Profile mis à jour avec succès';
         this.errorMessage = '';
 
         // reset password field
@@ -94,7 +94,7 @@ export class ProfileComponent implements OnInit {
         console.error('Update error:', err);
 
         // ❌ ERROR POPUP
-        this.errorMessage = 'Erreur lors de la mise à jour du profil';
+        this.errorMessage = 'Erreur lors de la mise à jour du profile';
         this.successMessage = '';
 
         setTimeout(() => {

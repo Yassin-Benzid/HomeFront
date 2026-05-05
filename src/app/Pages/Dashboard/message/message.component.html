@@ -7,8 +7,8 @@
         <div class="bg-white card-box border-20 w-100">
             <div class="d-sm-flex justify-content-between align-items-center mb-25">
                 <div>
-                    <h4 class="dash-title-three mb-1">Réservations hôtels</h4>
-                    <p class="m0 fs-16">Liste statique prête à être alimentée depuis le backend.</p>
+                    <h4 class="dash-title-three mb-1">Réservations hôtels & voitures</h4>
+                   
                 </div>
                 <span class="badge text-bg-light">{{ reservations.length }} réservations</span>
             </div>
@@ -18,7 +18,7 @@
                     <thead>
                         <tr>
                             <th>Réf</th>
-                            <th>Nom d'hôtel</th>
+                            <th>Type</th>
                             <th>Client</th>
                             <th>Montant</th>
                             <th>Statut</th>
@@ -27,11 +27,11 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let reservation of reservations">
-                            <td class="fw-500 color-dark">{{ reservation.ref }}</td>
-                            <td>{{ reservation.nomHotel }}</td>
-                            <td>{{ reservation.client }}</td>
-                            <td>{{ reservation.amount }}</td>
-                            <td><span class="badge text-bg-light">{{ reservation.status }}</span></td>
+                            <td class="fw-500 color-dark">{{ getReservationDisplayInfo(reservation).ref }}</td>
+                            <td>{{ getReservationDisplayInfo(reservation).type }}</td>
+                            <td>{{ getReservationDisplayInfo(reservation).client }}</td>
+                            <td>{{ getReservationDisplayInfo(reservation).amount }}</td>
+                            <td><span class="badge text-bg-light">{{ getReservationDisplayInfo(reservation).status }}</span></td>
                             <td><a href="javascript:void(0);" (click)="selectReservation(reservation)">Voir</a></td>
                         </tr>
                     </tbody>
@@ -42,19 +42,24 @@
     <div class="col-lg-4 d-flex">
         <div class="bg-white card-box border-20 w-100">
             <h4 class="dash-title-three">Détail sélectionné</h4>
-            <div class="border rounded-4 p-3 mb-20">
-                <div class="mb-2"><strong>Référence:</strong> {{ selectedReservation.ref }}</div>
-                <div class="mb-2"><strong> Nom d'Hôtel:</strong> {{ selectedReservation.nomHotel }}</div>
-                <div class="mb-2"><strong>Client:</strong> {{ selectedReservation.client }}</div>
-                <div class="mb-2"><strong>Chambre / offre:</strong> {{ selectedReservation.item }}</div>
-                <div class="mb-2"><strong>Période:</strong> {{ selectedReservation.period }}</div>
-                <div class="mb-2"><strong>Montant:</strong> {{ selectedReservation.amount }}</div>
-                <div><strong>Statut:</strong> {{ selectedReservation.status }}</div>
+            <div class="border rounded-4 p-3 mb-20" *ngIf="selectedReservation">
+                <div class="mb-2"><strong>Référence:</strong> {{ getReservationDisplayInfo(selectedReservation).ref }}</div>
+                <div class="mb-2"><strong>Type:</strong> {{ getReservationDisplayInfo(selectedReservation).type }}</div>
+                <div class="mb-2"><strong>Client:</strong> {{ getReservationDisplayInfo(selectedReservation).client }}</div>
+                <div class="mb-2"><strong>Produit:</strong> {{ selectedReservation.chambres[0].numero }} - {{ selectedReservation.hotel?.nom }}</div>
+<div class="mb-2"><strong>Numéro de chambre:</strong> {{ selectedReservation.chambres[0].numero }}</div>
+<div class="mb-2"><strong>Hotel:</strong> {{ selectedReservation.hotel?.nom }}</div>
+                <div class="mb-2"><strong>Période:</strong> {{ getReservationDisplayInfo(selectedReservation).period }}</div>
+                <div class="mb-2"><strong>Montant:</strong> {{ getReservationDisplayInfo(selectedReservation).amount }} DT</div>
+                <div><strong>Statut:</strong> {{ getReservationDisplayInfo(selectedReservation).status }}</div>
             </div>
-    
+            <div *ngIf="!selectedReservation" class="border rounded-4 p-3 mb-20">
+                <p class="text-muted">Sélectionnez une réservation pour voir les détails</p>
+            </div>
+            
             <div class="d-flex gap-2 mt-20">
-                <a href="javascript:void(0);" class="dash-btn-two tran3s">Confirmer</a>
-                <a href="javascript:void(0);" class="dash-cancel-btn tran3s">Annuler</a>
+                <button *ngIf="canConfirm()" (click)="confirmReservation()" class="dash-btn-two tran3s">Confirmer</button>
+                <button *ngIf="canCancel()" (click)="cancelReservation()" class="dash-cancel-btn tran3s">Annuler</button>
             </div>
         </div>
     </div>

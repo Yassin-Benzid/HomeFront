@@ -1,0 +1,167 @@
+<app-dashboard-navbar [Title]="'Facturation'" [showAdminButtons]="false"></app-dashboard-navbar>
+
+<h2 class="main-title d-block d-lg-none">Facturation</h2>
+
+<div class="row mt-4">
+  <div class="col-lg-4">
+    <div class="dash-card-one bg-white border-30 position-relative mb-15">
+      <div class="text-center py-3">
+        <h3 class="value fw-700">{{ stats.payees }}</h3>
+        <span>Factures payées</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="dash-card-one bg-white border-30 position-relative mb-15">
+      <div class="text-center py-3">
+        <h3 class="value fw-700">{{ stats.enAttente }}</h3>
+        <span>En attente</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="dash-card-one bg-white border-30 position-relative mb-15">
+      <div class="text-center py-3">
+        <h3 class="value fw-700">{{ stats.montantMois | number }} DT</h3>
+        <span>Montant du mois</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-12">
+    <div class="bg-white card-box border-20">
+      <h4 class="dash-title-three mb-3">Factures récentes</h4>
+
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoading && factures.length === 0" class="text-center py-5 text-muted">
+        <h6>Aucune facture pour le moment</h6>
+        <p class="m-0">Les factures sont générées automatiquement lors de la confirmation des réservations.</p>
+      </div>
+
+      <div *ngIf="!isLoading && factures.length > 0" class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th>FACTURE</th>
+              <th>DATE</th>
+              <th>CLIENT</th>
+              <th class="text-end">MONTANT</th>
+              <th>MÉTHODE</th>
+              <th>STATUT</th>
+              <th class="text-center">ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let fac of factures">
+              <td><strong>#FAC-{{ fac.idfacture }}</strong></td>
+              <td>{{ fac.date_Facture | date:'dd/MM/yyyy' }}</td>
+              <td>{{ fac.client?.prenom }} {{ fac.client?.nom }}</td>
+              <td class="text-end fw-bold">{{ fac.montant_Total | number }} DT</td>
+              <td>{{ fac.mode_Paiement || '-' }}</td>
+              <td>
+                <span class="badge" 
+                  [ngClass]="{
+                    'bg-warning': fac.statut === 'EN_ATTENTE',
+                    'bg-success': fac.statut === 'PAYEE',
+                    'bg-secondary': fac.statut === 'ENVOYEE'
+                  }">
+                 {{ fac.statut }}
+                </span>
+              </td>
+              <td class="text-center">
+                <button class="btn btn-sm btn-outline-primary" (click)="openFactureModal(fac)">
+                  👁️ Voir
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AFFICHAGE FACTURE -->
+<div class="modal d-block fade show" *ngIf="showModal" style="background: rgba(0,0,0,0.6); z-index: 1060;">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content border-20 p-4">
+      
+      <div class="modal-header border-0 pb-0">
+        <h4 class="modal-title">📄 Facture #FAC-{{ selectedFacture?.idfacture }}</h4>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <h6>Informations facture</h6>
+            <p class="mb-1">Date: {{ selectedFacture?.date_Facture | date:'dd/MM/yyyy' }}</p>
+            <p class="mb-1">Numéro: #FAC-{{ selectedFacture?.idfacture }}</p>
+            <p class="mb-1">Statut: 
+              <span class="badge" 
+                [ngClass]="{
+                  'bg-warning': selectedFacture?.statut === 'EN_ATTENTE',
+                  'bg-success': selectedFacture?.statut === 'PAYEE',
+                  'bg-secondary': selectedFacture?.statut === 'ENVOYEE'
+                }">
+                {{ selectedFacture?.statut }}
+              </span>
+            </p>
+          </div>
+          <div class="col-md-6 text-end">
+            <h6>Client</h6>
+            <p class="mb-1"><strong>{{ selectedFacture?.client?.prenom }} {{ selectedFacture?.client?.nom }}</strong></p>
+            <p class="mb-1">{{ selectedFacture?.client?.email }}</p>
+            <p class="mb-1">{{ selectedFacture?.client?.telephone }}</p>
+          </div>
+        </div>
+
+        <div class="card bg-light p-3 rounded border">
+          <div class="row fw-bold border-bottom pb-2">
+            <div class="col-6">Désignation</div>
+            <div class="col-2 text-center">Qté</div>
+            <div class="col-2 text-end">Prix Unit.</div>
+            <div class="col-2 text-end">Total</div>
+          </div>
+
+          <div class="row py-2 border-bottom" *ngIf="selectedFacture?.items">
+            <div class="col-12">
+              <div class="row" *ngFor="let item of selectedFacture?.items">
+                <div class="col-6">{{ item.designation }}</div>
+                <div class="col-2 text-center">{{ item.quantite }}</div>
+                <div class="col-2 text-end">{{ item.prix_unitaire | number }} DT</div>
+                <div class="col-2 text-end">{{ item.total | number }} DT</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-8"></div>
+            <div class="col-2">
+              <strong>Total TTC:</strong>
+            </div>
+            <div class="col-2 text-end">
+              <h5 class="fw-bold text-primary">{{ selectedFacture?.montant_Total | number }} DT</h5>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button class="btn btn-secondary" (click)="closeModal()">Fermer</button>
+          <button class="btn btn-primary">📥 Télécharger PDF</button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -8,11 +8,10 @@
             <div class="d-sm-flex justify-content-between align-items-center mb-25">
                 <div>
                     <h4 class="dash-title-three mb-1">Locations de voitures</h4>
-                    <p class="m0 fs-16">Même présentation que les réservations, centrée sur les contrats de location véhicule.</p>
+                    <p class="m0 fs-16">Connexion backend NestJS API active.</p>
                 </div>
                 <span class="badge text-bg-light">{{ locations.length }} locations</span>
             </div>
-            <!-- TODO backend: brancher sur GET /locations-voitures (ou équivalent) avec filtres -->
             <div class="table-responsive">
                 <table class="table property-list-table">
                     <thead>
@@ -27,11 +26,11 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let loc of locations">
-                            <td class="fw-500 color-dark">{{ loc.ref }}</td>
-                            <td>{{ loc.agence }}</td>
-                            <td>{{ loc.client }}</td>
-                            <td>{{ loc.amount }}</td>
-                            <td><span class="badge text-bg-light">{{ loc.status }}</span></td>
+                            <td class="fw-500 color-dark">LV-{{ loc.idlocation }}</td>
+                            <td>{{ loc.agence?.nom }}</td>
+                            <td>{{ loc.client?.nom }} {{ loc.client?.prenom }}</td>
+                            <td>{{ loc.montant }} </td>
+                            <td><span class="badge text-bg-light">{{ loc.statut }}</span></td>
                             <td><a href="javascript:void(0);" (click)="selectLocation(loc)">Voir</a></td>
                         </tr>
                     </tbody>
@@ -42,19 +41,22 @@
     <div class="col-lg-4 d-flex">
         <div class="bg-white card-box border-20 w-100">
             <h4 class="dash-title-three">Détail sélectionné</h4>
-            <div class="border rounded-4 p-3 mb-20">
-                <div class="mb-2"><strong>Référence:</strong> {{ selectedLocation.ref }}</div>
-                <div class="mb-2"><strong>Agence:</strong> {{ selectedLocation.agence }}</div>
-                <div class="mb-2"><strong>Client:</strong> {{ selectedLocation.client }}</div>
-                <div class="mb-2"><strong>Véhicule:</strong> {{ selectedLocation.vehicule }}</div>
-                <div class="mb-2"><strong>Période de location:</strong> {{ selectedLocation.period }}</div>
-                <div class="mb-2"><strong>Montant:</strong> {{ selectedLocation.amount }}</div>
-                <div><strong>Statut:</strong> {{ selectedLocation.status }}</div>
+            <div class="border rounded-4 p-3 mb-20" *ngIf="selectedLocation">
+                <div class="mb-2"><strong>Référence:</strong> LV-{{ selectedLocation.idlocation }}</div>
+                <div class="mb-2"><strong>Agence:</strong> {{ selectedLocation.agence?.nom }}</div>
+                <div class="mb-2"><strong>Client:</strong> {{ selectedLocation.client?.nom }} {{ selectedLocation.client?.prenom }}</div>
+                <div class="mb-2"><strong>Véhicule:</strong> {{ selectedLocation.voiture?.marque }} {{ selectedLocation.voiture?.modele }}</div>
+                <div class="mb-2"><strong>Période de location:</strong> {{ formatDate(selectedLocation.date_debut) }} - {{ formatDate(selectedLocation.date_fin) }}</div>
+                <div class="mb-2"><strong>Montant:</strong> {{ selectedLocation.montant }} DT</div>
+                <div><strong>Statut:</strong> {{ selectedLocation.statut }}</div>
+            </div>
+            <div *ngIf="!selectedLocation" class="border rounded-4 p-3 mb-20">
+                <p class="text-muted">Sélectionnez une location pour voir les détails</p>
             </div>
         
             <div class="d-flex gap-2 mt-20">
-                <a href="javascript:void(0);" class="dash-btn-two tran3s">Valider</a>
-                <a href="javascript:void(0);" class="dash-cancel-btn tran3s">Refuser</a>
+                <button *ngIf="canConfirm()" (click)="confirmerLocation()" class="dash-btn-two tran3s">Confirmer</button>
+                <button *ngIf="canCancel()" (click)="annulerLocation()" class="dash-cancel-btn tran3s">Annuler</button>
             </div>
         </div>
     </div>
